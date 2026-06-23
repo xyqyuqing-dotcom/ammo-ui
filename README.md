@@ -4,6 +4,14 @@
 
 - `index.html`：原型导航首页
 - `asset-workflow.html`：FOF 资产入池流程原型
+- `investment-committee.html`：上会主功能页面
+- `ta-data-send.html`：TA 数据发送
+- `parent-layer-business.html`：母层商务
+- `tuotuodi.html`：妥妥递主入口
+- `order-details.html`：妥妥递订单详情子页面
+- `seal-payment-workflow.html`：妥妥递用印划款子页面
+- `private-fund-manager-config.html`：妥妥递私募群管理人关系配置子页面
+- `email-config.html`：妥妥递邮箱配置子页面
 
 ## 发布
 

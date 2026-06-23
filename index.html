@@ -25,16 +25,16 @@
 <body>
   <header class="top">
     <nav class="nav"><div class="brand">AMMO UI · 资管原型中心</div><div class="nav-meta">持续沉淀 · 快速评审 · 共同迭代</div></nav>
-    <div class="hero"><div class="eyebrow">ASSET MANAGEMENT PROTOTYPES</div><h1>资产管理业务原型展示站</h1><p>集中展示投资、运营及基础平台相关的交互原型，用可操作页面对齐需求、流程与系统实现。</p></div>
+    <div class="hero"><div class="eyebrow">ASSET MANAGEMENT PROTOTYPES</div><h1>资产管理业务原型展示站</h1><p>集中展示投资、交易、运营、商务及基础平台相关的交互原型，用可操作页面对齐需求、流程与系统实现。</p></div>
   </header>
 
   <main class="main">
     <div class="toolbar">
       <div class="search"><input id="search" type="search" placeholder="搜索原型名称、说明或标签"></div>
-      <div class="filters" id="filters"><button class="filter active" data-filter="全部">全部</button><button class="filter" data-filter="投资">投资</button><button class="filter" data-filter="运营">运营</button><button class="filter" data-filter="基础平台">基础平台</button></div>
+      <div class="filters" id="filters"><button class="filter active" data-filter="全部">全部</button><button class="filter" data-filter="投资">投资</button><button class="filter" data-filter="交易">交易</button><button class="filter" data-filter="运营">运营</button><button class="filter" data-filter="商务">商务</button><button class="filter" data-filter="基础平台">基础平台</button></div>
     </div>
 
-    <div class="section-head"><div><h2>原型目录</h2><p>点击卡片进入可交互原型</p></div><div class="count">当前展示 <b id="count">1</b> 个原型</div></div>
+    <div class="section-head"><div><h2>原型目录</h2><p>点击卡片进入可交互原型</p></div><div class="count">当前展示 <b id="count">5</b> 个原型</div></div>
     <section class="grid" id="grid">
       <a class="card" href="asset-workflow.html" data-category="投资" data-search="fof 资产 入池 批量 产品 s码 na 资配池 投资">
         <div class="card-top"><div class="icon">投</div><span class="status">持续迭代</span></div>
@@ -42,6 +42,34 @@
         <p class="desc">支持单产品入池、同系列产品批量复制、未成立产品编码及资配池状态展示。</p>
         <div class="tags"><span class="tag">投资</span><span class="tag">审批流程</span><span class="tag">批量入池</span></div>
         <div class="card-foot"><span>更新于 2026-06-23</span><span class="open">打开原型 →</span></div>
+      </a>
+      <a class="card" href="investment-committee.html" data-category="投资" data-search="fof 下投 上会 确认 投资 委员会">
+        <div class="card-top"><div class="icon">会</div><span class="status">历史原型</span></div>
+        <h3>上会主功能页面</h3>
+        <p class="desc">FOF 下投上会确认系统主功能界面，用于展示上会信息及确认操作。</p>
+        <div class="tags"><span class="tag">投资</span><span class="tag">上会</span><span class="tag">确认</span></div>
+        <div class="card-foot"><span>收录于 2026-06-23</span><span class="open">打开原型 →</span></div>
+      </a>
+      <a class="card" href="ta-data-send.html" data-category="运营" data-search="ta 数据 发送 运营 交易确认 份额持有">
+        <div class="card-top"><div class="icon">运</div><span class="status">历史原型</span></div>
+        <h3>TA 数据发送</h3>
+        <p class="desc">支持交易确认与份额持有等 TA 数据发送场景的配置和操作展示。</p>
+        <div class="tags"><span class="tag">运营</span><span class="tag">TA 数据</span><span class="tag">发送管理</span></div>
+        <div class="card-foot"><span>收录于 2026-06-23</span><span class="open">打开原型 →</span></div>
+      </a>
+      <a class="card" href="parent-layer-business.html" data-category="商务" data-search="母层 商务 管理 商务管理">
+        <div class="card-top"><div class="icon">商</div><span class="status">历史原型</span></div>
+        <h3>母层商务</h3>
+        <p class="desc">母层产品相关商务管理页面，用于展示商务信息与业务操作。</p>
+        <div class="tags"><span class="tag">商务</span><span class="tag">母层</span><span class="tag">商务管理</span></div>
+        <div class="card-foot"><span>收录于 2026-06-23</span><span class="open">打开原型 →</span></div>
+      </a>
+      <a class="card" href="tuotuodi.html" data-category="交易" data-search="妥妥递 自动用印 用印 划款 订单 邮箱 私募群 交易">
+        <div class="card-top"><div class="icon">交</div><span class="status">组合原型</span></div>
+        <h3>妥妥递</h3>
+        <p class="desc">以自动用印订单管理为主入口，串联订单详情、用印划款及配套配置页面。</p>
+        <div class="tags"><span class="tag">交易</span><span class="tag">自动用印</span><span class="tag">订单管理</span></div>
+        <div class="card-foot"><span>收录于 2026-06-23</span><span class="open">打开原型 →</span></div>
       </a>
     </section>
     <div class="empty" id="empty">没有找到匹配的原型，请尝试其他关键词。</div>
@@ -52,7 +80,7 @@
   <script>
     const cards=[...document.querySelectorAll('.card')],search=document.querySelector('#search'),count=document.querySelector('#count'),empty=document.querySelector('#empty');let category='全部';
     function render(){const keyword=search.value.trim().toLowerCase();let visible=0;cards.forEach(card=>{const matchedCategory=category==='全部'||card.dataset.category===category;const matchedKeyword=!keyword||(card.textContent+' '+card.dataset.search).toLowerCase().includes(keyword);card.style.display=matchedCategory&&matchedKeyword?'flex':'none';if(matchedCategory&&matchedKeyword)visible++});count.textContent=visible;empty.style.display=visible?'none':'block'}
-    search.addEventListener('input',render);document.querySelector('#filters').addEventListener('click',event=>{const button=event.target.closest('.filter');if(!button)return;document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));button.classList.add('active');category=button.dataset.filter;render()});
+    search.addEventListener('input',render);document.querySelector('#filters').addEventListener('click',event=>{const button=event.target.closest('.filter');if(!button)return;document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));button.classList.add('active');category=button.dataset.filter;render()});render();
   </script>
 </body>
 </html>

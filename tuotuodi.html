@@ -1,0 +1,2770 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>妥妥递 - 订单管理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 200px;
+            background: #fff;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            border-right: 1px solid #e8e8e8;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            color: white;
+        }
+
+        .brand-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .sidebar-menu {
+            padding: 12px 0;
+        }
+
+        .menu-title {
+            padding: 12px 20px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .menu-item {
+            padding: 11px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.15s;
+        }
+
+        .menu-item:hover {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+
+        .menu-item.active {
+            background: #e6f7ff;
+            color: #1890ff;
+            border-right: 3px solid #1890ff;
+            font-weight: 500;
+        }
+
+        .menu-icon {
+            font-size: 16px;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            margin-left: 200px;
+            display: flex;
+            flex-direction: column;
+            overflow-x: auto;
+        }
+
+        /* 顶部栏 */
+        .top-bar {
+            background: #fff;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 8px 16px;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-input::placeholder {
+            color: #999;
+        }
+
+        .top-bar-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .top-bar-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: #1890ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        /* 内容区 */
+        .content {
+            padding: 24px;
+        }
+
+        /* 筛选栏 */
+        .filter-bar {
+            background: #fff;
+            padding: 16px 20px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-tab {
+            padding: 6px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .filter-tab:hover {
+            background: #f0f0f0;
+        }
+
+        .filter-tab.active {
+            background: #1890ff;
+            color: #fff;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 6px 16px;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 批量操作栏 */
+        .batch-bar {
+            background: #fff;
+            padding: 12px 20px;
+            margin-bottom: 12px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .batch-info {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .select-all {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .batch-stats {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .batch-stats span {
+            color: #1890ff;
+            font-weight: 500;
+        }
+
+        .batch-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* 批量用印按钮（暂时隐藏） */
+        .batch-btn.stamp { display: none; }
+
+        .batch-btn {
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .batch-btn.primary {
+            background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+            color: #fff;
+        }
+
+        .batch-btn.primary:hover {
+            background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%);
+        }
+
+        .batch-btn.wechat {
+            background: #fff;
+            color: #1890ff;
+            border: 1px solid #1890ff;
+        }
+
+        .batch-btn.wechat:hover {
+            background: #e6f7ff;
+            border-color: #40a9ff;
+            color: #40a9ff;
+        }
+
+        /* 企微消息下拉按钮 */
+        .wechat-dropdown-wrap {
+            position: relative;
+        }
+        .wechat-dropdown-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            background: transparent;
+            border: none;
+            color: inherit;
+            width: 100%;
+        }
+        .wechat-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            min-width: 180px;
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 100;
+            overflow: hidden;
+        }
+        .wechat-dropdown-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.15s;
+        }
+        .wechat-dropdown-item:hover {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+
+        .batch-btn:disabled,
+        .batch-btn[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 发送企微邀请弹窗 */
+        .wechat-modal {
+            background: #fff;
+            border-radius: 8px;
+            width: 780px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wechat-section {
+            margin-bottom: 20px;
+        }
+
+        .wechat-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .wechat-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .wechat-section-title .editable-hint {
+            font-size: 12px;
+            color: #999;
+            font-weight: normal;
+            margin-left: 4px;
+        }
+
+        .wechat-order-select {
+            width: 100%;
+            padding: 10px 16px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            font-size: 14px;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .wechat-textarea {
+            width: 100%;
+            min-height: 180px;
+            padding: 14px 16px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #333;
+            resize: vertical;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        .wechat-textarea:focus {
+            outline: none;
+            border-color: #1890ff;
+            box-shadow: 0 0 0 3px rgba(24,144,255,0.1);
+        }
+
+        .wechat-reset-btn {
+            padding: 4px 12px;
+            font-size: 14px;
+            background: #fff;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .wechat-reset-btn:hover {
+            border-color: #1890ff;
+            color: #1890ff;
+        }
+
+        .wechat-files {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .wechat-file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #f0f0f0;
+        }
+
+        .wechat-file-icon {
+            font-size: 20px;
+        }
+
+        .wechat-file-info {
+            flex: 1;
+        }
+
+        .wechat-file-name {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .wechat-file-desc {
+            font-size: 12px;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        .wechat-file-remove {
+            background: #f5222d;
+            color: #fff;
+            border: none;
+            padding: 4px 12px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .wechat-file-remove:hover {
+            background: #ff4d4f;
+        }
+
+        .wechat-add-file {
+            border: 2px dashed #d9d9d9;
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .wechat-add-file:hover {
+            border-color: #1890ff;
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+
+        .wechat-link-box {
+            background: #e6f7ff;
+            border: 1px solid #91d5ff;
+            border-radius: 6px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .wechat-link-icon {
+            font-size: 20px;
+        }
+
+        .wechat-link-text {
+            flex: 1;
+            font-size: 14px;
+            color: #1890ff;
+            word-break: break-all;
+            line-height: 1.5;
+        }
+
+        .wechat-link-text a {
+            color: #1890ff;
+            text-decoration: none;
+        }
+
+        .wechat-link-text a:hover {
+            text-decoration: underline;
+        }
+
+        .wechat-send-progress {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .wechat-send-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .wechat-send-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .wechat-send-desc {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+        }
+
+        .wechat-send-detail {
+            background: #f6ffed;
+            border: 1px solid #b7eb8f;
+            border-radius: 6px;
+            padding: 16px;
+            text-align: left;
+            max-width: 480px;
+            margin: 0 auto;
+            font-size: 14px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .wechat-send-detail .title {
+            font-weight: 600;
+            color: #52c41a;
+            margin-bottom: 8px;
+        }
+
+        /* 表格 */
+        .table-container {
+            background: #fff;
+            border-radius: 4px;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1400px;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 14px;
+            border-bottom: 1px solid #f0f0f0;
+            white-space: nowrap;
+        }
+
+        /* 固定首列（多选）- 完全不透明 */
+        th:nth-child(1), td:nth-child(1) {
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            background: #fff !important;
+            box-shadow: 2px 0 6px rgba(0,0,0,0.08);
+        }
+        th:nth-child(1) { background: #fafafa !important; }
+
+        /* 固定第二列（星标）*/
+        th:nth-child(2), td:nth-child(2) {
+            position: sticky;
+            left: 50px;
+            z-index: 10;
+            background: #fff !important;
+            box-shadow: 2px 0 6px rgba(0,0,0,0.08);
+        }
+        th:nth-child(2) { background: #fafafa !important; }
+
+        /* 固定末列（操作）*/
+        th:last-child, td:last-child {
+            position: sticky;
+            right: 0;
+            z-index: 10;
+            background: #fff !important;
+            box-shadow: -2px 0 6px rgba(0,0,0,0.08);
+        }
+        th:last-child { background: #fafafa !important; }
+
+        th {
+            background: #fafafa;
+            color: #666;
+            font-weight: 500;
+        }
+
+        tr:hover td {
+            background: #fafafa;
+        }
+
+        /* hover 时固定列保持实心背景，不透出任何东西 */
+        tr:hover td:nth-child(1),
+        tr:hover td:nth-child(2) {
+            background: #f8f9fa !important;
+        }
+        tr:hover td:last-child {
+            background: #f8f9fa !important;
+        }
+
+        .status-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-tag.green {
+            background: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+
+        .status-tag.blue {
+            background: #e6f7ff;
+            color: #1890ff;
+            border: 1px solid #91d5ff;
+        }
+
+        /* 消息状态 - 一行双色点 */
+        .msg-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+        }
+        .msg-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .msg-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        .msg-dot.gray { background: #d9d9d9; }
+        .msg-dot.green { background: #52c41a; }
+        .msg-dot.orange { background: #faad14; }
+
+        .status-tag.orange {
+            background: #fff7e6;
+            color: #fa8c16;
+            border: 1px solid #ffd591;
+        }
+
+        .status-tag.gray {
+            background: #f5f5f5;
+            color: #666;
+            border: 1px solid #d9d9d9;
+        }
+
+        .action-menu {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 紧凑操作链接 */
+        .action-link {
+            font-size: 13px;
+            color: #1890ff;
+            cursor: pointer;
+            text-decoration: none;
+            white-space: nowrap;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: all 0.15s;
+        }
+        .action-link:hover {
+            color: #40a9ff;
+            background: #e6f7ff;
+        }
+        .action-link-primary {
+            color: #1890ff;
+        }
+        .action-link-danger {
+            color: #f5222d;
+        }
+        .action-link-danger:hover {
+            color: #ff4d4f;
+            background: #fff1f0;
+        }
+
+        /* 竖三点按钮 */
+        .action-dots {
+            font-size: 18px;
+            line-height: 1;
+            background: none;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #666;
+            padding: 2px 6px;
+            transition: all 0.15s;
+            letter-spacing: -1px;
+        }
+        .action-dots:hover {
+            background: #f5f5f5;
+            border-color: #d9d9d9;
+            color: #333;
+        }
+
+        /* 匹配候选列表选中态 */
+        .match-candidate-item.selected {
+            background: #e6f7ff !important;
+        }
+        .match-candidate-item.selected input[type="radio"] {
+            accent-color: #1890ff;
+        }
+
+        /* 金证状态单元格 */
+        .gc-cell {
+            font-size: 13px;
+            color: #999;
+        }
+        .gc-cell.gc-done {
+            color: #52c41a;
+            font-weight: 500;
+        }
+        .gc-cell.gc-failed {
+            color: #f5222d;
+            font-weight: 500;
+            cursor: help;
+            text-decoration: underline dotted #f5222d;
+            text-underline-offset: 3px;
+        }
+        .gc-cell.gc-failed:hover {
+            background: #fff1f0;
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #666;
+            padding: 4px;
+        }
+
+        /* 复选框样式 */
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        /* 弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 8px;
+            width: 850px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            border: 1px solid #d9d9d9;
+            background: #fff;
+            color: #333;
+        }
+
+        .btn:hover {
+            border-color: #1890ff;
+            color: #1890ff;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+            border: none;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        .btn-success {
+            background: #52c41a;
+            border-color: #52c41a;
+            color: #fff;
+        }
+
+        .btn-danger {
+            background: #f5222d;
+            border-color: #f5222d;
+            color: #fff;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* 订单选择器 */
+        .order-selector {
+            margin-bottom: 20px;
+        }
+
+        .order-select {
+            width: 100%;
+            padding: 10px 16px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            font-size: 14px;
+            background: #fff;
+        }
+
+        .order-select-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* 批量操作弹窗样式 */
+        .batch-edit-field {
+            margin-bottom: 20px;
+        }
+        .batch-edit-field label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .batch-edit-field select,
+        .batch-edit-field input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            font-size: 14px;
+            background: #fff;
+        }
+        .batch-edit-field select:focus,
+        .batch-edit-field input:focus {
+            outline: none;
+            border-color: #722ed1;
+            box-shadow: 0 0 0 2px rgba(114,46,209,0.15);
+        }
+        .batch-edit-info {
+            text-align: center;
+            color: #999;
+            font-size: 13px;
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 6px;
+            margin-top: 16px;
+        }
+
+        /* 批量用印弹窗样式 */
+        .file-type-card {
+            flex: 1;
+            background: #fff;
+            border: 2px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 20px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-type-card:hover {
+            border-color: #1890ff;
+            box-shadow: 0 2px 8px rgba(24,144,255,0.15);
+        }
+
+        .file-type-card.active {
+            border-color: #1890ff;
+            background: linear-gradient(135deg, #e6f7ff 0%, #bae7ff 100%);
+        }
+
+        .batch-stamp-step {
+            transition: all 0.3s;
+        }
+
+        /* 预览内容 */
+        .preview-section {
+            margin-bottom: 24px;
+        }
+
+        .preview-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .message-preview {
+            background: #fff;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            padding: 16px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #333;
+            font-family: "Microsoft YaHei", sans-serif;
+            white-space: pre-line;
+            min-height: 200px;
+            width: 100%;
+            resize: vertical;
+        }
+
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #f0f0f0;
+        }
+
+        .file-icon {
+            font-size: 24px;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name-input {
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+            width: 100%;
+            padding: 4px 0;
+        }
+
+        .file-name-input:focus {
+            outline: none;
+            border-bottom: 1px solid #1890ff;
+        }
+
+        .file-desc {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .add-file-area {
+            border: 2px dashed #d9d9d9;
+            border-radius: 6px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .add-file-area:hover {
+            border-color: #1890ff;
+            background: #e6f7ff;
+        }
+
+        .link-preview {
+            background: #e6f7ff;
+            border: 1px solid #91d5ff;
+            border-radius: 6px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .link-icon {
+            font-size: 20px;
+        }
+
+        .link-text {
+            flex: 1;
+            font-size: 14px;
+            color: #1890ff;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">妥</div>
+            <div class="brand-name">妥妥递</div>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-title">功能菜单</div>
+            <div class="menu-item" onclick="location.href='ta-data-send.html'"><span class="menu-icon">&#128231;</span>TA数据发送</div>
+            <div class="menu-item" onclick="location.href='investment-committee.html'"><span class="menu-icon">&#128203;</span>上会主功能</div>
+            <div class="menu-item"><span class="menu-icon">&#128101;</span>投资主体</div>
+            <div class="menu-item"><span class="menu-icon">&#128193;</span>准入管理</div>
+            <div class="menu-item active"><span class="menu-icon">&#128220;</span>自动用印</div>
+            <div class="menu-item" onclick="alert('机构材料管理页面暂未收录')"><span class="menu-icon">&#128229;</span>机构材料管理</div>
+            <div class="menu-item" onclick="location.href='private-fund-manager-config.html'"><span class="menu-icon">&#128172;</span>私募群管理人关系配置</div>
+            <div class="menu-item" onclick="location.href='email-config.html'"><span class="menu-icon">&#128231;</span>邮箱配置管理</div>
+            <div class="menu-item"><span class="menu-icon">&#9881;&#65039;</span>系统设置</div>
+            <div class="menu-item"><span class="menu-icon">&#128267;</span>模拟器</div>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <!-- 顶部栏 -->
+        <div class="top-bar">
+            <div class="search-bar">
+                <span style="color: #999;">🔍</span>
+                <input type="text" class="search-input" placeholder="搜索母基金/子基金/投资经理...">
+            </div>
+            <div class="top-bar-actions">
+                <button class="top-bar-btn">🔔</button>
+                <button class="top-bar-btn">📤</button>
+                <button class="top-bar-btn">🔧</button>
+                <div class="user-avatar">用</div>
+            </div>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="content">
+            <!-- 筛选栏 -->
+            <div class="filter-bar">
+                <div class="filter-tabs">
+                    <div class="filter-tab">全部</div>
+                    <div class="filter-tab active">订单执行中</div>
+                    <div class="filter-tab">未关联</div>
+                    <div class="filter-tab">已归档</div>
+                    <div class="filter-tab">订单异常</div>
+                    <span style="color: #666;">📅</span>
+                </div>
+                <div class="filter-actions">
+                    <button class="filter-btn">列配置  ⋮⋮⋮</button>
+                    <button class="filter-btn">🔄</button>
+                    <button class="filter-btn">⬇️</button>
+                </div>
+            </div>
+
+            <!-- 批量操作栏 -->
+            <div class="batch-bar" id="batchBar">
+                <div class="batch-info">
+                    <label class="select-all">
+                        <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                        <span>全选</span>
+                    </label>
+                    <span class="batch-stats">已选择 <span id="selectedCount">0</span> 项</span>
+                </div>
+                <div class="batch-actions">
+                    <button class="batch-btn primary stamp" onclick="batchStamp()">
+                        <span>📝</span>
+                        <span>批量用印</span>
+                    </button>
+                    <button class="batch-btn primary" onclick="openBatchEditModal()" style="background: #722ed1; border-color: #722ed1;">
+                        <span>⚙️</span>
+                        <span>批量操作</span>
+                    </button>
+                    <div class="batch-btn wechat wechat-dropdown-wrap">
+                        <button class="wechat-dropdown-btn" onclick="toggleWechatDropdown(event)">
+                            <span>💬</span>
+                            <span>发送企微消息</span>
+                            <span style="margin-left:4px;font-size:10px;">▾</span>
+                        </button>
+                        <div id="wechatDropdownMenu" class="wechat-dropdown-menu hidden">
+                            <div class="wechat-dropdown-item" onclick="openSendWechatModal('invite')">
+                                🔗 关联邀请/订单
+                            </div>
+                            <div class="wechat-dropdown-item" onclick="openSendWechatModal('email')">
+                                📧 净值邮箱设置
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 表格 -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">
+                                <span style="color: #666;">★</span>
+                            </th>
+                            <th style="width: 60px;"></th>
+                            <th style="width: 180px;">母基金</th>
+                            <th style="width: 120px;">拟交易日期</th>
+                            <th style="width: 180px;">子基金</th>
+                            <th style="width: 100px;">交易类型</th>
+                            <th style="width: 120px;">完成情况</th>
+                            <th style="width: 120px;">计划金额</th>
+                            <th style="width: 120px;">妥妥递状态</th>
+                            <th style="width: 110px;">金证状态</th>
+                            <th style="width: 130px;">消息状态</th>
+                            <th style="width: 140px;">划款截止</th>
+                            <th style="width: 130px;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 批量用印弹窗 -->
+    <div id="batchStampModal" class="modal-overlay hidden">
+        <div class="modal" style="width: 600px;">
+            <div class="modal-header">
+                <div class="modal-title">批量用印</div>
+                <button class="modal-close" onclick="closeBatchStampModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <!-- 步骤1：选择文件类型 -->
+                <div id="step1Select" class="batch-stamp-step">
+                    <div style="margin-bottom: 20px;">
+                        <label class="order-select-label">请选择要批量用印的文件类型：</label>
+                    </div>
+                    
+                    <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+                        <div class="file-type-card active" onclick="selectFileType('all', this)">
+                            <div style="font-size: 32px; margin-bottom: 8px;">📁</div>
+                            <div style="font-weight: 600; font-size: 15px; color: #333; margin-bottom: 4px;">全部文件</div>
+                            <div style="font-size: 14px; color: #999;">适当性文件 + 订单文件</div>
+                        </div>
+                        
+                        <div class="file-type-card" onclick="selectFileType('suitability', this)">
+                            <div style="font-size: 32px; margin-bottom: 8px;">✅</div>
+                            <div style="font-weight: 600; font-size: 15px; color: #333; margin-bottom: 4px;">适当性文件</div>
+                            <div style="font-size: 14px; color: #999;">投资者信息表、风测问卷等</div>
+                        </div>
+                        
+                        <div class="file-type-card" onclick="selectFileType('order', this)">
+                            <div style="font-size: 32px; margin-bottom: 8px;">📄</div>
+                            <div style="font-weight: 600; font-size: 15px; color: #333; margin-bottom: 4px;">订单文件</div>
+                            <div style="font-size: 14px; color: #999;">认申购单、合同、风揭书</div>
+                        </div>
+                    </div>
+
+                    <!-- 已选订单预览 -->
+                    <div style="background: #fafafa; border: 1px solid #e8e8e8; border-radius: 6px; padding: 16px; margin-bottom: 20px;">
+                        <div style="font-weight: 600; font-size: 14px; color: #333; margin-bottom: 12px;">
+                            已选择 <span id="selectedOrderCount" style="color: #1890ff;">0</span> 个订单
+                        </div>
+                        <div id="selectedOrdersList" style="font-size: 14px; color: #666; line-height: 1.8;"></div>
+                    </div>
+
+                    <div style="text-align: center;">
+                        <button class="btn btn-primary" onclick="confirmBatchStamp()" style="padding: 12px 48px; font-size: 15px;">
+                            开始批量用印
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 步骤2：执行中 -->
+                <div id="step2Processing" class="batch-stamp-step hidden">
+                    <div style="text-align: center; padding: 20px 0;">
+                        <div style="font-size: 16px; font-weight: 600; color: #333; margin-bottom: 8px;">
+                            正在执行批量用印...
+                        </div>
+                        <div style="font-size: 14px; color: #999; margin-bottom: 32px;">
+                            请勿关闭页面，等待操作完成
+                        </div>
+
+                        <!-- 进度条区域 -->
+                        <div style="max-width: 480px; margin: 0 auto;">
+                            <!-- 步骤1：用印 -->
+                            <div style="margin-bottom: 32px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span style="font-size: 14px; font-weight: 500; color: #333;">
+                                        <span id="step1Icon">⏳</span> 步骤1：调接口进行用印
+                                    </span>
+                                    <span id="step1Status" style="font-size: 14px; color: #1890ff;">进行中...</span>
+                                </div>
+                                <div style="background: #f0f0f0; border-radius: 8px; height: 8px; overflow: hidden;">
+                                    <div id="progressStep1" style="background: linear-gradient(90deg, #1890ff, #40a9ff); height: 100%; width: 0%; transition: width 0.3s ease; border-radius: 8px;"></div>
+                                </div>
+                                <div id="step1Desc" style="font-size: 12px; color: #999; margin-top: 6px; text-align: left;">
+                                    正在调用用印接口...
+                                </div>
+                            </div>
+
+                            <!-- 连接箭头 -->
+                            <div style="text-align: center; margin: -8px 0 8px 0;">
+                                <span style="color: #d9d9d9; font-size: 20px;">↓</span>
+                            </div>
+
+                            <!-- 步骤2：传输妥妥递 -->
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <span style="font-size: 14px; font-weight: 500; color: #999;">
+                                        <span id="step2Icon">⏳</span> 步骤2：将用印文件传输妥妥递
+                                    </span>
+                                    <span id="step2Status" style="font-size: 14px; color: #999;">等待中</span>
+                                </div>
+                                <div style="background: #f0f0f0; border-radius: 8px; height: 8px; overflow: hidden;">
+                                    <div id="progressStep2" style="background: #d9d9d9; height: 100%; width: 0%; transition: width 0.3s ease; border-radius: 8px;"></div>
+                                </div>
+                                <div id="step2Desc" style="font-size: 12px; color: #999; margin-top: 6px; text-align: left;">
+                                    等待步骤1完成...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 详情日志 -->
+                        <div style="margin-top: 32px; text-align: left;">
+                            <div style="font-size: 14px; font-weight: 600; color: #333; margin-bottom: 12px;">
+                                执行详情
+                            </div>
+                            <div id="processLog" style="background: #262626; color: #52c41a; font-family: 'Consolas', monospace; font-size: 14px; padding: 16px; border-radius: 6px; max-height: 200px; overflow-y: auto; line-height: 1.8;">
+                                <div>[等待开始] 准备执行批量用印操作...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 步骤3：完成 -->
+                <div id="step3Complete" class="batch-stamp-step hidden">
+                    <div style="text-align: center; padding: 20px 0;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">🎉</div>
+                        <div style="font-size: 20px; font-weight: 600; color: #333; margin-bottom: 8px;">
+                            批量用印完成！
+                        </div>
+                        <div id="completeSummary" style="font-size: 14px; color: #666; margin-bottom: 32px;">
+                            已完成 0 个订单的用印
+                        </div>
+
+                        <div style="background: #f6ffed; border: 1px solid #b7eb8f; border-radius: 6px; padding: 16px; text-align: left; max-width: 480px; margin: 0 auto;">
+                            <div style="font-weight: 600; font-size: 14px; color: #52c41a; margin-bottom: 8px;">
+                                ✅ 执行结果
+                            </div>
+                            <div id="completeDetails" style="font-size: 14px; color: #666; line-height: 1.8;">
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 24px;">
+                            <button class="btn btn-primary" onclick="closeBatchStampModal()" style="padding: 12px 48px; font-size: 15px;">
+                                确定
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 批量操作弹窗 -->
+    <div id="batchEditModal" class="modal-overlay hidden">
+        <div class="modal" style="width: 520px;">
+            <div class="modal-header">
+                <div class="modal-title">批量操作</div>
+                <button class="modal-close" onclick="closeBatchEditModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <!-- 完成情况 -->
+                <div class="batch-edit-field">
+                    <label>完成情况</label>
+                    <select id="batchEditProgress">
+                        <option value="">-- 不修改 --</option>
+                        <option value="待交易">待交易</option>
+                        <option value="交易中">交易中</option>
+                        <option value="交易已完成印">交易已完成印</option>
+                        <option value="交易要素确认中">交易要素确认中</option>
+                        <option value="待交易">待交易</option>
+                    </select>
+                </div>
+
+                <!-- 操作状态 -->
+                <div class="batch-edit-field">
+                    <label>操作状态</label>
+                    <select id="batchEditStatus">
+                        <option value="">-- 不修改 --</option>
+                        <option value="订单待签署">订单待签署</option>
+                        <option value="适当性提交异常">适当性提交异常</option>
+                        <option value="未关联">未关联</option>
+                        <option value="文件就绪">文件就绪</option>
+                    </select>
+                </div>
+
+                <!-- 跟进人 -->
+                <div class="batch-edit-field">
+                    <label>跟进人</label>
+                    <input type="text" id="batchEditFollower" placeholder="输入跟进人姓名（留空则不修改）">
+                </div>
+
+                <div class="batch-edit-info" id="batchEditInfo">
+                    将对已选择的 <span id="batchEditCount">0</span> 个订单进行批量修改
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeBatchEditModal()">取消</button>
+                <button class="btn btn-primary" onclick="confirmBatchEdit()" style="background:#722ed1;border-color:#722ed1;">确认修改</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 匹配妥妥递订单弹窗 -->
+    <div id="matchModal" class="modal-overlay hidden">
+        <div class="modal" style="width: 720px;">
+            <div class="modal-header">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="font-size:12px;color:#999;">手动匹配</span>
+                    <span class="modal-title">选择妥妥递订单</span>
+                </div>
+                <button class="modal-close" onclick="closeMatchModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:13px;color:#999;margin-bottom:16px;">从符合条件的候选订单中选择一条进行绑定</p>
+
+                <!-- 当前订单信息 -->
+                <div id="matchCurrentOrderInfo" style="background:#fafafa;border:1px solid #e8e8e8;border-radius:6px;padding:14px 18px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:12px 32px;font-size:13px;">
+                </div>
+
+                <!-- 搜索框 -->
+                <div style="margin-bottom:12px;">
+                    <input type="text" id="matchSearchInput" class="search-input"
+                           placeholder="搜索交易编号、金额、开放日..."
+                           oninput="filterMatchCandidates()"
+                           style="width:100%;padding:10px 16px;">
+                </div>
+
+                <!-- 候选列表 -->
+                <div id="matchCandidateList" style="max-height:320px;overflow-y:auto;border:1px solid #e8e8e8;border-radius:6px;">
+                </div>
+
+                <div style="margin-top:12px;font-size:13px;color:#999;">
+                    共 <span id="matchCandidateCount">0</span> 条候选订单
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeMatchModal()">取消</button>
+                <button class="btn btn-primary" onclick="confirmMatch()" id="confirmMatchBtn" disabled>确认绑定 →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 解绑确认弹窗 -->
+    <div id="unbindModal" class="modal-overlay hidden">
+        <div class="modal" style="width: 480px;">
+            <div class="modal-header">
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="color:#f5222d;font-size:20px;">⚠</span>
+                    <span class="modal-title">解绑妥妥递订单</span>
+                </div>
+                <button class="modal-close" onclick="closeUnbindModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size:14px;color:#666;margin-bottom:20px;line-height:1.8;">解绑后该投资计划将与当前妥妥递订单断开，可重新发起匹配。</p>
+
+                <div id="unbindOrderInfo" style="background:#fafafa;border:1px solid #e8e8e8;border-radius:6px;padding:16px;font-size:13px;line-height:2;">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeUnbindModal()">取消</button>
+                <button class="btn btn-danger" onclick="confirmUnbind()">解绑</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 发送企微邀请弹窗 -->
+    <div id="sendWechatModal" class="modal-overlay hidden">
+        <div class="wechat-modal">
+            <div class="modal-header">
+                <div class="modal-title">发送企微消息预览</div>
+                <button class="modal-close" onclick="closeSendWechatModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <!-- 编辑视图 -->
+                <div id="wechatEditView">
+                    <!-- 关联邀请/订单 模式（默认显示） -->
+                    <div id="wechatInviteMode">
+                    <!-- 订单选择 -->
+                    <div class="wechat-section">
+                        <label class="wechat-section-title">选择订单查看/编辑话术</label>
+                        <div style="margin-top: 10px;">
+                            <select id="wechatOrderSelect" class="wechat-order-select" onchange="onWechatOrderChange()">
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 拟发送群 -->
+                    <div class="wechat-section">
+                        <label class="wechat-section-title">拟发送群</label>
+                        <div style="margin-top: 8px; display: flex; align-items: center; gap: 8px;">
+                            <span id="wechatGroupName" style="font-size: 14px; color: #1890ff;">--</span>
+                            <a href="private-fund-manager-config.html" target="_blank" style="font-size: 12px; color: #1890ff; text-decoration: none; white-space: nowrap;">🔗 私募群管理人关系配置 →</a>
+                        </div>
+                    </div>
+
+                    <!-- 企微话术 -->
+                    <div class="wechat-section">
+                        <div class="wechat-section-header">
+                            <span class="wechat-section-title">企微话术<span class="editable-hint">（可编辑）</span></span>
+                            <button class="wechat-reset-btn" onclick="resetWechatMessage()">↻ 恢复默认</button>
+                        </div>
+                        <textarea id="wechatMessageText" class="wechat-textarea"></textarea>
+                    </div>
+
+                    <!-- 附件文件 -->
+                    <div class="wechat-section">
+                        <div class="wechat-section-header">
+                            <span class="wechat-section-title">附件文件<span class="editable-hint">（可编辑）</span></span>
+                            <button class="wechat-reset-btn" onclick="addWechatFile()" style="background: #52c41a; color: #fff; border-color: #52c41a;">+ 添加文件</button>
+                        </div>
+                        <div id="wechatFileList" class="wechat-files"></div>
+                    </div>
+
+                    <!-- 文件收集链接（已隐藏） -->
+                    <div class="wechat-section" style="display: none;">
+                        <label class="wechat-section-title">文件收集链接</label>
+                        <div style="margin-top: 10px;">
+                            <div class="wechat-link-box">
+                                <span class="wechat-link-icon">🔗</span>
+                                <div class="wechat-link-text" id="wechatLinkText"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    <!-- 净值邮箱设置模式（默认隐藏） -->
+                    <div id="wechatEmailMode" class="hidden" style="margin-top: 16px;">
+                        <!-- 订单选择 -->
+                        <div class="wechat-section">
+                            <label class="wechat-section-title">选择订单查看/编辑话术</label>
+                            <div style="margin-top: 10px;">
+                                <select id="wechatEmailOrderSelect" class="wechat-order-select" onchange="onWechatEmailOrderChange()">
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 拟发送群 -->
+                        <div class="wechat-section">
+                            <label class="wechat-section-title">拟发送群</label>
+                            <div style="margin-top: 8px; display: flex; align-items: center; gap: 8px;">
+                                <span id="wechatEmailGroupName" style="font-size: 14px; color: #1890ff;">--</span>
+                                <a href="private-fund-manager-config.html" target="_blank" style="font-size: 12px; color: #1890ff; text-decoration: none; white-space: nowrap;">🔗 私募群管理人关系配置 →</a>
+                            </div>
+                        </div>
+
+                        <div class="wechat-section">
+                            <div class="wechat-section-header">
+                                <span class="wechat-section-title">消息内容<span class="editable-hint">（固定模板）</span></span>
+                            </div>
+                            <textarea id="wechatEmailText" class="wechat-textarea" readonly style="background:#fafafa;color:#333;" rows="18"></textarea>
+                        </div>
+                        <div class="batch-edit-info" style="text-align:left;padding:12px;background:#fffbe6;border:1px solid #ffe58f;border-radius:6px;margin-top:12px;font-size:13px;color:#856404;">
+                            <strong>提示：</strong>切换上方订单可查看不同子基金的净值邮箱设置内容，日期将自动填充当前日期。
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 发送进度视图 -->
+                <div id="wechatSendView" class="hidden">
+                    <div class="wechat-send-progress">
+                        <div class="wechat-send-icon" id="wechatSendIcon">⏳</div>
+                        <div class="wechat-send-title" id="wechatSendTitle">正在发送企微消息...</div>
+                        <div class="wechat-send-desc" id="wechatSendDesc">请勿关闭页面</div>
+
+                        <div style="max-width: 480px; margin: 0 auto 24px auto;">
+                            <div style="background: #f0f0f0; border-radius: 8px; height: 8px; overflow: hidden;">
+                                <div id="wechatSendProgress" style="background: linear-gradient(90deg, #1890ff, #40a9ff); height: 100%; width: 0%; transition: width 0.3s ease; border-radius: 8px;"></div>
+                            </div>
+                        </div>
+
+                        <div class="wechat-send-detail">
+                            <div class="title" id="wechatSendLogTitle">📋 发送详情</div>
+                            <div id="wechatSendLog"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" id="wechatModalFooter">
+                <button class="btn" onclick="closeSendWechatModal()">取消</button>
+                <button class="btn btn-primary" id="wechatConfirmBtn" onclick="confirmSendWechat()">确认发送</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟订单数据
+        const orders = [
+            {
+                id: 1,
+                starred: true,
+                selected: false,
+                matched: true,
+                matchedTTDOrderNo: '2026060817585188',
+                motherFund: '国联FOF1号',
+                tradeDate: '2026-05-29',
+                childFund: '某某量化对冲A2号',
+                tradeType: '追加',
+                progress: '交易已完成印',
+                amount: '1,500万',
+                status: '交易已生效',
+                statusType: 'green',
+                platform: 'TTD',
+                canStamp: true,
+                customMessage: null,
+                customFiles: null,
+                wechatMessage: '@管理人 老师好，以下为我们的拟投计划，烦请确认【交易额度】及【签约渠道】，无误后推送妥妥递关联~\n\n--------------------------------------------------\n拟交易日期：2026-05-29\n母 基 金：国联FOF1号\n交 易 类 型：追加\n子 基 金：某某量化对冲A2号\n交 易 额 度：1,500万\n签 约 渠 道：直销-妥妥递\n--------------------------------------------------\n\n然后辛苦提供【子基金】的以下材料，我们内部走个流程~\n（1）合同（电子清洁版）\n（2）风揭（电子清洁版）\n（3）三级估值表（最新用印版）\n（4）补充协议（如有）\n\n--------------------------------------------------\n\n麻烦再看看咱追加时有无【特殊事项】，例如：\n（1）其他材料（妥妥递系统上要求上传以外的）\n（2）划款到账时间（早于交易日期17点前的）',
+                wechatFiles: [
+                    { name: '托管函.pdf', desc: '产品托管账户证明文件' },
+                    { name: '备案函.pdf', desc: '产品备案证明文件' }
+                ],
+                goldCertStatus: 'failed',
+                goldCertFailReason: '子基金账户可用余额不足，当前余额 2,300 元，本次交易需划款 15,000,000 元',
+                transferDeadline: '2026-05-28 17:00',
+                inviteStatus: '未发送',
+                emailStatus: '排队中',
+                wechatGroup: '国联FOF1-管理人沟通群'
+            },
+            {
+                id: 2,
+                starred: false,
+                selected: false,
+                matched: false,
+                matchedTTDOrderNo: null,
+                motherFund: '国联FOF1号',
+                tradeDate: '2026-05-29',
+                childFund: '某某全天候A号',
+                tradeType: '赎回',
+                progress: '交易已完成印',
+                amount: '500万',
+                status: '适当性提交异常',
+                statusType: 'red',
+                platform: 'TTD',
+                canStamp: false,
+                customMessage: null,
+                customFiles: null,
+                wechatMessage: '@管理人 老师好，以下为我们的拟投计划，烦请确认【交易额度】及【签约渠道】，无误后推送妥妥递关联~\n\n--------------------------------------------------\n拟交易日期：2026-05-29\n母 基 金：国联FOF1号\n交 易 类 型：赎回\n子 基 金：某某全天候A号\n交 易 额 度：500万\n签 约 渠 道：直销-妥妥递\n--------------------------------------------------\n\n然后辛苦提供【子基金】的以下材料，我们内部走个流程~\n（1）合同（电子清洁版）\n（2）风揭（电子清洁版）\n（3）三级估值表（最新用印版）\n（4）补充协议（如有）\n\n--------------------------------------------------\n\n麻烦再看看咱赎回时有无【特殊事项】，例如：\n（1）其他材料（妥妥递系统上要求上传以外的）\n（2）划款到账时间（早于交易日期17点前的）',
+                wechatFiles: [
+                    { name: '托管函.pdf', desc: '产品托管账户证明文件' },
+                    { name: '赎回申请表.pdf', desc: '赎回业务申请表' }
+                ],
+                goldCertStatus: 'not_called',
+                transferDeadline: '2026-05-28 17:00',
+                inviteStatus: '未发送',
+                emailStatus: '未发送',
+                wechatGroup: '国联FOF1-运营对接群'
+            },
+            {
+                id: 3,
+                starred: false,
+                selected: false,
+                matched: true,
+                matchedTTDOrderNo: '2026060875896390',
+                motherFund: '国联FOF1号',
+                tradeDate: '2026-01-20',
+                childFund: '珠海宽德金刚钻16号',
+                tradeType: '申购',
+                progress: '交易要素确认中',
+                amount: '100.0万',
+                status: '交易已生效',
+                statusType: 'green',
+                platform: 'TTD',
+                canStamp: true,
+                customMessage: null,
+                customFiles: null,
+                wechatMessage: '@管理人 老师好，以下为我们的拟投计划，烦请确认【交易额度】及【签约渠道】，无误后推送妥妥递关联~\n\n--------------------------------------------------\n拟交易日期：2026-01-20\n母 基 金：国联FOF1号\n交 易 类 型：申购\n子 基 金：珠海宽德金刚钻16号\n交 易 额 度：100.0万\n签 约 渠 道：直销-妥妥递\n--------------------------------------------------\n\n然后辛苦提供【子基金】的以下材料，我们内部走个流程~\n（1）合同（电子清洁版）\n（2）风揭（电子清洁版）\n（3）三级估值表（最新用印版）\n（4）补充协议（如有）\n\n--------------------------------------------------\n\n麻烦再看看咱申购时有无【特殊事项】，例如：\n（1）其他材料（妥妥递系统上要求上传以外的）\n（2）划款到账时间（早于交易日期17点前的）',
+                wechatFiles: [
+                    { name: '托管函.pdf', desc: '产品托管账户证明文件' },
+                    { name: '备案函.pdf', desc: '产品备案证明文件' },
+                    { name: '认申购单.pdf', desc: '认申购单' }
+                ],
+                goldCertStatus: 'success',
+                transferDeadline: '2026-01-19 17:00',
+                inviteStatus: '未发送',
+                emailStatus: '未发送',
+                wechatGroup: '珠海宽德-管理人沟通群'
+            },
+            {
+                id: 4,
+                starred: false,
+                selected: false,
+                matched: true,
+                matchedTTDOrderNo: '2026060807454558',
+                motherFund: '国联FOF1号',
+                tradeDate: '2026-06-01',
+                childFund: '上海幻方指数增强5号',
+                tradeType: '申购',
+                progress: '待交易',
+                amount: '200.0万',
+                status: '订单用印异常',
+                statusType: 'red',
+                platform: 'TTD',
+                canStamp: false,
+                customMessage: null,
+                customFiles: null,
+                wechatMessage: '@管理人 老师好，以下为我们的拟投计划，烦请确认【交易额度】及【签约渠道】，无误后推送妥妥递关联~\n\n--------------------------------------------------\n拟交易日期：2026-06-01\n母 基 金：国联FOF1号\n交 易 类 型：申购\n子 基 金：上海幻方指数增强5号\n交 易 额 度：200.0万\n签 约 渠 道：直销-妥妥递\n--------------------------------------------------\n\n然后辛苦提供【子基金】的以下材料，我们内部走个流程~\n（1）合同（电子清洁版）\n（2）风揭（电子清洁版）\n（3）三级估值表（最新用印版）\n（4）补充协议（如有）\n\n--------------------------------------------------\n\n麻烦再看看咱申购时有无【特殊事项】，例如：\n（1）其他材料（妥妥递系统上要求上传以外的）\n（2）划款到账时间（早于交易日期17点前的）',
+                wechatFiles: [
+                    { name: '托管函.pdf', desc: '产品托管账户证明文件' },
+                    { name: '备案函.pdf', desc: '产品备案证明文件' }
+                ],
+                goldCertStatus: 'not_called',
+                transferDeadline: '2026-05-30 17:00',
+                inviteStatus: '已发送',
+                emailStatus: '已发送',
+                wechatGroup: '上海幻方-管理人沟通群'
+            },
+            {
+                id: 5,
+                starred: false,
+                selected: false,
+                matched: false,
+                matchedTTDOrderNo: null,
+                motherFund: '国联FOF2号',
+                tradeDate: '2026-06-03',
+                childFund: '九坤投资多策略增强7号',
+                tradeType: '申购',
+                progress: '交易已完成印',
+                amount: '300万',
+                status: '订单待确认',
+                statusType: 'blue',
+                platform: 'TA30',
+                canStamp: true,
+                customMessage: null,
+                customFiles: null,
+                wechatMessage: '',
+                wechatFiles: [],
+                goldCertStatus: 'not_called',
+                transferDeadline: '2026-06-02 17:00',
+                inviteStatus: '已发送',
+                emailStatus: '已发送',
+                wechatGroup: '九坤-运营对接群'
+            },
+            {
+                id: 6,
+                starred: false,
+                selected: false,
+                matched: true,
+                matchedTTDOrderNo: '2026060533422188',
+                motherFund: '国联FOF2号',
+                tradeDate: '2026-06-04',
+                childFund: '明汯量化中性策略9号',
+                tradeType: '追加',
+                progress: '用印中',
+                amount: '800万',
+                status: '订单待签署',
+                statusType: 'orange',
+                platform: 'TA30',
+                canStamp: true,
+                customMessage: null,
+                customFiles: null,
+                wechatMessage: '',
+                wechatFiles: [],
+                goldCertStatus: 'not_called',
+                transferDeadline: '2026-06-03 17:00',
+                inviteStatus: '未发送',
+                emailStatus: '未发送',
+                wechatGroup: '明汯-管理人沟通群'
+            },
+            {
+                id: 7,
+                starred: false,
+                selected: false,
+                matched: false,
+                matchedTTDOrderNo: null,
+                motherFund: '国联FOF3号',
+                tradeDate: '2026-06-05',
+                childFund: '灵均中证500指增12号',
+                tradeType: '申购',
+                progress: '待交易',
+                amount: '120万',
+                status: '订单待确认',
+                statusType: 'blue',
+                platform: 'TA30',
+                canStamp: true,
+                customMessage: null,
+                customFiles: null,
+                wechatMessage: '',
+                wechatFiles: [],
+                goldCertStatus: 'not_called',
+                transferDeadline: '2026-06-04 17:00',
+                inviteStatus: '未发送',
+                emailStatus: '未发送',
+                wechatGroup: '灵均-运营群'
+            },
+            {
+                id: 8,
+                starred: true,
+                selected: false,
+                matched: true,
+                matchedTTDOrderNo: '2026060711223344',
+                motherFund: '国联FOF3号',
+                tradeDate: '2026-06-06',
+                childFund: '衍复中证1000增强A号',
+                tradeType: '申购',
+                progress: '交易要素确认中',
+                amount: '250万',
+                status: '适当性通过',
+                statusType: 'green',
+                platform: 'TA30',
+                canStamp: true,
+                customMessage: null,
+                customFiles: null,
+                wechatMessage: '',
+                wechatFiles: [],
+                goldCertStatus: 'not_called',
+                transferDeadline: '2026-06-05 17:00',
+                inviteStatus: '排队中',
+                emailStatus: '未发送',
+                wechatGroup: '衍复-管理人沟通群'
+            },
+            {
+                id: 9,
+                starred: false,
+                selected: false,
+                matched: false,
+                matchedTTDOrderNo: null,
+                motherFund: '国联FOF1号',
+                tradeDate: '2026-06-07',
+                childFund: '诚奇灵活对冲6号',
+                tradeType: '追加',
+                progress: '交易已完成印',
+                amount: '600万',
+                status: '订单待签署',
+                statusType: 'orange',
+                platform: 'TTD',
+                canStamp: true,
+                customMessage: null,
+                customFiles: null,
+                wechatMessage: '',
+                wechatFiles: [],
+                goldCertStatus: 'not_called',
+                transferDeadline: '2026-06-06 17:00',
+                inviteStatus: '已发送',
+                emailStatus: '已发送',
+                wechatGroup: '诚奇-运营对接群'
+            },
+            {
+                id: 10,
+                starred: false,
+                selected: false,
+                matched: true,
+                matchedTTDOrderNo: '2026060899887766',
+                motherFund: '国联FOF2号',
+                tradeDate: '2026-06-08',
+                childFund: '宽德中证500指增3号',
+                tradeType: '申购',
+                progress: '用印中',
+                amount: '450万',
+                status: '订单用印异常',
+                statusType: 'red',
+                platform: 'TA30',
+                canStamp: false,
+                customMessage: null,
+                customFiles: null,
+                wechatMessage: '',
+                wechatFiles: [],
+                goldCertStatus: 'not_called',
+                transferDeadline: '2026-06-07 17:00',
+                inviteStatus: '未发送',
+                emailStatus: '未发送',
+                wechatGroup: '宽德-管理人沟通群'
+            }
+        ];
+
+        // 当前选中的订单
+        let currentSelectedOrders = [];
+        let currentEditingOrderIndex = 0;
+
+        // 默认文件列表
+        function getDefaultFiles() {
+            return [
+                { id: 1, name: '托管函.pdf', desc: '产品托管账户证明文件' },
+                { id: 2, name: '备案函.pdf', desc: '产品备案证明文件' }
+            ];
+        }
+
+        // 渲染订单表格（按划款截止日倒序）
+        function renderOrderTable() {
+            const sorted = [...orders].sort((a, b) => {
+                return new Date(b.transferDeadline) - new Date(a.transferDeadline);
+            });
+            const tbody = document.getElementById('orderTableBody');
+            tbody.innerHTML = sorted.map(order => `
+                <tr ondblclick="openOrderDetail(${order.id})" style="cursor:pointer;">
+                    <td><span style="color: ${order.starred ? '#ffd700' : '#ddd'};">★</span></td>
+                    <td>
+                        <input type="checkbox"
+                               ${!order.canStamp ? 'disabled style="opacity:0.3;cursor:not-allowed;"' : ''}
+                               ${order.selected ? 'checked' : ''}
+                               onclick="event.stopPropagation(); toggleOrder(${order.id})">
+                    </td>
+                    <td>${order.motherFund}</td>
+                    <td>${order.tradeDate}</td>
+                    <td>${order.childFund}</td>
+                    <td>${order.tradeType}</td>
+                    <td>${order.progress}</td>
+                    <td>${order.amount}</td>
+                    <td><span class="status-tag ${order.statusType}">${order.status}</span></td>
+                    <td>${renderGoldCertCell(order)}</td>
+                    <td>${renderMsgStatus(order.inviteStatus, order.emailStatus)}</td>
+                    <td>${order.transferDeadline}</td>
+                    <td class="action-menu" onclick="event.stopPropagation();">
+                        ${order.matched
+                            ? `<a class="action-link action-link-danger" onclick="openUnbindModal(${order.id})">解绑</a>`
+                            : `<a class="action-link action-link-primary" onclick="openMatchModal(${order.id})">匹配</a>`
+                        }
+                        <a class="action-link" onclick="openTransferWorkflow(${order.id})">用印划款</a>
+                        <button class="action-dots" onclick="openOrderDetail(${order.id})" title="详情">⋮</button>
+                    </td>
+                </tr>
+            `).join('');
+            updateSelectedCount();
+        }
+
+        // 渲染消息状态（一行双色点）
+        function renderMsgStatus(invite, email) {
+            const dot = (status) => {
+                if (status === '已发送') return 'green';
+                if (status === '排队中') return 'orange';
+                return 'gray';
+            };
+            return `<div class="msg-status">
+                <span class="msg-item"><span class="msg-dot ${dot(invite)}"></span>邀请</span>
+                <span class="msg-item"><span class="msg-dot ${dot(email)}"></span>邮箱</span>
+            </div>`;
+        }
+
+        // 渲染金证状态单元格（三态 + 失败hover提示）
+        function renderGoldCertCell(order) {
+            const statusMap = {
+                success: { icon: '✓', text: '已调取', cls: 'gc-done' },
+                failed: { icon: '✗', text: '失败', cls: 'gc-failed' },
+                not_called: { icon: '○', text: '未调取', cls: '' }
+            };
+            const s = statusMap[order.goldCertStatus] || statusMap.not_called;
+
+            if (order.goldCertStatus === 'failed') {
+                return `<span class="gc-cell ${s.cls}" title="${order.goldCertFailReason}">${s.icon} ${s.text}</span>`;
+            }
+            return `<span class="gc-cell ${s.cls}">${s.icon} ${s.text}</span>`;
+        }
+
+        // 切换订单选中状态
+        function toggleOrder(id) {
+            const order = orders.find(o => o.id === id);
+            if (order && order.canStamp) {
+                order.selected = !order.selected;
+                renderOrderTable();
+            }
+        }
+
+        // 全选/取消全选
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            orders.forEach(order => {
+                if (order.canStamp) {
+                    order.selected = selectAll.checked;
+                }
+            });
+            renderOrderTable();
+        }
+
+        // 更新选中数量
+        function updateSelectedCount() {
+            const selectedOrders = orders.filter(o => o.selected);
+            document.getElementById('selectedCount').textContent = selectedOrders.length;
+        }
+
+        // 批量用印
+        let selectedFileType = 'all';
+        
+        function batchStamp() {
+            currentSelectedOrders = orders.filter(o => o.selected);
+            if (currentSelectedOrders.length === 0) {
+                alert('请先选择要批量用印的订单！');
+                return;
+            }
+
+            // 打开批量用印弹窗
+            openBatchStampModal();
+        }
+
+        // 打开批量用印弹窗
+        function openBatchStampModal() {
+            // 重置状态
+            selectedFileType = 'all';
+            
+            // 更新已选订单列表
+            document.getElementById('selectedOrderCount').textContent = currentSelectedOrders.length;
+            const ordersList = document.getElementById('selectedOrdersList');
+            ordersList.innerHTML = currentSelectedOrders.map(order => 
+                `<div>• ${order.motherFund} - ${order.childFund} (${order.amount})</div>`
+            ).join('');
+
+            // 显示第一步
+            showBatchStampStep(1);
+            
+            // 显示弹窗
+            document.getElementById('batchStampModal').classList.remove('hidden');
+        }
+
+        // 关闭批量用印弹窗
+        function closeBatchStampModal() {
+            document.getElementById('batchStampModal').classList.add('hidden');
+        }
+
+        // 显示批量用印步骤
+        function showBatchStampStep(step) {
+            // 隐藏所有步骤
+            document.getElementById('step1Select').classList.add('hidden');
+            document.getElementById('step2Processing').classList.add('hidden');
+            document.getElementById('step3Complete').classList.add('hidden');
+
+            // 显示指定步骤
+            if (step === 1) {
+                document.getElementById('step1Select').classList.remove('hidden');
+            } else if (step === 2) {
+                document.getElementById('step2Processing').classList.remove('hidden');
+            } else if (step === 3) {
+                document.getElementById('step3Complete').classList.remove('hidden');
+            }
+        }
+
+        // 选择文件类型
+        function selectFileType(type, element) {
+            selectedFileType = type;
+            
+            // 更新UI
+            document.querySelectorAll('.file-type-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            element.classList.add('active');
+        }
+
+        // 确认批量用印
+        function confirmBatchStamp() {
+            if (currentSelectedOrders.length === 0) {
+                alert('请先选择要批量用印的订单！');
+                return;
+            }
+
+            // 显示执行中步骤
+            showBatchStampStep(2);
+            
+            // 开始执行流程
+            executeBatchStamp();
+        }
+
+        // 执行批量用印流程
+        function executeBatchStamp() {
+            const logContainer = document.getElementById('processLog');
+            logContainer.innerHTML = '';
+
+            // 步骤1：调接口进行用印
+            executeStep1(logContainer);
+        }
+
+        // 步骤1：调接口进行用印
+        function executeStep1(logContainer) {
+            const typeNames = {
+                'all': '全部文件',
+                'suitability': '适当性文件',
+                'order': '订单文件'
+            };
+
+            let progress = 0;
+            const progressBar = document.getElementById('progressStep1');
+            const statusText = document.getElementById('step1Status');
+            const descText = document.getElementById('step1Desc');
+            const iconText = document.getElementById('step1Icon');
+
+            logContainer.innerHTML += '<div>[开始] 步骤1：调用用印接口...</div>';
+
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
+
+                progressBar.style.width = progress + '%';
+
+                if (progress < 30) {
+                    descText.textContent = '正在调用用印接口...';
+                    statusText.textContent = '进行中...';
+                    statusText.style.color = '#1890ff';
+                } else if (progress < 70) {
+                    descText.textContent = `正在处理 ${currentSelectedOrders.length} 个订单的用印...`;
+                    statusText.textContent = '进行中...';
+                    logContainer.innerHTML += `<div>[处理中] 正在为订单 ${currentSelectedOrders.length} 个进行用印...</div>`;
+                } else if (progress < 100) {
+                    descText.textContent = '用印完成，准备进入下一步...';
+                } else {
+                    clearInterval(interval);
+
+                    // 步骤1完成
+                    progressBar.style.width = '100%';
+                    statusText.textContent = '✅ 完成';
+                    statusText.style.color = '#52c41a';
+                    descText.textContent = '用印接口调用成功！';
+                    iconText.textContent = '✅';
+                    logContainer.innerHTML += `<div>[成功] ✅ 步骤1完成：已为 ${currentSelectedOrders.length} 个订单完成用印</div>`;
+                    logContainer.innerHTML += '<div></div>';
+                    logContainer.innerHTML += '<div>[开始] 步骤2：将用印文件传输至妥妥递系统...</div>';
+
+                    // 延迟执行步骤2
+                    setTimeout(() => {
+                        executeStep2(logContainer);
+                    }, 500);
+                }
+            }, 200);
+        }
+
+        // 步骤2：将用印文件传输妥妥递
+        function executeStep2(logContainer) {
+            const progressBar = document.getElementById('progressStep2');
+            const statusText = document.getElementById('step2Status');
+            const descText = document.getElementById('step2Desc');
+            const iconText = document.getElementById('step2Icon');
+            const labelText = statusText.parentElement.querySelector('span');
+
+            // 激活步骤2样式
+            labelText.style.color = '#333';
+            progressBar.style.background = 'linear-gradient(90deg, #52c41a, #73d13d)';
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 12;
+                if (progress > 100) progress = 100;
+
+                progressBar.style.width = progress + '%';
+
+                if (progress < 40) {
+                    descText.textContent = '正在连接妥妥递系统...';
+                    statusText.textContent = '进行中...';
+                    statusText.style.color = '#1890ff';
+                } else if (progress < 80) {
+                    descText.textContent = '正在上传用印后的文件...';
+                    logContainer.innerHTML += `<div>[上传] 正在传输用印文件至妥妥递...</div>`;
+                } else if (progress < 100) {
+                    descText.textContent = '文件传输即将完成...';
+                } else {
+                    clearInterval(interval);
+
+                    // 步骤2完成
+                    progressBar.style.width = '100%';
+                    statusText.textContent = '✅ 完成';
+                    statusText.style.color = '#52c41a';
+                    descText.textContent = '文件已成功传输至妥妥递！';
+                    iconText.textContent = '✅';
+                    logContainer.innerHTML += `<div>[成功] ✅ 步骤2完成：用印文件已传输至妥妥递系统</div>`;
+                    logContainer.innerHTML += '<div></div>';
+                    logContainer.innerHTML += '<div>[完成] 🎉 所有操作已完成！</div>';
+
+                    // 显示完成步骤
+                    setTimeout(() => {
+                        showBatchStampStep(3);
+                        showCompleteResults();
+                    }, 500);
+                }
+            }, 250);
+        }
+
+        // 显示完成结果
+        function showCompleteResults() {
+            const typeNames = {
+                'all': '全部文件',
+                'suitability': '适当性文件',
+                'order': '订单文件'
+            };
+
+            document.getElementById('completeSummary').textContent = 
+                `已完成 ${currentSelectedOrders.length} 个订单的批量用印`;
+
+            const details = document.getElementById('completeDetails');
+            details.innerHTML = `
+                <div>• 文件类型：${typeNames[selectedFileType]}</div>
+                <div>• 处理订单数：${currentSelectedOrders.length} 个</div>
+                <div>• 用印状态：✅ 全部成功</div>
+                <div>• 传输状态：✅ 已传输至妥妥递</div>
+                <div>• 完成时间：${new Date().toLocaleString()}</div>
+            `;
+        }
+
+        // 打开订单详情
+        function openOrderDetail(id) {
+            window.location.href = `order-details.html?orderId=${id}`;
+        }
+
+        // 打开用印划款流程
+        function openTransferWorkflow(orderId) {
+            window.location.href = `seal-payment-workflow.html?orderId=${orderId}`;
+        }
+
+        // 打开补充材料流程（与用印划款流程类似，但不需要用印前附件自动挂接）
+        function openSupplementWorkflow(orderId) {
+            window.location.href = `seal-payment-workflow.html?orderId=${orderId}&type=supplement`;
+        }
+
+        // ===== 匹配/解绑 =====
+        let matchCurrentOrderId = null;
+        let matchSelectedCandidateId = null;
+
+        // 模拟妥妥递候选订单数据
+        const ttdCandidates = [
+            { id: 'TTD001', orderNo: '2026060817585188', status: '订单待确认', matchScore: 8, amount: '90000', tradeDate: '2026-06-11', fundName: 'TA30号MOM集合资产管理计划', product: 'SAJP17' },
+            { id: 'TTD002', orderNo: '2026060875896390', status: '订单待确认', matchScore: 6, amount: '85666', tradeDate: '2026-06-08', fundName: 'TA30号MOM集合资产管理计划', product: 'SAJP17' },
+            { id: 'TTD003', orderNo: '2026060807454558', status: '文件待签署', matchScore: 3, amount: '60000', tradeDate: '2026-06-09', fundName: '大理财量化4号私募资产', product: 'SANS95' },
+            { id: 'TTD004', orderNo: '2026060799112233', status: '订单待确认', matchScore: 5, amount: '120000', tradeDate: '2026-06-10', fundName: '启林量化中性3号', product: 'QLZN03' },
+            { id: 'TTD005', orderNo: '2026060655443322', status: '订单待确认', matchScore: 7, amount: '75000', tradeDate: '2026-06-12', fundName: '天演资本多策略A号', product: 'TYCD01' },
+            { id: 'TTD006', orderNo: '2026060522119988', status: '文件待签署', matchScore: 4, amount: '50000', tradeDate: '2026-06-07', fundName: '黑翼资产CTA增强1号', product: 'HYCT01' },
+            { id: 'TTD007', orderNo: '2026060488776655', status: '订单待确认', matchScore: 9, amount: '200000', tradeDate: '2026-06-13', fundName: '佳期投资股票增强号', product: 'JQCG02' },
+            { id: 'TTD008', orderNo: '2026060333445566', status: '订单待确认', matchScore: 2, amount: '35000', tradeDate: '2026-06-05', fundName: '龙旗科技指增Alpha号', product: 'LQZQ01' },
+        ];
+
+        // 打开匹配弹窗
+        function openMatchModal(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            matchCurrentOrderId = orderId;
+            matchSelectedCandidateId = null;
+
+            // 显示当前订单信息
+            document.getElementById('matchCurrentOrderInfo').innerHTML = `
+                <div><span style="color:#999;">子基金</span><div style="font-weight:500;color:#333;">${order.childFund}</div></div>
+                <div><span style="color:#999;">交易类型</span><div style="font-weight:500;color:#333;">${order.tradeType}</div></div>
+                <div><span style="color:#999;">金额</span><div style="font-weight:500;color:#333;">${order.amount.replace('万','')}元</div></div>
+                <div><span style="color:#999;">拟交易日</span><div style="font-weight:500;color:#333;">${order.tradeDate}</div></div>
+                <div><span style="color:#999;">产品</span><div style="font-weight:500;color:#333;">--</div></div>
+            `;
+
+            // 清空搜索
+            document.getElementById('matchSearchInput').value = '';
+
+            // 渲染候选列表
+            renderMatchCandidates(ttdCandidates);
+
+            // 重置按钮状态
+            document.getElementById('confirmMatchBtn').disabled = true;
+
+            document.getElementById('matchModal').classList.remove('hidden');
+        }
+
+        function closeMatchModal() {
+            document.getElementById('matchModal').classList.add('hidden');
+            matchCurrentOrderId = null;
+            matchSelectedCandidateId = null;
+        }
+
+        // 渲染候选列表
+        function renderMatchCandidates(candidates) {
+            const container = document.getElementById('matchCandidateList');
+            if (candidates.length === 0) {
+                container.innerHTML = '<div style="padding:40px;text-align:center;color:#999;font-size:14px;">无匹配结果</div>';
+                document.getElementById('matchCandidateCount').textContent = '0';
+                return;
+            }
+
+            container.innerHTML = candidates.map(c => `
+                <div class="match-candidate-item ${matchSelectedCandidateId === c.id ? 'selected' : ''}"
+                     onclick="selectMatchCandidate('${c.id}')"
+                     style="display:flex;align-items:center;gap:16px;padding:14px 18px;border-bottom:1px solid #f0f0f0;cursor:pointer;transition:background 0.15s;"
+                     onmouseenter="this.style.background='#fafafa'" onmouseleave="this.style.background='#fff'">
+                    <input type="radio" name="matchCandidate" ${matchSelectedCandidateId === c.id ? 'checked' : ''} onclick="event.stopPropagation();selectMatchCandidate('${c.id}')">
+                    <div style="flex:1;min-width:0;">
+                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                            <span style="font-size:14px;font-weight:600;color:#333;white-space:nowrap;">${c.orderNo}</span>
+                            <span class="status-tag blue" style="font-size:11px;">${c.status}</span>
+                            <span style="font-size:12px;color:#999;background:#f5f5f5;padding:1px 8px;border-radius:10px;">匹配分 ${c.matchScore}</span>
+                        </div>
+                        <div style="display:flex;flex-wrap:wrap;gap:12px 24px;font-size:13px;color:#666;">
+                            <span>金额/<b>${c.amount}</b>份</span>
+                            <span>开放日 <b>${c.tradeDate}</b></span>
+                            <span>基金 <b>${c.fundName}</b></span>
+                            <span>产品 <b>${c.product}</b></span>
+                            <span>私募 <b>--</b></span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('matchCandidateCount').textContent = candidates.length;
+        }
+
+        // 选择候选订单
+        function selectMatchCandidate(candidateId) {
+            matchSelectedCandidateId = candidateId;
+            document.getElementById('confirmMatchBtn').disabled = false;
+            // 重新渲染以更新选中态
+            filterMatchCandidates();
+        }
+
+        // 搜索过滤候选
+        function filterMatchCandidates() {
+            const keyword = document.getElementById('matchSearchInput').value.toLowerCase();
+            const filtered = ttdCandidates.filter(c =>
+                c.orderNo.toLowerCase().includes(keyword) ||
+                c.amount.includes(keyword) ||
+                c.tradeDate.includes(keyword) ||
+                c.fundName.toLowerCase().includes(keyword)
+            );
+            renderMatchCandidates(filtered);
+        }
+
+        // 确认匹配
+        function confirmMatch() {
+            if (!matchCurrentOrderId || !matchSelectedCandidateId) return;
+
+            const candidate = ttdCandidates.find(c => c.id === matchSelectedCandidateId);
+            const order = orders.find(o => o.id === matchCurrentOrderId);
+
+            if (candidate && order) {
+                order.matched = true;
+                order.matchedTTDOrderNo = candidate.orderNo;
+            }
+
+            closeMatchModal();
+            renderOrderTable();
+        }
+
+        // ===== 解绑 =====
+        let unbindCurrentOrderId = null;
+
+        function openUnbindModal(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order || !order.matched) return;
+
+            unbindCurrentOrderId = orderId;
+
+            document.getElementById('unbindOrderInfo').innerHTML = `
+                <div><span style="color:#999;display:inline-block;width:70px;">子基金</span>${order.childFund}TA30号MOM集合资产管理计划</div>
+                <div><span style="color:#999;display:inline-block;width:70px;">订单号</span><b>${order.matchedTTDOrderNo}</b></div>
+            `;
+
+            document.getElementById('unbindModal').classList.remove('hidden');
+        }
+
+        function closeUnbindModal() {
+            document.getElementById('unbindModal').classList.add('hidden');
+            unbindCurrentOrderId = null;
+        }
+
+        function confirmUnbind() {
+            if (!unbindCurrentOrderId) return;
+
+            const order = orders.find(o => o.id === unbindCurrentOrderId);
+            if (order) {
+                order.matched = false;
+                order.matchedTTDOrderNo = null;
+            }
+
+            closeUnbindModal();
+            renderOrderTable();
+        }
+
+        // ===== 批量操作 =====
+        function openBatchEditModal() {
+            const selected = orders.filter(o => o.selected);
+            if (selected.length === 0) {
+                alert('请先选择要批量修改的订单！');
+                return;
+            }
+            // 重置表单
+            document.getElementById('batchEditProgress').value = '';
+            document.getElementById('batchEditStatus').value = '';
+            document.getElementById('batchEditFollower').value = '';
+            document.getElementById('batchEditCount').textContent = selected.length;
+            document.getElementById('batchEditModal').classList.remove('hidden');
+        }
+
+        function closeBatchEditModal() {
+            document.getElementById('batchEditModal').classList.add('hidden');
+        }
+
+        function confirmBatchEdit() {
+            const progressVal = document.getElementById('batchEditProgress').value;
+            const statusVal = document.getElementById('batchEditStatus').value;
+            const followerVal = document.getElementById('batchEditFollower').value.trim();
+
+            if (!progressVal && !statusVal && !followerVal) {
+                alert('请至少选择一项要修改的内容！');
+                return;
+            }
+
+            let changedCount = 0;
+            orders.forEach(order => {
+                if (!order.selected) return;
+                let changed = false;
+                if (progressVal) { order.progress = progressVal; changed = true; }
+                if (statusVal) { order.status = statusVal; changed = true; }
+                if (followerVal) { order.follower = followerVal; changed = true; }
+                if (changed) changedCount++;
+            });
+
+            alert(`已成功修改 ${changedCount} 个订单！`);
+            closeBatchEditModal();
+            renderTable(); // 刷新表格
+        }
+
+        // ===== 发送企微消息 =====
+        let wechatOrders = [];
+        let wechatCurrentIndex = 0;
+        let wechatEmailCurrentIndex = 0; // 净值邮箱模式当前选中订单索引
+        let currentWechatType = 'invite';
+
+        // 切换下拉菜单
+        function toggleWechatDropdown(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('wechatDropdownMenu');
+            menu.classList.toggle('hidden');
+        }
+        // 点击其他地方关闭下拉
+        document.addEventListener('click', function() {
+            const menu = document.getElementById('wechatDropdownMenu');
+            if (menu) menu.classList.add('hidden');
+        });
+
+        // 打开发送企微消息弹窗（type: 'invite' | 'email'）
+        function openSendWechatModal(type) {
+            // 关闭下拉
+            document.getElementById('wechatDropdownMenu').classList.add('hidden');
+
+            currentWechatType = type || 'invite';
+            wechatOrders = orders.filter(o => o.selected);
+            if (wechatOrders.length === 0) {
+                alert('请先选择要发送企微消息的订单！');
+                return;
+            }
+
+            wechatCurrentIndex = 0;
+
+            // 根据类型切换显示区域
+            if (currentWechatType === 'invite') {
+                document.getElementById('wechatInviteMode').classList.remove('hidden');
+                document.getElementById('wechatEmailMode').classList.add('hidden');
+
+                // 填充订单下拉
+                const select = document.getElementById('wechatOrderSelect');
+                select.innerHTML = wechatOrders.map((o, idx) =>
+                    `<option value="${idx}">${idx + 1}. ${o.motherFund} → ${o.childFund}（${o.tradeDate}）</option>`
+                ).join('');
+                loadWechatOrderContent(0);
+            } else {
+                document.getElementById('wechatInviteMode').classList.add('hidden');
+                document.getElementById('wechatEmailMode').classList.remove('hidden');
+
+                // 填充净值邮箱订单下拉
+                const emailSelect = document.getElementById('wechatEmailOrderSelect');
+                emailSelect.innerHTML = wechatOrders.map((o, idx) =>
+                    `<option value="${idx}">${idx + 1}. ${o.motherFund} → ${o.childFund}（${o.tradeDate}）</option>`
+                ).join('');
+                wechatEmailCurrentIndex = 0;
+                generateEmailTemplate();
+            }
+
+            // 重置视图
+            document.getElementById('wechatEditView').classList.remove('hidden');
+            document.getElementById('wechatSendView').classList.add('hidden');
+            document.getElementById('wechatModalFooter').style.display = 'flex';
+
+            // 显示弹窗
+            document.getElementById('sendWechatModal').classList.remove('hidden');
+        }
+
+        // 生成净值邮箱设置模板
+        function generateEmailTemplate() {
+            const today = new Date();
+            const dateStr = today.getFullYear() + '-' +
+                String(today.getMonth() + 1).padStart(2, '0') + '-' +
+                String(today.getDate()).padStart(2, '0');
+
+            // 使用当前选中的订单的子基金名称
+            const order = wechatOrders[wechatEmailCurrentIndex];
+            const fundName = order ? order.childFund : '';
+
+            const template = `【${dateStr}】老师好，以下邮箱麻烦设置下
+
+1、【${fundName}】的日频虚拟净值接收邮箱麻烦设置:
+   *****@**.**;*****@**.**;*****@**.**;
+
+2、月末EXCEL版三级估值表麻烦设置:
+   *****@**.**;*****@**.**;*****@**.**;
+
+3、仅接收净值的邮箱麻烦设置并发送产品成立以来历史净值(如该产品已设置和发送过则不用重复设置):
+   *****@**.**
+
+4、交易确认单:
+   *****@**.**
+
+【${dateStr}】老师好，以下信息麻烦提供下:
+
+1、确认单一般T+几日可以给出
+2、交易录单后，烦请老师告知~`;
+
+            document.getElementById('wechatEmailText').value = template;
+
+            // 拟发送群
+            const groupNameEl = document.getElementById('wechatEmailGroupName');
+            if (groupNameEl && order && order.wechatGroup) {
+                groupNameEl.textContent = order.wechatGroup;
+            }
+        }
+
+        // 净值邮箱模式切换订单
+        function onWechatEmailOrderChange() {
+            wechatEmailCurrentIndex = parseInt(document.getElementById('wechatEmailOrderSelect').value);
+            generateEmailTemplate();
+        }
+
+        // 关闭发送企微邀请弹窗
+        function closeSendWechatModal() {
+            document.getElementById('sendWechatModal').classList.add('hidden');
+        }
+
+        // 切换订单
+        function onWechatOrderChange() {
+            // 保存当前订单的编辑内容
+            saveWechatCurrentEdit();
+            wechatCurrentIndex = parseInt(document.getElementById('wechatOrderSelect').value);
+            loadWechatOrderContent(wechatCurrentIndex);
+        }
+
+        // 保存当前订单的编辑
+        function saveWechatCurrentEdit() {
+            if (wechatOrders.length === 0) return;
+            const order = wechatOrders[wechatCurrentIndex];
+            const textarea = document.getElementById('wechatMessageText');
+            order.customMessage = textarea.value;
+            // 附件文件在添加/删除时已经直接修改了源数据
+        }
+
+        // 加载订单内容到弹窗
+        function loadWechatOrderContent(index) {
+            const order = wechatOrders[index];
+            if (!order) return;
+
+            // 话术：优先使用 customMessage，否则用 wechatMessage（为空则自动生成）
+            let message = order.customMessage !== null ? order.customMessage : order.wechatMessage;
+            if (!message && order) {
+                message = `@管理人 老师好，以下为我们的拟投计划，烦请确认【交易额度】及【签约渠道】，无误后推送妥妥递关联~
+
+--------------------------------------------------
+拟交易日期：${order.tradeDate}
+母 基 金：${order.motherFund}
+交 易 类 型：${order.tradeType}
+子 基 金：${order.childFund}
+交 易 额 度：${order.amount}
+签 约 渠 道：直销-妥妥递
+--------------------------------------------------
+
+然后辛苦提供【子基金】的以下材料，我们内部走个流程~
+（1）合同（电子清洁版）
+（2）风揭（电子清洁版）
+（3）三级估值表（最新用印版）
+（4）补充协议（如有）
+
+--------------------------------------------------
+
+麻烦再看看咱${order.tradeType}时有无【特殊事项】，例如：
+（1）其他材料（妥妥递系统上要求上传以外的）
+（2）划款到账时间（早于交易日期17点前的）`;
+                // 缓存到订单对象，避免重复生成
+                order.wechatMessage = message;
+            }
+            document.getElementById('wechatMessageText').value = message;
+
+            // 附件文件
+            renderWechatFileList();
+
+            // 文件收集链接（每个订单独立）
+            const linkText = document.getElementById('wechatLinkText');
+            linkText.innerHTML = '<span style="color:#999">文件收集页面暂未收录</span>';
+
+            // 拟发送群
+            const groupNameEl = document.getElementById('wechatGroupName');
+            if (groupNameEl && order.wechatGroup) {
+                groupNameEl.textContent = order.wechatGroup;
+            }
+        }
+
+        // 渲染附件文件列表
+        function renderWechatFileList() {
+            const order = wechatOrders[wechatCurrentIndex];
+            if (!order) return;
+
+            const list = document.getElementById('wechatFileList');
+            const files = order.wechatFiles || [];
+
+            if (files.length === 0) {
+                list.innerHTML = '<div style="text-align:center;color:#999;font-size:13px;padding:12px;">暂无附件</div>';
+                return;
+            }
+
+            list.innerHTML = files.map((file, idx) => `
+                <div class="wechat-file-item">
+                    <span class="wechat-file-icon">📄</span>
+                    <div class="wechat-file-info">
+                        <div class="wechat-file-name">${file.name}</div>
+                        <div class="wechat-file-desc">${file.desc || ''}</div>
+                    </div>
+                    <button class="wechat-file-remove" onclick="removeWechatFile(${idx})">删除</button>
+                </div>
+            `).join('');
+        }
+
+        // 删除附件
+        function removeWechatFile(idx) {
+            const order = wechatOrders[wechatCurrentIndex];
+            if (order && order.wechatFiles) {
+                order.wechatFiles.splice(idx, 1);
+                renderWechatFileList();
+            }
+        }
+
+        // 添加附件
+        function addWechatFile() {
+            const order = wechatOrders[wechatCurrentIndex];
+            if (!order) return;
+
+            const fileName = prompt('请输入文件名（如：合同.pdf）：', '新文件.pdf');
+            if (!fileName) return;
+            const fileDesc = prompt('请输入文件说明：', '') || '';
+
+            if (!order.wechatFiles) order.wechatFiles = [];
+            order.wechatFiles.push({ name: fileName, desc: fileDesc });
+            renderWechatFileList();
+        }
+
+        // 恢复默认话术
+        function resetWechatMessage() {
+            const order = wechatOrders[wechatCurrentIndex];
+            if (!order) return;
+            if (confirm('确定要恢复为默认话术吗？当前编辑将丢失。')) {
+                order.customMessage = null;
+                document.getElementById('wechatMessageText').value = order.wechatMessage;
+            }
+        }
+
+        // 确认发送
+        function confirmSendWechat() {
+            // 净值邮箱模式：直接发送，无需校验话术
+            if (currentWechatType === 'email') {
+                // 切换到发送进度视图
+                document.getElementById('wechatEditView').classList.add('hidden');
+                document.getElementById('wechatSendView').classList.remove('hidden');
+                document.getElementById('wechatModalFooter').style.display = 'none';
+                document.getElementById('wechatConfirmBtn').textContent = '确认发送';
+                document.getElementById('wechatSendIcon').textContent = '⏳';
+                document.getElementById('wechatSendTitle').textContent = '正在发送企微消息...';
+                document.getElementById('wechatSendDesc').textContent = `共 ${wechatOrders.length} 个订单，请勿关闭页面`;
+                simulateEmailSend();
+                return;
+            }
+
+            // 关联邀请模式：原有逻辑
+            saveWechatCurrentEdit();
+
+            // 校验：所有订单必须有话术
+            const emptyOrders = wechatOrders.filter(o => {
+                const msg = o.customMessage !== null ? o.customMessage : o.wechatMessage;
+                return !msg || !msg.trim();
+            });
+            if (emptyOrders.length > 0) {
+                alert(`订单 "${emptyOrders[0].childFund}" 话术为空，请补充后再发送！`);
+                return;
+            }
+
+            // 切换到发送进度视图
+            document.getElementById('wechatEditView').classList.add('hidden');
+            document.getElementById('wechatSendView').classList.remove('hidden');
+            document.getElementById('wechatModalFooter').style.display = 'none';
+            document.getElementById('wechatConfirmBtn').textContent = '确认发送';
+            document.getElementById('wechatSendIcon').textContent = '⏳';
+            document.getElementById('wechatSendTitle').textContent = '正在发送企微消息...';
+            document.getElementById('wechatSendDesc').textContent = `共 ${wechatOrders.length} 个订单，请勿关闭页面`;
+
+            // 模拟发送进度
+            let progress = 0;
+            const progressBar = document.getElementById('wechatSendProgress');
+            const log = document.getElementById('wechatSendLog');
+            log.innerHTML = '';
+
+            const interval = setInterval(() => {
+                progress += Math.random() * 18 + 7;
+                if (progress > 100) progress = 100;
+                progressBar.style.width = progress + '%';
+
+                if (progress < 30) {
+                    document.getElementById('wechatSendDesc').textContent = '正在准备发送内容...';
+                } else if (progress < 70) {
+                    document.getElementById('wechatSendDesc').textContent = '正在调用企微接口...';
+                } else if (progress < 100) {
+                    document.getElementById('wechatSendDesc').textContent = '即将完成...';
+                } else {
+                    clearInterval(interval);
+                    // 完成
+                    document.getElementById('wechatSendIcon').textContent = '🎉';
+                    document.getElementById('wechatSendTitle').textContent = '发送完成！';
+                    document.getElementById('wechatSendDesc').textContent = `已成功发送 ${wechatOrders.length} 个企微消息`;
+                    document.getElementById('wechatSendLogTitle').innerHTML = '✅ 发送结果';
+
+                    log.innerHTML = wechatOrders.map((o, idx) => `
+                        <div>${idx + 1}. ${o.motherFund} → ${o.childFund}</div>
+                        <div style="color:#52c41a;margin-left:16px;">✓ 已发送给客户（${o.platform}）</div>
+                    `).join('') + `
+                        <div style="margin-top:8px;color:#999;">完成时间：${new Date().toLocaleString()}</div>
+                    `;
+
+                    // 改底部按钮为"完成"
+                    document.getElementById('wechatModalFooter').style.display = 'flex';
+                    const confirmBtn = document.getElementById('wechatConfirmBtn');
+                    confirmBtn.textContent = '完成';
+                    confirmBtn.onclick = closeSendWechatModal;
+                }
+
+                // 实时日志
+                if (progress < 100) {
+                    log.innerHTML = wechatOrders.map((o, idx) => {
+                        const sent = progress > (idx + 1) * (100 / wechatOrders.length);
+                        return `
+                            <div>${idx + 1}. ${o.childFund} ${sent ? '<span style="color:#52c41a;">✓ 已发送</span>' : '<span style="color:#1890ff;">发送中...</span>'}</div>
+                        `;
+                    }).join('');
+                }
+            }, 250);
+        }
+
+        // 净值邮箱模式发送模拟
+        function simulateEmailSend() {
+            let progress = 0;
+            const progressBar = document.getElementById('wechatSendProgress');
+            const log = document.getElementById('wechatSendLog');
+            log.innerHTML = '';
+
+            const interval = setInterval(() => {
+                progress += Math.random() * 20 + 10;
+                if (progress > 100) progress = 100;
+                progressBar.style.width = progress + '%';
+
+                if (progress < 40) {
+                    document.getElementById('wechatSendDesc').textContent = '正在准备净值邮箱模板...';
+                } else if (progress < 80) {
+                    document.getElementById('wechatSendDesc').textContent = '正在调用企微接口发送...';
+                } else if (progress < 100) {
+                    document.getElementById('wechatSendDesc').textContent = '即将完成...';
+                } else {
+                    clearInterval(interval);
+                    document.getElementById('wechatSendIcon').textContent = '📧';
+                    document.getElementById('wechatSendTitle').textContent = '发送完成！';
+                    document.getElementById('wechatSendDesc').textContent = `已成功发送净值邮箱设置消息（${wechatOrders.length} 个订单）`;
+                    document.getElementById('wechatSendLogTitle').innerHTML = '✅ 发送结果';
+
+                    log.innerHTML = `
+                        <div>消息类型：净值邮箱设置</div>
+                        <div style="color:#52c41a;margin-left:16px;">✓ 已发送给 ${wechatOrders.length} 个子基金的对接人</div>
+                        <div style="margin-top:8px;color:#999;">完成时间：${new Date().toLocaleString()}</div>
+                    `;
+
+                    document.getElementById('wechatModalFooter').style.display = 'flex';
+                    const confirmBtn = document.getElementById('wechatConfirmBtn');
+                    confirmBtn.textContent = '完成';
+                    confirmBtn.onclick = closeSendWechatModal;
+                }
+            }, 200);
+        }
+
+        // 初始化
+        renderOrderTable();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>私募群管理人关系配置</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 200px;
+            background: #fff;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            border-right: 1px solid #e8e8e8;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            color: white;
+        }
+
+        .brand-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .sidebar-menu {
+            padding: 12px 0;
+        }
+
+        .menu-title {
+            padding: 12px 20px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .menu-item {
+            padding: 11px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.15s;
+        }
+
+        .menu-item:hover {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+
+        .menu-item.active {
+            background: #e6f7ff;
+            color: #1890ff;
+            border-right: 3px solid #1890ff;
+            font-weight: 500;
+        }
+
+        .menu-icon {
+            font-size: 16px;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            margin-left: 200px;
+            display: flex;
+            flex-direction: column;
+            overflow-x: auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1890ff;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .action-btn {
+            padding: 6px 16px;
+            border: 1px solid #d9d9d9;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            border-color: #1890ff;
+            color: #1890ff;
+        }
+
+        .action-btn.primary {
+            background: #1890ff;
+            color: white;
+            border-color: #1890ff;
+        }
+
+        .action-btn.primary:hover {
+            background: #40a9ff;
+        }
+
+        .filter-section {
+            background: white;
+            padding: 24px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 16px;
+            align-items: flex-end;
+        }
+
+        .filter-item {
+            flex: 1;
+        }
+
+        .filter-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .search-select {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 6px 30px 6px 11px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .search-input:focus {
+            border-color: #1890ff;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            pointer-events: none;
+        }
+
+        .dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            margin-top: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+        }
+
+        .dropdown-list.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 14px;
+        }
+
+        .dropdown-item:hover {
+            background: #f5f5f5;
+        }
+
+        .dropdown-item.selected {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+
+        .table-section {
+            background: white;
+            padding: 24px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            background: #fafafa;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 1px solid #e8e8e8;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e8e8e8;
+            color: #333;
+        }
+
+        tr:hover td {
+            background: #fafafa;
+        }
+
+        .group-info {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .group-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .group-details {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .group-name {
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .group-id {
+            font-size: 12px;
+            color: #999;
+            font-family: 'Courier New', monospace;
+        }
+
+        .action-link {
+            color: #1890ff;
+            cursor: pointer;
+            text-decoration: none;
+            margin-right: 12px;
+            font-size: 13px;
+        }
+
+        .action-link:hover {
+            color: #40a9ff;
+        }
+
+        .robot-info {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .robot-icon {
+            font-size: 20px;
+        }
+
+        .robot-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .robot-name {
+            font-weight: 500;
+            color: #333;
+            font-size: 13px;
+        }
+
+        .robot-id {
+            font-size: 11px;
+            color: #999;
+            font-family: 'Courier New', monospace;
+        }
+
+        .rule-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #f0f5ff;
+            border: 1px solid #d6e4ff;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #1890ff;
+            margin: 2px;
+        }
+
+        .rule-tag.default {
+            background: #f6ffed;
+            border-color: #b7eb8f;
+            color: #52c41a;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 600px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: #1890ff;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* 产品选择器样式 */
+        .product-selector {
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        .product-search-box {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .product-search-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .product-search-input:focus {
+            border-color: #1890ff;
+            box-shadow: 0 0 0 2px rgba(24,144,255,0.1);
+        }
+
+        .search-hint {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .product-list-container {
+            max-height: 250px;
+            overflow-y: auto;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .product-list-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .product-list-container::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+
+        .product-list {
+            padding: 8px 0;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid #fafafa;
+        }
+
+        .product-item:hover {
+            background: #e6f7ff;
+        }
+
+        .product-item.selected {
+            background: #bae7ff;
+        }
+
+        .product-checkbox {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-size: 13px;
+            color: #333;
+            margin-bottom: 2px;
+            font-weight: 500;
+        }
+
+        .product-code-text {
+            font-size: 12px;
+            color: #1890ff;
+            font-weight: 600;
+        }
+
+        .selected-products-area {
+            padding: 12px;
+            background: #fafafa;
+        }
+
+        .selected-label {
+            font-size: 13px;
+            color: #52c41a;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .selected-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .product-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: #1890ff;
+            color: white;
+            border-radius: 4px;
+            font-size: 12px;
+            max-width: 200px;
+        }
+
+        .product-tag-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .tag-remove {
+            cursor: pointer;
+            font-size: 14px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .tag-remove:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">妥</div>
+            <div class="brand-name">妥妥递</div>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-title">功能菜单</div>
+            <div class="menu-item" onclick="location.href='ta-data-send.html'"><span class="menu-icon">&#128231;</span>TA数据发送</div>
+            <div class="menu-item" onclick="location.href='investment-committee.html'"><span class="menu-icon">&#128203;</span>上会主功能</div>
+            <div class="menu-item"><span class="menu-icon">&#128101;</span>投资主体</div>
+            <div class="menu-item"><span class="menu-icon">&#128193;</span>准入管理</div>
+            <div class="menu-item" onclick="location.href='tuotuodi.html'"><span class="menu-icon">&#128220;</span>自动用印</div>
+            <div class="menu-item" onclick="alert('机构材料管理页面暂未收录')"><span class="menu-icon">&#128229;</span>机构材料管理</div>
+            <div class="menu-item active"><span class="menu-icon">&#128172;</span>私募群管理人关系配置</div>
+            <div class="menu-item" onclick="location.href='email-config.html'"><span class="menu-icon">&#128231;</span>邮箱配置管理</div>
+            <div class="menu-item"><span class="menu-icon">&#9881;&#65039;</span>系统设置</div>
+            <div class="menu-item"><span class="menu-icon">&#128267;</span>模拟器</div>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <div class="container">
+        <div class="header">
+            <div class="header-title">私募群管理人关系配置</div>
+            <div class="header-actions">
+                <button class="action-btn" onclick="window.location.href='tuotuodi.html'">返回</button>
+                <button class="action-btn primary" onclick="addRelation()">新增私募群管理人关系</button>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-row">
+                <div class="filter-item">
+                    <label class="filter-label">私募管理人</label>
+                    <div class="search-select">
+                        <input type="text" class="search-input" id="managerInput" placeholder="搜索并选择管理人..." onclick="toggleDropdown('managerDropdown')" oninput="filterOptions('managerInput', 'managerDropdown', managerData)">
+                        <span class="search-icon">🔍</span>
+                        <div class="dropdown-list" id="managerDropdown"></div>
+                    </div>
+                </div>
+                <div class="filter-item">
+                    <label class="filter-label">私募群</label>
+                    <div class="search-select">
+                        <input type="text" class="search-input" id="groupInput" placeholder="搜索并选择群..." onclick="toggleDropdown('groupDropdown')" oninput="filterOptions('groupInput', 'groupDropdown', groupData)">
+                        <span class="search-icon">🔍</span>
+                        <div class="dropdown-list" id="groupDropdown"></div>
+                    </div>
+                </div>
+                <div style="padding-bottom: 1px;">
+                    <button class="action-btn primary" onclick="searchRelations()">查询</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-section">
+            <div class="section-title">已关联列表</div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">序号</th>
+                            <th>私募管理人名称</th>
+                            <th>私募群信息</th>
+                            <th>机器人</th>
+                            <th>匹配规则</th>
+                            <th style="width: 120px;">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="relationTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- 规则配置弹窗 -->
+    <div class="modal-overlay" id="ruleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title" id="modalTitle">配置群关联规则</span>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editId">
+
+                <div class="form-group">
+                    <label class="form-label">私募管理人 *</label>
+                    <select class="form-select" id="modalManagerSelect" onchange="onManagerChange()">
+                        <option value="">请选择管理人</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">私募群 *</label>
+                    <select class="form-select" id="modalGroupSelect">
+                        <option value="">请选择群</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">消息机器人 *</label>
+                    <select class="form-select" id="modalRobotSelect">
+                        <option value="">请选择机器人</option>
+                    </select>
+                    <div style="font-size:12px;color:#999;margin-top:4px;">用于指定该群发送消息时使用的机器人</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">精确匹配产品</label>
+                    <div class="product-selector">
+                        <!-- 搜索框 -->
+                        <div class="product-search-box">
+                            <input type="text" class="product-search-input" id="productSearchInput"
+                                   placeholder="🔍 搜索产品名称、代码、策略..."
+                                   oninput="onProductSearch(this.value)">
+                            <div class="search-hint">支持模糊搜索</div>
+                        </div>
+
+                        <!-- 产品列表 -->
+                        <div class="product-list-container" id="productListContainer">
+                            <div class="product-list" id="productList"></div>
+                        </div>
+
+                        <!-- 已选产品展示 -->
+                        <div class="selected-products-area" id="selectedProductsArea" style="display: none;">
+                            <div class="selected-label">
+                                ✅ 已选 <span id="selectedCount">0</span> 个产品：
+                            </div>
+                            <div class="selected-tags" id="selectedTags"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn" onclick="closeModal()">取消</button>
+                <button class="action-btn primary" onclick="saveRuleConfig()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const managerData = [
+            { id: 1, name: '招商财富资产管理有限公司' },
+            { id: 2, name: '嘉澳共赢基金管理有限公司' },
+            { id: 3, name: '光融七号（天津）航空租赁有限公司' },
+            { id: 4, name: '国泰君安期货有限公司' },
+            { id: 5, name: '中信证券股份有限公司' },
+            { id: 6, name: '华泰证券股份有限公司' },
+            { id: 7, name: '广发基金管理有限公司' },
+            { id: 8, name: '易方达基金管理有限公司' }
+        ];
+
+        // 机器人数据（3个可选机器人）
+        const robotData = [
+            { id: 'R001', name: '妥妥递消息助手', isDefault: true },
+            { id: 'R002', name: 'FOF投研机器人' },
+            { id: 'R003', name: '合规审核机器人' }
+        ];
+
+        // 默认机器人ID
+        const DEFAULT_ROBOT_ID = 'R001';
+
+        const groupData = [
+            { id: 1, name: '生产测试用群', groupId: 'R:10699598106076777', robotName: '测试助手Bot' },
+            { id: 2, name: '招商财富-辰丰17号管理群', groupId: 'R:10888665209912345', robotName: '辰丰管理Bot' },
+            { id: 3, name: '嘉澳共赢1号投资交流群', groupId: 'R:10997744338822334', robotName: '嘉澳投研Bot' },
+            { id: 4, name: 'FOF下投上会审批群', groupId: 'R:11006655447733445', robotName: '审批流程Bot' },
+            { id: 5, name: '产品备案审核群', groupId: 'R:11107766548855667', robotName: '备案审核Bot' },
+            { id: 6, name: '量化对冲策略交流群', groupId: 'R:11208877659966778', robotName: '量化策略Bot' },
+            { id: 7, name: '固收+投资组合群', groupId: 'R:11309988771077889', robotName: '固收投资Bot' },
+            { id: 8, name: 'CTA策略研究群', groupId: 'R:11400999882188990', robotName: 'CTA研究Bot' }
+        ];
+
+        // 模拟产品数据库
+        const productData = [
+            { id: 'P001', name: 'SAZM91_九木CTA2号私募证券投资基金', code: 'SAZM91', strategy: 'CTA策略', managerId: 3, establishDate: '2024-03-15', scale: '5000万' },
+            { id: 'P002', name: '辰丰17号私募证券投资基金', code: 'CF017', strategy: '固收+', managerId: 1, establishDate: '2023-08-20', scale: '8000万' },
+            { id: 'P003', name: '嘉澳共赢1号私募证券投资基金', code: 'JA001', strategy: '量化对冲', managerId: 2, establishDate: '2024-01-10', scale: '3000万' },
+            { id: 'P004', name: '光融七号航空租赁基金', code: 'GR007', strategy: '其他', managerId: 3, establishDate: '2025-02-28', scale: '1.2亿' },
+            { id: 'P005', name: '国泰君安量化增强1号', code: 'GJQA1', strategy: '量化增强', managerId: 4, establishDate: '2023-11-05', scale: '6000万' },
+            { id: 'P006', name: '中信证券FOF精选1号', code: 'ZXFF1', strategy: 'FOF', managerId: 5, establishDate: '2024-06-18', scale: '2亿' },
+            { id: 'P007', name: '华泰柏瑞沪深300增强', code: 'HTBR1', strategy: '指数增强', managerId: 6, establishDate: '2023-09-22', scale: '1.5亿' },
+            { id: 'P008', name: '广发核心优势混合A', code: 'GFHX1', strategy: '混合策略', managerId: 7, establishDate: '2022-12-15', scale: '8亿' },
+            { id: 'P009', name: '易方达蓝筹精选混合', code: 'YFLC1', strategy: '价值投资', managerId: 8, establishDate: '2020-07-08', scale: '50亿' },
+            { id: 'P010', name: '招商中证白酒指数分级', code: 'ZSBG1', strategy: '指数型', managerId: 1, establishDate: '2015-06-29', scale: '30亿' },
+            { id: 'P011', name: '嘉实先进制造100ETF', code: 'JSZZ1', strategy: 'ETF', managerId: 2, establishDate: '2021-03-25', scale: '5亿' },
+            { id: 'P012', name: '光融七号稳健收益1号', code: 'GRWJ1', strategy: '固收+', managerId: 3, establishDate: '2024-09-10', scale: '4000万' },
+            { id: 'P013', name: '国泰君安科创板2号', code: 'GJKB2', strategy: '权益类', managerId: 4, establishDate: '2023-04-18', scale: '7000万' },
+            { id: 'P014', name: '中信建投医药健康A', code: 'ZXJJ1', strategy: '行业主题', managerId: 5, establishDate: '2022-08-30', scale: '3.5亿' },
+            { id: 'P015', name: '华泰紫金泰盈混合', code: 'HTZJ1', strategy: '混合策略', managerId: 6, establishDate: '2024-02-14', scale: '9000万' },
+            { id: 'P016', name: '广发纳斯达克100ETF', code: 'GFNK1', strategy: 'QDII', managerId: 7, establishDate: '2023-05-20', scale: '12亿' },
+            { id: 'P017', name: '易方达消费行业股票', code: 'YFXF1', strategy: '行业主题', managerId: 8, establishDate: '2018-03-16', scale: '40亿' },
+            { id: 'P018', name: '招商瑞文混合A', code: 'ZSRW1', strategy: '灵活配置', managerId: 1, establishDate: '2020-12-28', scale: '6亿' },
+            { id: 'P019', name: '嘉实全球互联网股票QDII', code: 'JSQQ1', strategy: 'QDII', managerId: 2, establishDate: '2021-09-08', scale: '2.5亿' },
+            { id: 'P020', name: '光融七号量化选股1号', code: 'GRXL1', strategy: '量化选股', managerId: 3, establishDate: '2024-11-03', scale: '3500万' }
+        ];
+
+        let relationsData = [
+            {
+                id: 1,
+                managerId: 1,
+                managerName: '招商财富资产管理有限公司',
+                groupId: 2,
+                groupName: '招商财富-辰丰17号管理群',
+                groupIcon: '招',
+                groupColor: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                robotId: 'R001',
+                robotName: '妥妥递消息助手',
+                exactProducts: ['P002'],
+                exactProductNames: ['辰丰17号私募证券投资基金']
+            },
+            {
+                id: 2,
+                managerId: 1,
+                managerName: '招商财富资产管理有限公司',
+                groupId: 6,
+                groupName: '量化对冲策略交流群',
+                groupIcon: '量',
+                groupColor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                robotId: 'R002',
+                robotName: 'FOF投研机器人',
+                exactProducts: ['P003', 'P005', 'P020'],
+                exactProductNames: ['嘉澳共赢1号私募证券投资基金', '国泰君安量化增强1号', '光融七号量化选股1号']
+            },
+            {
+                id: 3,
+                managerId: 1,
+                managerName: '招商财富资产管理有限公司',
+                groupId: 4,
+                groupName: 'FOF下投上会审批群',
+                groupIcon: 'F',
+                groupColor: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                robotId: 'R003',
+                robotName: '合规审核机器人',
+                exactProducts: [],
+                exactProductNames: []
+            },
+            {
+                id: 4,
+                managerId: 2,
+                managerName: '嘉澳共赢基金管理有限公司',
+                groupId: 3,
+                groupName: '嘉澳共赢1号投资交流群',
+                groupIcon: '嘉',
+                groupColor: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                robotId: 'R001',
+                robotName: '妥妥递消息助手',
+                exactProducts: [],
+                exactProductNames: []
+            },
+            {
+                id: 5,
+                managerId: 3,
+                managerName: '光融七号（天津）航空租赁有限公司',
+                groupId: 7,
+                groupName: '固收+投资组合群',
+                groupIcon: '固',
+                groupColor: 'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
+                robotId: 'R002',
+                robotName: 'FOF投研机器人',
+                exactProducts: ['P002', 'P012'],
+                exactProductNames: ['辰丰17号私募证券投资基金', '光融七号稳健收益1号']
+            },
+            {
+                id: 6,
+                managerId: 3,
+                managerName: '光融七号（天津）航空租赁有限公司',
+                groupId: 8,
+                groupName: 'CTA策略研究群',
+                groupIcon: 'C',
+                groupColor: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+                robotId: 'R001',
+                robotName: '妥妥递消息助手',
+                exactProducts: ['P001'],
+                exactProductNames: ['SAZM91_九木CTA2号私募证券投资基金']
+            }
+        ];
+
+        let selectedManager = null;
+        let selectedGroup = null;
+        let nextId = 7;
+
+        function initPage() {
+            renderTable();
+            populateModalSelects();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('relationTableBody');
+
+            if (relationsData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #999;">
+                            暂无关联记录，点击"新增私募群管理人关系"添加
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = relationsData.map((relation, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${relation.managerName}</strong></td>
+                    <td>
+                        <div class="group-info">
+                            <div class="group-icon" style="background: ${relation.groupColor}">${relation.groupIcon}</div>
+                            <div class="group-details">
+                                <span class="group-name">${relation.groupName}</span>
+                                <span class="group-id">${relation.groupId ? groupData.find(g => g.id === relation.groupId)?.groupId || '' : ''}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="robot-info">
+                            <span class="robot-icon">🤖</span>
+                            <div class="robot-details">
+                                <span class="robot-name">${relation.robotName}</span>
+                                ${relation.robotId === DEFAULT_ROBOT_ID ? '<span style="font-size:11px;color:#52c41a;">(默认)</span>' : ''}
+                            </div>
+                        </div>
+                    </td>
+                    <td>${renderRules(relation)}</td>
+                    <td>
+                        <a href="#" class="action-link" onclick="editRelation(${relation.id})">编辑</a>
+                        <a href="#" class="action-link" onclick="deleteRelation(${relation.id})">删除</a>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderRules(relation) {
+            if (!relation.exactProducts || relation.exactProducts.length === 0) {
+                return '<span class="rule-tag default">未指定产品</span>';
+            }
+
+            // 显示前3个产品 + 等共N个
+            const products = relation.exactProductNames || [];
+            const total = products.length;
+
+            if (total <= 3) {
+                return products.map(name =>
+                    `<span class="rule-tag">${name}</span>`
+                ).join('');
+            } else {
+                const first3 = products.slice(0, 3).map(name =>
+                    `<span class="rule-tag">${name}</span>`
+                ).join('');
+
+                return `${first3}<span class="rule-tag">等共${total}个</span>`;
+            }
+        }
+
+        function populateModalSelects() {
+            const managerSelect = document.getElementById('modalManagerSelect');
+            managerSelect.innerHTML = '<option value="">请选择管理人</option>' +
+                managerData.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+
+            updateGroupOptions();
+
+            // 初始化机器人选项
+            const robotSelect = document.getElementById('modalRobotSelect');
+            robotSelect.innerHTML = '<option value="">请选择机器人</option>' +
+                robotData.map(r => `<option value="${r.id}" ${r.isDefault ? 'selected' : ''}>${r.name}${r.isDefault ? ' (默认)' : ''}</option>`).join('');
+        }
+
+        function onManagerChange() {
+            updateGroupOptions();
+
+            // 根据选中的管理人过滤产品列表
+            const managerId = parseInt(document.getElementById('modalManagerSelect').value);
+            filterProductsByManager(managerId);
+
+            // 清空已选产品（换管理人后需要重新选择）
+            selectedProductIds = [];
+            document.getElementById('productSearchInput').value = '';
+            updateSelectedProductsDisplay();
+        }
+
+        // 根据管理人ID过滤产品
+        function filterProductsByManager(managerId) {
+            let filteredProducts;
+
+            if (!managerId || isNaN(managerId)) {
+                // 未选择管理人时显示提示
+                filteredProducts = [];
+            } else {
+                // 只显示该管理人下的产品
+                filteredProducts = productData.filter(p => p.managerId === managerId);
+            }
+
+            renderProductList(filteredProducts);
+
+            // 显示产品数量提示
+            const container = document.getElementById('productListContainer');
+            if (managerId && filteredProducts.length > 0) {
+                container.title = `该管理人下共 ${filteredProducts.length} 个产品`;
+            }
+        }
+
+        function updateGroupOptions() {
+            const groupSelect = document.getElementById('modalGroupSelect');
+            groupSelect.innerHTML = '<option value="">请选择群</option>' +
+                groupData.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
+        }
+
+        function addRelation() {
+            document.getElementById('modalTitle').textContent = '新增私募群管理人关系';
+            document.getElementById('editId').value = '';
+            document.getElementById('modalManagerSelect').value = '';
+            document.getElementById('modalGroupSelect').value = '';
+            document.getElementById('modalRobotSelect').value = DEFAULT_ROBOT_ID;
+
+            // 重置产品选择器
+            selectedProductIds = [];
+            document.getElementById('productSearchInput').value = '';
+            renderProductList([]);  // 未选择管理人时显示空列表
+            updateSelectedProductsDisplay();
+
+            openModal();
+        }
+
+        function editRelation(id) {
+            const relation = relationsData.find(r => r.id === id);
+            if (!relation) return;
+
+            document.getElementById('modalTitle').textContent = '编辑关联规则';
+            document.getElementById('editId').value = id;
+            document.getElementById('modalManagerSelect').value = relation.managerId;
+            document.getElementById('modalGroupSelect').value = relation.groupId;
+            document.getElementById('modalRobotSelect').value = relation.robotId || DEFAULT_ROBOT_ID;
+
+            // 恢复已选产品
+            selectedProductIds = [...(relation.exactProducts || [])];
+            document.getElementById('productSearchInput').value = '';
+
+            // 根据管理人的产品列表渲染
+            const managerId = relation.managerId;
+            filterProductsByManager(managerId);
+            updateSelectedProductsDisplay();
+
+            openModal();
+        }
+
+        function deleteRelation(id) {
+            if (!confirm('确定要删除这条关联规则吗？')) return;
+
+            relationsData = relationsData.filter(r => r.id !== id);
+            renderTable();
+        }
+
+        function openModal() {
+            document.getElementById('ruleModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('ruleModal').classList.remove('show');
+        }
+
+        function saveRuleConfig() {
+            const editId = document.getElementById('editId').value;
+            const managerId = parseInt(document.getElementById('modalManagerSelect').value);
+            const groupId = parseInt(document.getElementById('modalGroupSelect').value);
+            const robotId = document.getElementById('modalRobotSelect').value;
+
+            if (!managerId) {
+                alert('请选择私募管理人');
+                return;
+            }
+            if (!groupId) {
+                alert('请选择私募群');
+                return;
+            }
+            if (!robotId) {
+                alert('请选择消息机器人');
+                return;
+            }
+
+            const manager = managerData.find(m => m.id === managerId);
+            const group = groupData.find(g => g.id === groupId);
+            const robot = robotData.find(r => r.id === robotId);
+
+            // 获取已选产品信息
+            const exactProducts = selectedProductIds;
+            const exactProductNames = selectedProductIds.map(id =>
+                productData.find(p => p.id === id)?.name || id
+            );
+
+            const relationData = {
+                managerId,
+                managerName: manager.name,
+                groupId,
+                groupName: group.name,
+                groupIcon: group.name.charAt(0),
+                groupColor: getRandomGradient(),
+                robotId,
+                robotName: robot.name,
+                exactProducts,
+                exactProductNames
+            };
+
+            if (editId) {
+                const index = relationsData.findIndex(r => r.id === parseInt(editId));
+                if (index > -1) {
+                    relationData.id = parseInt(editId);
+                    relationsData[index] = relationData;
+                }
+            } else {
+                relationData.id = nextId++;
+                relationsData.push(relationData);
+            }
+
+            closeModal();
+            renderTable();
+        }
+
+        // ========== 产品选择器核心功能 ==========
+        let selectedProductIds = [];  // 当前选中的产品ID数组
+
+        // 搜索产品（带防抖）
+        let searchTimer = null;
+        function onProductSearch(keyword) {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => {
+                const filtered = searchProducts(keyword);
+                renderProductList(filtered);
+            }, 300);  // 300ms防抖
+        }
+
+        // 搜索产品算法（先按管理人过滤，再搜索）
+        function searchProducts(keyword) {
+            const managerId = parseInt(document.getElementById('modalManagerSelect')?.value);
+
+            // 第一步：根据管理人过滤
+            let baseProducts;
+            if (!managerId || isNaN(managerId)) {
+                baseProducts = [];
+            } else {
+                baseProducts = productData.filter(p => p.managerId === managerId);
+            }
+
+            // 第二步：如果没有搜索关键词，直接返回该管理人的所有产品
+            if (!keyword || keyword.trim() === '') {
+                return baseProducts;
+            }
+
+            // 第三步：在管理人的产品中进行关键词搜索
+            const kw = keyword.toLowerCase().trim();
+            return baseProducts.filter(p =>
+                p.name.toLowerCase().includes(kw) ||
+                p.code.toLowerCase().includes(kw) ||
+                p.strategy.toLowerCase().includes(kw)
+            );
+        }
+
+        // 渲染产品列表
+        function renderProductList(products) {
+            const container = document.getElementById('productList');
+            const managerId = parseInt(document.getElementById('modalManagerSelect')?.value);
+
+            if (!products || products.length === 0) {
+                if (!managerId || isNaN(managerId)) {
+                    // 未选择管理人
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 30px; color: #999;">
+                            <div style="font-size: 36px; margin-bottom: 8px;">👤</div>
+                            <div>请先选择私募管理人</div>
+                        </div>
+                    `;
+                } else {
+                    // 搜索无结果或该管理人暂无产品
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 30px; color: #999;">
+                            <div style="font-size: 36px; margin-bottom: 8px;">�</div>
+                            <div>该管理人暂无匹配的产品</div>
+                        </div>
+                    `;
+                }
+                return;
+            }
+
+            container.innerHTML = products.map(product => `
+                <div class="product-item ${selectedProductIds.includes(product.id) ? 'selected' : ''}"
+                     onclick="toggleProductSelection('${product.id}')">
+                    <input type="checkbox" class="product-checkbox"
+                           ${selectedProductIds.includes(product.id) ? 'checked' : ''}
+                           onclick="event.stopPropagation(); toggleProductSelection('${product.id}')">
+                    <div class="product-info">
+                        <div class="product-name">${highlightMatch(product.name, document.getElementById('productSearchInput')?.value)}</div>
+                        <div class="product-code-text">${highlightMatch(product.code, document.getElementById('productSearchInput')?.value)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 高亮匹配文字
+        function highlightMatch(text, keyword) {
+            if (!keyword || !keyword.trim()) return text;
+
+            const kw = keyword.trim();
+            const regex = new RegExp(`(${kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            return text.replace(regex, '<mark style="background: #ffeb3b; padding: 0 2px;">$1</mark>');
+        }
+
+        // 切换产品选中状态
+        function toggleProductSelection(productId) {
+            const index = selectedProductIds.indexOf(productId);
+
+            if (index > -1) {
+                // 取消选中
+                selectedProductIds.splice(index, 1);
+            } else {
+                // 添加选中
+                selectedProductIds.push(productId);
+            }
+
+            // 更新UI
+            const currentKeyword = document.getElementById('productSearchInput')?.value || '';
+            const filtered = searchProducts(currentKeyword);
+            renderProductList(filtered);
+            updateSelectedProductsDisplay();
+        }
+
+        // 移除已选产品Tag
+        function removeSelectedProduct(productId) {
+            const index = selectedProductIds.indexOf(productId);
+            if (index > -1) {
+                selectedProductIds.splice(index, 1);
+
+                // 刷新UI
+                const currentKeyword = document.getElementById('productSearchInput')?.value || '';
+                const filtered = searchProducts(currentKeyword);
+                renderProductList(filtered);
+                updateSelectedProductsDisplay();
+            }
+        }
+
+        // 更新已选产品展示区域
+        function updateSelectedProductsDisplay() {
+            const area = document.getElementById('selectedProductsArea');
+            const countEl = document.getElementById('selectedCount');
+            const tagsEl = document.getElementById('selectedTags');
+
+            if (selectedProductIds.length === 0) {
+                area.style.display = 'none';
+                return;
+            }
+
+            area.style.display = 'block';
+            countEl.textContent = selectedProductIds.length;
+
+            tagsEl.innerHTML = selectedProductIds.map(id => {
+                const product = productData.find(p => p.id === id);
+                const name = product ? product.name : id;
+                const displayName = name.length > 15 ? name.substring(0, 15) + '...' : name;
+
+                return `
+                    <div class="product-tag" title="${name}">
+                        <span class="product-tag-name">${displayName}</span>
+                        <span class="tag-remove" onclick="removeSelectedProduct('${id}')">×</span>
+                    </div>
+                `;
+            }).join('');
+        }
+        // ========== 产品选择器功能结束 ==========
+
+        function getRandomGradient() {
+            const gradients = [
+                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                'linear-gradient(135deg, #30cfd0 0%, #330867 100%)'
+            ];
+            return gradients[Math.floor(Math.random() * gradients.length)];
+        }
+
+        function searchRelations() {
+            alert('查询功能：可根据管理人和群进行筛选（示例）');
+        }
+
+        initPage();
+    </script>
+</body>
+</html>
