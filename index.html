@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="资产管理业务原型展示站">
+  <title>资管业务原型中心</title>
+  <style>
+    :root{--blue:#2f6bff;--blue-dark:#1748c7;--ink:#182235;--muted:#67748a;--line:#e5e9f0;--soft:#f5f7fb;--card:#fff;--green:#168455}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--soft);color:var(--ink);font-family:"Microsoft YaHei",system-ui,sans-serif}
+    button,input{font:inherit}.top{background:linear-gradient(135deg,#172a57 0%,#224fb2 58%,#3676ff 100%);color:#fff;position:relative;overflow:hidden}.top:after{content:"";position:absolute;width:420px;height:420px;border-radius:50%;right:-120px;top:-220px;background:rgba(255,255,255,.09)}
+    .nav{max-width:1240px;margin:auto;height:68px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}.brand{font-weight:700;font-size:18px;letter-spacing:.04em}.nav-meta{font-size:13px;color:#dbe6ff}
+    .hero{max-width:1240px;margin:auto;padding:56px 24px 66px;position:relative;z-index:1}.eyebrow{font-size:13px;letter-spacing:.16em;color:#c9d8ff;margin-bottom:14px}.hero h1{font-size:38px;margin:0 0 15px;line-height:1.25}.hero p{margin:0;max-width:650px;color:#dce6ff;font-size:16px;line-height:1.8}
+    .main{max-width:1240px;margin:-28px auto 70px;padding:0 24px;position:relative;z-index:2}.toolbar{background:#fff;border:1px solid rgba(222,228,239,.9);border-radius:14px;padding:17px;display:flex;align-items:center;gap:12px;box-shadow:0 12px 35px rgba(29,55,112,.09)}
+    .search{flex:1;position:relative}.search:before{content:"⌕";position:absolute;left:13px;top:8px;color:#7b8799;font-size:21px}.search input{width:100%;height:42px;border:1px solid var(--line);border-radius:9px;padding:0 14px 0 40px;outline:none}.search input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(47,107,255,.1)}
+    .filters{display:flex;gap:7px}.filter{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 14px;color:#526076;cursor:pointer}.filter.active{color:var(--blue);background:#edf3ff;border-color:#bcd0ff;font-weight:600}
+    .section-head{display:flex;justify-content:space-between;align-items:end;margin:34px 2px 17px}.section-head h2{margin:0 0 6px;font-size:22px}.section-head p{margin:0;color:var(--muted);font-size:14px}.count{font-size:13px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:21px;text-decoration:none;color:inherit;display:flex;flex-direction:column;min-height:225px;transition:.18s;box-shadow:0 3px 10px rgba(24,42,77,.03)}.card:hover{transform:translateY(-3px);border-color:#b9cbf6;box-shadow:0 13px 30px rgba(28,64,145,.10)}
+    .card-top{display:flex;justify-content:space-between;align-items:center}.icon{width:42px;height:42px;border-radius:11px;background:#edf3ff;color:var(--blue);display:grid;place-items:center;font-size:20px;font-weight:700}.status{font-size:12px;padding:4px 8px;background:#e9f8f0;color:var(--green);border-radius:12px}.card h3{font-size:18px;margin:20px 0 9px}.desc{color:var(--muted);font-size:14px;line-height:1.7;margin:0}.tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}.tag{font-size:12px;color:#536177;background:#f2f4f8;padding:4px 7px;border-radius:5px}.card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:20px;color:#78859a;font-size:12px}.open{color:var(--blue);font-weight:600;font-size:14px}
+    .empty{display:none;background:#fff;border:1px dashed #cfd6e3;border-radius:12px;padding:48px;text-align:center;color:var(--muted)}.footer{max-width:1240px;margin:auto;padding:25px 24px 38px;border-top:1px solid var(--line);color:#7a8799;font-size:13px;display:flex;justify-content:space-between}
+    @media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.toolbar{align-items:stretch;flex-direction:column}.filters{overflow:auto}.hero h1{font-size:31px}}
+    @media(max-width:620px){.grid{grid-template-columns:1fr}.hero{padding-top:40px}.hero h1{font-size:27px}.nav-meta{display:none}.footer{display:block;line-height:2}}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <nav class="nav"><div class="brand">AMMO UI · 资管原型中心</div><div class="nav-meta">持续沉淀 · 快速评审 · 共同迭代</div></nav>
+    <div class="hero"><div class="eyebrow">ASSET MANAGEMENT PROTOTYPES</div><h1>资产管理业务原型展示站</h1><p>集中展示投资、运营及基础平台相关的交互原型，用可操作页面对齐需求、流程与系统实现。</p></div>
+  </header>
+
+  <main class="main">
+    <div class="toolbar">
+      <div class="search"><input id="search" type="search" placeholder="搜索原型名称、说明或标签"></div>
+      <div class="filters" id="filters"><button class="filter active" data-filter="全部">全部</button><button class="filter" data-filter="投资">投资</button><button class="filter" data-filter="运营">运营</button><button class="filter" data-filter="基础平台">基础平台</button></div>
+    </div>
+
+    <div class="section-head"><div><h2>原型目录</h2><p>点击卡片进入可交互原型</p></div><div class="count">当前展示 <b id="count">1</b> 个原型</div></div>
+    <section class="grid" id="grid">
+      <a class="card" href="asset-workflow.html" data-category="投资" data-search="fof 资产 入池 批量 产品 s码 na 资配池 投资">
+        <div class="card-top"><div class="icon">投</div><span class="status">持续迭代</span></div>
+        <h3>FOF 资产入池流程</h3>
+        <p class="desc">支持单产品入池、同系列产品批量复制、未成立产品编码及资配池状态展示。</p>
+        <div class="tags"><span class="tag">投资</span><span class="tag">审批流程</span><span class="tag">批量入池</span></div>
+        <div class="card-foot"><span>更新于 2026-06-23</span><span class="open">打开原型 →</span></div>
+      </a>
+    </section>
+    <div class="empty" id="empty">没有找到匹配的原型，请尝试其他关键词。</div>
+  </main>
+
+  <footer class="footer"><span>AMMO UI Prototype Center</span><span>后续原型将持续加入此目录</span></footer>
+
+  <script>
+    const cards=[...document.querySelectorAll('.card')],search=document.querySelector('#search'),count=document.querySelector('#count'),empty=document.querySelector('#empty');let category='全部';
+    function render(){const keyword=search.value.trim().toLowerCase();let visible=0;cards.forEach(card=>{const matchedCategory=category==='全部'||card.dataset.category===category;const matchedKeyword=!keyword||(card.textContent+' '+card.dataset.search).toLowerCase().includes(keyword);card.style.display=matchedCategory&&matchedKeyword?'flex':'none';if(matchedCategory&&matchedKeyword)visible++});count.textContent=visible;empty.style.display=visible?'none':'block'}
+    search.addEventListener('input',render);document.querySelector('#filters').addEventListener('click',event=>{const button=event.target.closest('.filter');if(!button)return;document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));button.classList.add('active');category=button.dataset.filter;render()});
+  </script>
+</body>
+</html>
