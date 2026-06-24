@@ -12,6 +12,7 @@
 - `seal-payment-workflow.html`：妥妥递用印划款子页面
 - `private-fund-manager-config.html`：妥妥递私募群管理人关系配置子页面
 - `email-config.html`：妥妥递邮箱配置子页面
+- `machine-management-workflow.html`：运营机器管理流程，覆盖设备购入、移交与报废
 
 ## 发布
 

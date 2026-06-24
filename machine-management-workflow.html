@@ -1,0 +1,145 @@
++<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>机器管理流程</title>
+  <style>
+    :root{--blue:#3370ff;--blue-weak:#edf3ff;--ink:#1f2329;--muted:#646a73;--line:#e5e6eb;--bg:#f5f6f8;--green:#2b8a64;--orange:#d97917;--red:#d83931;--purple:#7a5af8}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 "Microsoft YaHei",system-ui,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}
+    .topbar{height:58px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 26px;position:sticky;top:0;z-index:20}.brand{font-size:17px;font-weight:700}.crumb{color:#8f959e;margin-left:15px;padding-left:15px;border-left:1px solid var(--line)}.top-actions{margin-left:auto;display:flex;gap:24px;color:#646a73}
+    .page{max-width:1540px;margin:14px auto 88px;padding:0 18px}.initiator{background:#fff;border:1px solid #eceef2;border-radius:8px;padding:17px 20px;display:flex;align-items:center;gap:12px}.avatar{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#354d7d,#74a7d8);font-weight:700}.initiator strong{font-size:15px}.initiator .light{color:#8f959e;margin-left:8px}.title-row{margin-left:24px;display:flex;align-items:center;gap:10px;flex:1}.title-input{height:36px;max-width:360px;background:#f7f8fa;border:1px solid #dfe1e6;border-radius:4px;padding:0 11px;flex:1}.priority{display:flex;align-items:center;gap:4px}.priority button{border:1px solid var(--line);background:#fff;color:#646a73;padding:6px 12px}.priority button:first-of-type{border-radius:4px 0 0 4px}.priority button:last-of-type{border-radius:0 4px 4px 0}.priority button.active{border-color:#8fb3ff;color:var(--blue);background:#f4f7ff}
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:14px;margin-top:14px}.main-card,.side-card{background:#fff;border:1px solid #eceef2;border-radius:8px}.main-card{padding:24px 34px 30px}.page-title{text-align:center;font-size:21px;margin:0 0 24px}.scenario-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:25px}.scenario{position:relative;border:1px solid var(--line);border-radius:8px;background:#fff;text-align:left;padding:15px 16px 14px;min-height:82px;color:var(--ink)}.scenario:hover{border-color:#a8c0ff}.scenario.active{border:2px solid var(--blue);padding:14px 15px 13px;background:var(--blue-weak)}.scenario .icon{float:left;width:38px;height:38px;margin-right:11px;border-radius:9px;display:grid;place-items:center;background:#f2f3f5;color:#596273;font-size:19px}.scenario.active .icon{color:var(--blue);background:#fff}.scenario b{display:block;font-size:15px;margin-top:1px}.scenario small{color:#8f959e}.scenario .check{display:none;position:absolute;right:0;bottom:0;background:var(--blue);color:#fff;border-radius:8px 0 6px 0;width:23px;height:20px;text-align:center}.scenario.active .check{display:block}
+    .section{margin-top:26px}.section-title{font-size:16px;font-weight:700;border-left:3px solid var(--blue);padding-left:9px;margin-bottom:17px;display:flex;align-items:center}.section-title .section-note{margin-left:10px;font-size:12px;color:#8f959e;font-weight:400}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 26px}.field.full{grid-column:1/-1}.field label{display:block;color:#4e535a;margin-bottom:7px}.req:before{content:"*";color:#f54a45;margin-right:4px}.control{width:100%;height:38px;border:1px solid #d7d9de;border-radius:4px;background:#fff;padding:0 11px;outline:none}.control:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(51,112,255,.1)}.control[readonly],.control:disabled{background:#f5f6f7;color:#7a8089}.radio-row{height:38px;display:flex;align-items:center;gap:22px}.radio{display:flex;align-items:center;gap:7px;cursor:pointer}.radio input{accent-color:var(--blue);width:16px;height:16px}.hint{font-size:12px;color:#8f959e;margin-top:6px}.hint.info{color:#536b98}.hint.danger{color:var(--red)}textarea.control{height:82px;padding:9px 11px;resize:vertical}
+    .pool-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.pool-stat{border:1px solid var(--line);border-radius:7px;padding:13px 14px;display:flex;align-items:center;gap:11px;background:#fafbfc}.pool-stat .dot{width:9px;height:9px;border-radius:50%}.pool-stat strong{font-size:21px;margin-left:auto}.pool-stat.normal .dot{background:var(--green)}.pool-stat.deleted .dot{background:#a1a7b0}.pool-stat.adding .dot{background:var(--blue)}.pool-stat.deleting .dot{background:var(--orange)}.pool-stat.blocking{border-color:#ffc6c3;background:#fff6f5}.pool-alert{display:none;margin-top:10px;border:1px solid #ffc6c3;background:#fff4f3;color:#b82e27;border-radius:6px;padding:10px 12px}.pool-alert.show{display:block}
+    .asset-card{border:1px solid #dfe7f6;border-radius:8px;background:linear-gradient(100deg,#f8faff,#fff);overflow:hidden}.asset-head{padding:14px 16px;border-bottom:1px solid #e7ebf3;display:flex;align-items:center}.asset-head b{font-size:15px}.asset-tag{font-size:12px;color:var(--blue);background:#eaf1ff;border-radius:11px;padding:2px 8px;margin-left:9px}.asset-body{display:grid;grid-template-columns:repeat(3,1fr);gap:17px 24px;padding:17px 16px}.asset-item span{display:block;color:#8f959e;font-size:12px;margin-bottom:4px}.asset-item b{font-weight:500}.asset-form{padding:18px 16px}.mac-valid{color:var(--green)}.mac-invalid{color:var(--red)}
+    .side-card{position:sticky;top:72px;height:max-content;min-height:430px;padding:20px}.side-head{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eef0f3;padding-bottom:14px}.side-head b{font-size:16px}.flow-name{color:var(--blue);font-size:12px}.flow{padding:21px 4px}.flow-step{display:grid;grid-template-columns:28px 1fr;gap:11px;position:relative;padding-bottom:28px}.flow-step:not(:last-child):before{content:"";position:absolute;width:1px;background:#d8dce3;left:13px;top:29px;bottom:0}.node{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#eef3ff;color:var(--blue);border:1px solid #b8cbff;font-size:12px;font-weight:700}.flow-step:first-child .node{background:var(--blue);color:#fff}.flow-step:last-child{padding-bottom:0}.flow-step b{display:block;font-size:14px}.flow-step small{display:block;color:#8f959e;margin-top:3px}.rule-box{margin-top:18px;background:#f7f8fa;border-radius:6px;padding:12px;color:#646a73;font-size:12px}.rule-box b{display:block;color:#34383f;margin-bottom:5px}
+    .bottom{position:fixed;bottom:0;left:0;right:0;z-index:25;height:66px;background:rgba(255,255,255,.96);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:flex-end;padding:0 28px;gap:10px;backdrop-filter:blur(8px)}.bottom .summary{margin-right:auto;color:#646a73}.btn{height:38px;padding:0 20px;border-radius:4px;border:1px solid #d7d9de;background:#fff}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn.primary:disabled{background:#a9c2ff;border-color:#a9c2ff;cursor:not-allowed}.toast{position:fixed;top:75px;left:50%;transform:translate(-50%,-12px);background:#20242c;color:#fff;padding:11px 18px;border-radius:6px;opacity:0;pointer-events:none;transition:.2s;z-index:50;box-shadow:0 8px 24px rgba(0,0,0,.2)}.toast.show{opacity:1;transform:translate(-50%,0)}
+    .dialog-mask{display:none;position:fixed;inset:0;background:rgba(31,35,41,.42);z-index:60;align-items:center;justify-content:center}.dialog-mask.show{display:flex}.dialog{width:min(900px,92vw);background:#fff;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.22);overflow:hidden}.dialog-head{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center}.dialog-head b{font-size:17px}.close{margin-left:auto;border:0;background:transparent;font-size:22px;color:#8f959e}.dialog-body{padding:18px 22px}.asset-table{width:100%;border-collapse:collapse}.asset-table th,.asset-table td{padding:12px 10px;border-bottom:1px solid #eef0f3;text-align:left}.asset-table th{background:#f7f8fa;color:#646a73}.asset-table tr{cursor:pointer}.asset-table tbody tr:hover{background:#f4f7ff}.asset-table input{accent-color:var(--blue)}.dialog-foot{padding:14px 22px;display:flex;justify-content:flex-end;gap:10px;background:#fafbfc}
+    @media(max-width:1050px){.layout{grid-template-columns:1fr}.side-card{position:static}.asset-body{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:720px){.page{padding:0 9px}.initiator{align-items:flex-start;flex-wrap:wrap}.title-row{margin-left:0;order:3;width:100%}.priority{display:none}.main-card{padding:20px 16px}.scenario-tabs,.form-grid,.pool-strip{grid-template-columns:1fr}.asset-body{grid-template-columns:1fr}.page-title{text-align:left}.top-actions{display:none}}
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="brand">机器管理流程</div><div class="crumb">运营 · 业务流程</div><div class="top-actions"><span>事务中心</span><span>设置</span></div></header>
+  <main class="page">
+    <section class="initiator">
+      <div class="avatar">刘</div><div><strong id="initiatorName">刘芳（运营部）</strong><span class="light" id="actionText">发起购入流程</span></div>
+      <div class="title-row"><span>标题</span><input class="title-input" id="flowTitle" value="刘芳发起的新设备购入流程"></div>
+      <div class="priority"><span>优先级</span><button class="active" type="button">一般</button><button type="button">加急</button><button type="button">特急</button></div>
+    </section>
+
+    <div class="layout">
+      <section class="main-card">
+        <h1 class="page-title">机器管理审批单</h1>
+        <div class="scenario-tabs" id="scenarioTabs">
+          <button class="scenario active" type="button" data-scene="purchase"><span class="icon">＋</span><b>新设备购入</b><small>登记新购设备并纳入管理池</small><span class="check">✓</span></button>
+          <button class="scenario" type="button" data-scene="transfer"><span class="icon">⇄</span><b>老设备移交</b><small>在用设备变更实际使用方</small><span class="check">✓</span></button>
+          <button class="scenario" type="button" data-scene="scrap"><span class="icon">⌫</span><b>老设备报废</b><small>在用设备退出使用并报废</small><span class="check">✓</span></button>
+        </div>
+
+        <section class="section">
+          <div class="section-title">业务信息<span class="section-note">带 * 为必填项</span></div>
+          <div class="form-grid">
+            <div class="field"><label class="req" id="operatorLabel">购入人</label><input class="control" id="operator" value="刘芳（运营部）" readonly></div>
+            <div class="field" id="receiverField" style="display:none"><label class="req">接收人</label><select class="control" id="receiver"><option value="">请选择接收人</option><option>张晨</option><option>王磊</option><option>陈瑜</option></select><div class="hint">仅可选择资管部员工</div></div>
+            <div class="field"><label class="req">角色类型</label><div class="radio-row" id="roleRadios"><label class="radio"><input type="radio" name="role" value="内部" checked>内部</label><label class="radio"><input type="radio" name="role" value="外部">外部</label></div></div>
+            <div class="field"><label class="req">实际使用方</label><select class="control" id="userParty"><option>刘芳（运营部）</option><option>张晨（交易部）</option><option>王磊（投资部）</option></select><div class="hint" id="partyHint">内部角色请选择实际使用员工</div></div>
+            <div class="field"><label class="req">MAC 地址</label><input class="control" id="macAddress" value="A4-7B-9C-62-11-08" placeholder="请输入新设备 MAC 地址"><select class="control" id="macSelector" style="display:none"><option value="">请选择管理池中的在用 MAC</option></select><div class="hint" id="macHint">输入后自动校验管理池，已有 MAC 不允许重复登记</div></div>
+            <div class="field"><label class="req">MAC 类型</label><select class="control" id="macType"><option value="">请选择</option><option>交易机</option><option selected>办公机</option><option>交易服务器</option><option>托管服务器</option></select><div class="hint" id="macTypeHint"></div></div>
+            <div class="field" id="statusField" style="display:none"><label>状态</label><input class="control" id="status" value="" readonly><div class="hint" id="statusHint">由系统根据流程场景自动计算</div></div>
+            <div class="field"><label class="req">生效日期</label><input class="control" id="effectiveDate" type="date" value="2026-06-25"><div class="hint info" id="dateHint">对应管理池「开始日期」；区间规则为左开右闭，即 (开始日期, 结束日期]</div></div>
+            <div class="field full"><label>备注</label><textarea class="control" id="remark" placeholder="请输入本次购入、移交或报废的补充说明"></textarea></div>
+          </div>
+        </section>
+
+        <section class="section" id="poolSection" style="display:none">
+          <div class="section-title">报备池状态<span class="section-note">发起时实时校验</span></div>
+          <div class="pool-strip">
+            <div class="pool-stat normal" id="normalStat"><span class="dot"></span><span>正常</span><strong id="normalCount">0</strong></div>
+            <div class="pool-stat deleted"><span class="dot"></span><span>已删除</span><strong>2</strong></div>
+            <div class="pool-stat adding" id="addingStat"><span class="dot"></span><span>新增流程中</span><strong id="addingCount">0</strong></div>
+            <div class="pool-stat deleting"><span class="dot"></span><span>删除流程中</span><strong>0</strong></div>
+          </div>
+          <div class="pool-alert" id="poolAlert">报备池有正常或新增流程中数据，请先发起删除流程（删除流程发起后即可继续，无需等待审批完成）。</div>
+          <label class="radio" style="margin-top:12px;color:#646a73"><input type="checkbox" id="simulatePool">演示：模拟报备池存在 1 条正常数据</label>
+        </section>
+
+        <section class="section">
+          <div class="section-title">资产卡片信息</div>
+          <div class="asset-card" id="purchaseAssetForm">
+            <div class="asset-head"><b>新购资产信息</b><span class="asset-tag">手工填写</span></div>
+            <div class="asset-form"><div class="form-grid">
+              <div class="field"><label class="req">资产编码</label><input class="control purchase-asset" id="newAssetCode" value="ZC-2026-00128"></div>
+              <div class="field"><label class="req">财务编码</label><input class="control purchase-asset" id="newFinanceCode" value="CW-IT-260117"></div>
+              <div class="field"><label class="req">资产类别</label><input class="control purchase-asset" id="newAssetCategory" value="电子设备 / 计算机"></div>
+              <div class="field"><label class="req">规格型号</label><input class="control purchase-asset" id="newAssetModel" value="ThinkStation P360 / i7 / 32G"></div>
+              <div class="field"><label class="req">资产名称</label><input class="control purchase-asset" id="newAssetName" value="联想 ThinkStation P360 工作站"></div>
+              <div class="field"><label class="req">购置日期</label><input class="control purchase-asset" id="newPurchaseDate" type="date" value="2026-06-18"></div>
+            </div></div>
+          </div>
+          <div class="asset-card" id="existingAssetCard" style="display:none">
+            <div class="asset-head"><b id="assetNameHead">请先选择在用 MAC</b><span class="asset-tag" id="assetTag">由 MAC 自动带出</span></div>
+            <div class="asset-body" id="assetBody">
+              <div class="asset-item"><span>资产编码</span><b id="assetCode">ZC-2026-00128</b></div><div class="asset-item"><span>财务编码</span><b id="financeCode">CW-IT-260117</b></div><div class="asset-item"><span>资产类别</span><b id="assetCategory">电子设备 / 计算机</b></div><div class="asset-item"><span>规格型号</span><b id="assetModel">ThinkStation P360 / i7 / 32G</b></div><div class="asset-item"><span>资产名称</span><b id="assetName">联想 ThinkStation P360 工作站</b></div><div class="asset-item"><span>购置日期</span><b id="purchaseDate">2026-06-18</b></div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <aside class="side-card">
+        <div class="side-head"><b>流程记录</b><span class="flow-name">审批流程图</span></div>
+        <div class="flow" id="flowSteps"></div>
+        <div class="rule-box" id="ruleBox"><b>发起规则</b><span id="ruleText">新购设备的 MAC 不得与管理池已有记录重复。</span></div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="bottom"><div class="summary" id="bottomSummary">新设备购入 · 共 2 个审批节点</div><button class="btn" type="button" id="draftBtn">保存草稿</button><button class="btn primary" type="button" id="submitBtn">发起流程</button></footer>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const sceneData={
+      purchase:{name:'新设备购入',operator:'购入人',action:'发起购入流程',status:'在用',date:'对应管理池「开始日期」；区间规则为左开右闭，即 (开始日期, 结束日期]',steps:[['发起','购入人发起','刘芳（运营部）'],['审批','资管 IT 岗审批','IT 资产管理员']]},
+      transfer:{name:'老设备移交',operator:'移交人',action:'发起移交流程',status:'在用',date:'移交生效日同时对应：原记录「结束日期」、新记录「开始日期」；区间规则为左开右闭，即 (开始日期, 结束日期]',steps:[['发起','移交人发起','刘芳（运营部）'],['审批','接收人审批','选择接收人后自动带入'],['审批','资管 IT 岗审批','IT 资产管理员']]},
+      scrap:{name:'老设备报废',operator:'报废人',action:'发起报废流程',status:'报废',date:'对应管理池「结束日期」；区间规则为左开右闭，即 (开始日期, 结束日期]',steps:[['发起','报废人发起','刘芳（运营部）'],['审批','资管 IT 岗审批','IT 资产管理员']]}
+    };
+    const assets=[
+      {mac:'8C-47-BE-21-9A-06',macType:'办公机',code:'ZC-2026-00128',finance:'CW-IT-260117',category:'电子设备 / 计算机',model:'ThinkStation P360 / i7 / 32G',name:'联想 ThinkStation P360 工作站',date:'2026-06-18',status:'在用'},
+      {mac:'18-F2-2C-A4-E6-D4',macType:'交易机',code:'ZC-2024-00456',finance:'CW-IT-240392',category:'电子设备 / 计算机',model:'Dell OptiPlex 7010 / i5 / 16G',name:'戴尔办公台式机',date:'2024-03-12',status:'在用'},
+      {mac:'D0-8E-79-0E-73-B9',macType:'交易服务器',code:'ZC-2023-00209',finance:'CW-SV-230188',category:'电子设备 / 服务器',model:'PowerEdge R750 / 64G',name:'交易应用服务器',date:'2023-08-21',status:'在用'}
+    ];
+    let scene='purchase',selectedAsset=-1,macDuplicated=false,macInvalid=false,purchaseMacType='办公机';
+    const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+    function toast(text){const el=$('#toast');el.textContent=text;el.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>el.classList.remove('show'),2400)}
+    function renderFlow(){const d=sceneData[scene];$('#flowSteps').innerHTML=d.steps.map((x,i)=>`<div class="flow-step"><span class="node">${i+1}</span><div><b>${x[1]}</b><small>${x[2]}</small></div></div>`).join('');$('#bottomSummary').textContent=`${d.name} · 共 ${d.steps.length} 个审批节点`}
+    function setScene(next){
+      if(scene==='purchase'&&next!=='purchase')purchaseMacType=$('#macType').value;
+      scene=next;const d=sceneData[scene],isPurchase=scene==='purchase';
+      $$('.scenario').forEach(x=>x.classList.toggle('active',x.dataset.scene===scene));$('#operatorLabel').textContent=d.operator;$('#actionText').textContent=d.action;$('#dateHint').textContent=d.date;$('#receiverField').style.display=scene==='transfer'?'block':'none';$('#flowTitle').value=`刘芳发起的${d.name}流程`;
+      $('#macAddress').style.display=isPurchase?'block':'none';$('#macSelector').style.display=isPurchase?'none':'block';$('#macType').disabled=!isPurchase;$('#macTypeHint').textContent=isPurchase?'':'选择 MAC 后由系统自动带出';$('#statusField').style.display=isPurchase?'none':'block';$('#poolSection').style.display=isPurchase?'none':'block';$('#purchaseAssetForm').style.display=isPurchase?'block':'none';$('#existingAssetCard').style.display=isPurchase?'none':'block';
+      $('#ruleText').textContent=isPurchase?'新购设备的 MAC 不得与管理池已有记录重复。':'报备池存在“正常”或“新增流程中”数据时，系统将拦截发起，并引导先发起删除流程。';
+      if(isPurchase){$('#macType').value=purchaseMacType;$('#macHint').textContent='输入后自动校验管理池，已有 MAC 不允许重复登记';validateNewMac()}else{$('#macHint').textContent='仅可选择管理池中状态为「在用」的 MAC';$('#macSelector').value='';clearExistingAsset();$('#status').value='';$('#statusHint').textContent=scene==='transfer'?'带出所选设备当前状态；流程完成后生成转移前「已删除」、转移后「在用」两条记录':'带出所选设备当前状态；流程完成后自动更新为「报废」'}
+      $('#simulatePool').checked=false;updatePoolBlock(false);renderFlow()
+    }
+    $('#scenarioTabs').addEventListener('click',e=>{const btn=e.target.closest('.scenario');if(btn)setScene(btn.dataset.scene)});
+    $('#roleRadios').addEventListener('change',e=>{const external=e.target.value==='外部';$('#userParty').innerHTML=external?'<option>资管投顾公司</option>':'<option>刘芳（运营部）</option><option>张晨（交易部）</option><option>王磊（投资部）</option>';$('#partyHint').textContent=external?'外部角色实际使用方固定为资管投顾公司':'内部角色请选择实际使用员工'});
+    $$('.priority button').forEach(btn=>btn.addEventListener('click',()=>{$$('.priority button').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}));
+    $('#receiver').addEventListener('change',()=>{if(scene==='transfer')renderFlow();const small=$$('#flowSteps small')[1];if(small&&$('#receiver').value)small.textContent=$('#receiver').value});
+    function updatePoolBlock(blocked){$('#normalCount').textContent=blocked?'1':'0';$('#normalStat').classList.toggle('blocking',blocked);$('#poolAlert').classList.toggle('show',blocked);$('#submitBtn').disabled=scene==='purchase'?(macDuplicated||macInvalid):blocked}
+    $('#simulatePool').addEventListener('change',e=>updatePoolBlock(e.target.checked));
+    function normalizeMac(value){return value.trim().toUpperCase().replace(/[^0-9A-F]/g,'').match(/.{1,2}/g)?.join('-')||''}
+    function validateNewMac(){if(scene!=='purchase')return true;const raw=$('#macAddress').value.trim().toUpperCase().replace(/[^0-9A-F]/g,''),value=normalizeMac(raw);if(value)$('#macAddress').value=value;macDuplicated=assets.some(a=>a.mac===value);macInvalid=raw.length!==12;const hint=$('#macHint');hint.className='hint '+(macDuplicated||macInvalid?'mac-invalid':'mac-valid');hint.textContent=macDuplicated?'该 MAC 已存在于管理池，不允许重复登记':macInvalid?'请输入 12 位有效 MAC 地址':'校验通过：管理池中不存在该 MAC';$('#submitBtn').disabled=macDuplicated||macInvalid;return !macDuplicated&&!macInvalid}
+    $('#macAddress').addEventListener('blur',validateNewMac);
+    function fillAsset(i){selectedAsset=i;const a=assets[i];$('#assetCode').textContent=a.code;$('#financeCode').textContent=a.finance;$('#assetCategory').textContent=a.category;$('#assetModel').textContent=a.model;$('#assetName').textContent=a.name;$('#assetNameHead').textContent=a.name;$('#purchaseDate').textContent=a.date;$('#macType').value=a.macType;$('#status').value=a.status}
+    function clearExistingAsset(){selectedAsset=-1;$('#assetNameHead').textContent='请先选择在用 MAC';['assetCode','financeCode','assetCategory','assetModel','assetName','purchaseDate'].forEach(id=>$('#'+id).textContent='—');$('#macType').value='';$('#status').value=''}
+    $('#macSelector').innerHTML+=assets.map((a,i)=>`<option value="${i}">${a.mac} · ${a.name}</option>`).join('');
+    $('#macSelector').addEventListener('change',e=>{if(e.target.value==='')return clearExistingAsset();fillAsset(Number(e.target.value));toast('已带出 MAC 类型、状态和资产信息')});
+    $('#draftBtn').addEventListener('click',()=>toast('草稿已保存（原型演示）'));
+    $('#submitBtn').addEventListener('click',()=>{if(scene!=='purchase'&&(Number($('#normalCount').textContent)>0||Number($('#addingCount').textContent)>0)){toast('报备池有数据，请先发起删除流程');return}if(scene==='purchase'&&!validateNewMac()){toast('管理池已有该 MAC，不允许重复登记');return}if(scene==='transfer'&&!$('#receiver').value){toast('请选择接收人');$('#receiver').focus();return}if(scene!=='purchase'&&$('#macSelector').value===''){toast('请先选择管理池中的在用 MAC');$('#macSelector').focus();return}if(!$('#macType').value||!$('#effectiveDate').value||(scene==='purchase'&&!$('#macAddress').value)){toast('请补充完整必填信息');return}if(scene==='purchase'&&$$('.purchase-asset').some(x=>!x.value)){toast('请完整填写资产卡片信息');return}toast(`${sceneData[scene].name}流程已发起（原型演示）`)});
+    setScene('purchase');
+  </script>
+</body>
+</html>
+
+
