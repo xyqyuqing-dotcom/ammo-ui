@@ -183,6 +183,10 @@
             cursor: default;
         }
 
+        .file-card-actions { display: flex; align-items: center; gap: 10px; }
+        .fetch-files-btn { color: #1890ff; border-color: #91caff; }
+        .fetch-files-btn:disabled { color: #999; border-color: #d9d9d9; cursor: wait; }
+
         /* 批量操作栏 */
         .batch-bar {
             background: #fff;
@@ -1316,6 +1320,8 @@
         .stamp-modal {
             width: 800px;
             max-width: 90%;
+            display: flex;
+            flex-direction: column;
         }
 
         .pdf-preview-container {
@@ -1324,6 +1330,14 @@
             min-height: 500px;
             max-height: 600px;
             overflow-y: auto;
+        }
+
+        @media (max-height: 800px) {
+            .stamp-modal .pdf-preview-container {
+                min-height: 0;
+                height: calc(90vh - 150px);
+                max-height: calc(90vh - 150px);
+            }
         }
 
         .pdf-content {
@@ -1523,7 +1537,10 @@
         <div class="file-card">
             <div class="file-card-header">
                 <span class="info-title">订单签约文件</span>
-                <button class="archive-btn" id="archiveBtn" onclick="doArchive()">📦 归档</button>
+                <div class="file-card-actions">
+                    <button class="archive-btn fetch-files-btn" id="fetchOrderFilesBtn" onclick="fetchOrderSigningFiles()">↻ 获取文件</button>
+                    <button class="archive-btn" id="archiveBtn" onclick="doArchive()">📦 归档</button>
+                </div>
             </div>
             <div class="file-card-body">
                 <!-- 子标签页 -->
@@ -1633,7 +1650,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn" onclick="closeStampViewModal()">取消</button>
+                <button class="btn" onclick="closeStampViewModal()">关闭</button>
+                <button class="btn btn-primary" id="previewDownloadBtn" onclick="downloadCurrentPreview()" style="display:none;">⬇ 下载</button>
                 <button class="btn btn-primary" id="stampBtn" onclick="applyStamp()">📝 盖章</button>
             </div>
         </div>
@@ -1661,7 +1679,7 @@
     </div>
 
     <script>
-        // 模拟订单数据（与列表页 tuotuodi.html 一致）
+        // 模拟订单数据（与列表页5-自动用印.html一致）
         const ordersData = {
             '1': {
                 id: 1,
@@ -2458,6 +2476,18 @@
             renderAllFileLists();
         }
 
+        function fetchOrderSigningFiles() {
+            const button = document.getElementById('fetchOrderFilesBtn');
+            button.disabled = true;
+            button.textContent = '获取中...';
+            setTimeout(() => {
+                loadFiles();
+                button.disabled = false;
+                button.textContent = '↻ 获取文件';
+                showAlert('success', '文件获取完成', ['已从妥妥递获取最新订单签约文件']);
+            }, 650);
+        }
+
         // 渲染所有文件列表
         function renderAllFileLists() {
             renderFileList('suitability');
@@ -2529,10 +2559,12 @@
         // 获取文件操作按钮
         function getFileActionButtons(file) {
             if (file.type === 'suitability') {
-                return `<button class="btn btn-sm" onclick="viewFile('${file.id}')">查看</button>`;
+                return `<button class="btn btn-sm" onclick="viewFile('${file.id}')">预览</button>
+                        <button class="btn btn-sm" onclick="downloadFile('${file.id}')">下载</button>`;
             }
-            // 订单签约文件：所有文件可查看，待签署的额外有用印按钮
-            let buttons = `<button class="btn btn-sm" onclick="viewFile('${file.id}')">查看</button>`;
+            // 订单签约文件：所有文件可预览、下载，待签署的额外有用印按钮
+            let buttons = `<button class="btn btn-sm" onclick="viewFile('${file.id}')">预览</button>
+                           <button class="btn btn-sm" onclick="downloadFile('${file.id}')">下载</button>`;
             if (file.status === 'pending') {
                 buttons += ` <button class="btn btn-sm btn-primary" onclick="openStampModal('${file.id}')">用印</button>`;
             }
@@ -2622,14 +2654,8 @@
             });
         }
 
-        // 查看适当性文件
-        function viewFile(fileId) {
-            const file = allFiles.find(f => f.id === fileId);
-            if (!file) return;
-            alert(`查看文件：${file.name}`);
-        }
-
         let currentStampFileId = null;
+        let currentPreviewFileId = null;
 
         // 打开用印弹窗
         function openStampModal(fileId) {
@@ -2637,8 +2663,12 @@
             if (!file) return;
 
             currentStampFileId = fileId;
+            currentPreviewFileId = fileId;
             document.getElementById('stampFileName').textContent = file.name;
             document.getElementById('stampViewTitle').textContent = `文件预览 - ${file.name}`;
+            document.getElementById('stampArea').style.display = '';
+            document.getElementById('stampBtn').style.display = '';
+            document.getElementById('previewDownloadBtn').style.display = 'none';
 
             // 重置盖章状态
             const stampPlaceholder = document.getElementById('stampPlaceholder');
@@ -2653,6 +2683,7 @@
         function closeStampViewModal() {
             document.getElementById('stampViewModal').classList.remove('show');
             currentStampFileId = null;
+            currentPreviewFileId = null;
         }
 
         // 执行盖章
@@ -2802,8 +2833,25 @@
         function viewFile(fileId) {
             const file = allFiles.find(f => f.id === fileId);
             if (file) {
-                alert(`正在预览：${file.name}\n\n（这是模拟预览，实际项目中会打开文件）`);
+                currentPreviewFileId = fileId;
+                currentStampFileId = null;
+                document.getElementById('stampViewTitle').textContent = `文件预览 - ${file.name}`;
+                document.getElementById('stampFileName').textContent = file.name;
+                document.getElementById('stampArea').style.display = 'none';
+                document.getElementById('stampBtn').style.display = 'none';
+                document.getElementById('previewDownloadBtn').style.display = '';
+                document.getElementById('stampViewModal').classList.add('show');
             }
+        }
+
+        function downloadFile(fileId) {
+            const file = allFiles.find(f => f.id === fileId);
+            if (!file) return;
+            showAlert('success', '文件下载', [`已开始下载 ${file.name}（原型演示）`]);
+        }
+
+        function downloadCurrentPreview() {
+            if (currentPreviewFileId) downloadFile(currentPreviewFileId);
         }
 
         // 开始批量用印流程

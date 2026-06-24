@@ -91,6 +91,16 @@
             font-weight: 500;
         }
 
+        .menu-item.is-disabled {
+            color: #bfbfbf;
+            cursor: not-allowed;
+        }
+
+        .menu-item.is-disabled:hover {
+            background: transparent;
+            color: #bfbfbf;
+        }
+
         .menu-icon {
             font-size: 16px;
         }
@@ -114,12 +124,47 @@
             border-bottom: 1px solid #e8e8e8;
         }
 
+        .top-query {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex: 1;
+            min-width: 0;
+        }
+
         .search-bar {
             display: flex;
             align-items: center;
             gap: 12px;
             flex: 1;
             max-width: 500px;
+        }
+
+        .trade-date-filter {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .trade-date-filter label { font-weight: 500; color: #595959; }
+
+        .trade-date-input {
+            height: 34px;
+            padding: 0 10px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            background: #fff;
+            color: #333;
+            font: inherit;
+        }
+
+        .trade-date-input:focus {
+            outline: none;
+            border-color: #1890ff;
+            box-shadow: 0 0 0 2px rgba(24,144,255,.1);
         }
 
         .search-input {
@@ -165,6 +210,54 @@
             padding: 24px;
         }
 
+        .page-heading {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 16px;
+        }
+
+        .page-eyebrow {
+            color: #1890ff;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+        }
+
+        .page-title {
+            color: #1f1f1f;
+            font-size: 24px;
+            line-height: 1.35;
+            font-weight: 650;
+        }
+
+        .page-subtitle {
+            color: #8c8c8c;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .summary-list {
+            display: flex;
+            gap: 10px;
+        }
+
+        .summary-item {
+            min-width: 96px;
+            padding: 9px 12px;
+            background: #fff;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .summary-label { color: #8c8c8c; font-size: 12px; }
+        .summary-value { color: #262626; font-size: 20px; font-weight: 650; line-height: 1.25; }
+        .summary-item.warning .summary-value { color: #fa8c16; }
+        .summary-item.danger .summary-value { color: #f5222d; }
+
         /* 筛选栏 */
         .filter-bar {
             background: #fff;
@@ -188,6 +281,27 @@
             font-size: 14px;
             color: #666;
             transition: all 0.2s;
+            border: 0;
+            background: transparent;
+        }
+
+        .tab-count {
+            display: inline-flex;
+            min-width: 20px;
+            height: 20px;
+            margin-left: 4px;
+            padding: 0 6px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: #f0f0f0;
+            color: #8c8c8c;
+            font-size: 11px;
+        }
+
+        .filter-tab.active .tab-count {
+            background: rgba(255,255,255,0.22);
+            color: #fff;
         }
 
         .filter-tab:hover {
@@ -203,7 +317,25 @@
             display: flex;
             gap: 12px;
             align-items: center;
+            position: relative;
         }
+
+        .column-popover {
+            position: absolute;
+            right: 84px;
+            top: calc(100% + 8px);
+            width: 220px;
+            padding: 12px;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            z-index: 80;
+        }
+
+        .column-popover-title { font-weight: 600; margin-bottom: 8px; }
+        .column-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; }
+        .column-option { display: flex; align-items: center; gap: 6px; color: #595959; cursor: pointer; }
 
         .filter-btn {
             padding: 6px 16px;
@@ -338,6 +470,8 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
+
+        .batch-btn.is-disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* 发送企微邀请弹窗 */
         .wechat-modal {
@@ -562,9 +696,11 @@
         /* 表格 */
         .table-container {
             background: #fff;
-            border-radius: 4px;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
             overflow-x: auto;
             position: relative;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
 
         table {
@@ -615,6 +751,47 @@
             background: #fafafa;
             color: #666;
             font-weight: 500;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .empty-state td {
+            padding: 56px 20px;
+            color: #8c8c8c;
+            text-align: center;
+        }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            top: 24px;
+            transform: translate(-50%, -12px);
+            padding: 10px 16px;
+            border-radius: 6px;
+            background: rgba(38,38,38,0.94);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            opacity: 0;
+            pointer-events: none;
+            transition: all .2s ease;
+            z-index: 2000;
+        }
+
+        .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+        @media (max-width: 1200px) {
+            .content { padding: 16px; }
+            .page-heading { align-items: flex-start; flex-direction: column; gap: 12px; }
+            .summary-list { width: 100%; }
+            .summary-item { flex: 1; }
+            .filter-bar { align-items: flex-start; gap: 12px; }
+            .filter-tabs { flex-wrap: wrap; }
+            .batch-bar { align-items: flex-start; gap: 12px; }
+            .batch-actions { flex-wrap: wrap; justify-content: flex-end; }
+            .top-query { gap: 12px; }
+            .search-bar { max-width: 390px; }
+            .trade-date-filter label { display: none; }
         }
 
         tr:hover td {
@@ -743,6 +920,64 @@
         }
         .match-candidate-item.selected input[type="radio"] {
             accent-color: #1890ff;
+        }
+
+        .modal.match-modal { width: 1240px; max-width: calc(100vw - 48px); }
+        .match-modal .modal-body { padding: 18px 24px; overflow-y: hidden; }
+        .match-section-label { margin-bottom: 8px; color: #595959; font-size: 13px; font-weight: 600; }
+        .match-current-card {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px 24px;
+            padding: 16px 18px;
+            margin-bottom: 18px;
+            border: 1px solid #d6e4ff;
+            border-radius: 8px;
+            background: #f5f9ff;
+        }
+        .match-info-label { display: block; margin-bottom: 3px; color: #8c8c8c; font-size: 12px; }
+        .match-info-value { overflow: hidden; color: #262626; font-size: 14px; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+        .match-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .match-toolbar .search-input { flex: 1; min-width: 260px; }
+        .match-show-all { display: flex; align-items: center; gap: 6px; color: #595959; font-size: 13px; cursor: pointer; white-space: nowrap; }
+        .match-fetch-btn { padding: 8px 14px; white-space: nowrap; }
+        .match-fetch-meta { margin: -4px 0 10px; color: #999; font-size: 12px; text-align: right; }
+        .match-table-wrap { overflow-x: auto; border: 1px solid #e8e8e8; border-radius: 8px; }
+        .match-table-inner { min-width: 1160px; }
+        .match-table-header,
+        .match-candidate-item {
+            display: grid;
+            grid-template-columns: 34px 155px 105px 95px minmax(140px, 1.3fr) 105px 72px 78px 135px 132px;
+            align-items: center;
+            gap: 8px;
+        }
+        .match-table-header {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e8e8e8;
+            background: #fafafa;
+            color: #595959;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .match-candidate-list { max-height: 300px; overflow-x: hidden; overflow-y: auto; }
+        .match-candidate-item {
+            padding: 14px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background .15s;
+        }
+        .match-candidate-item:last-child { border-bottom: 0; }
+        .match-candidate-item:hover { background: #fafafa; }
+        .match-candidate-item.selected { background: #e6f7ff !important; }
+        .match-cell-main { color: #262626; font-size: 13px; font-weight: 500; }
+        .match-cell-sub { margin-top: 3px; color: #8c8c8c; font-size: 12px; }
+        .match-status { display: inline-flex; margin-top: 4px; padding: 1px 7px; border-radius: 10px; background: #e6f7ff; color: #1890ff; font-size: 11px; }
+        .match-status.void { background: #f5f5f5; color: #999; text-decoration: line-through; }
+        .match-mismatch { display: inline-block; margin-top: 4px; color: #fa8c16; font-size: 11px; }
+
+        @media (max-height: 800px) {
+            .match-candidate-list { max-height: 240px; }
+            .match-current-card { gap: 10px 20px; padding: 12px 16px; margin-bottom: 12px; }
         }
 
         /* 金证状态单元格 */
@@ -1102,7 +1337,7 @@
             <div class="menu-item"><span class="menu-icon">&#128101;</span>投资主体</div>
             <div class="menu-item"><span class="menu-icon">&#128193;</span>准入管理</div>
             <div class="menu-item active"><span class="menu-icon">&#128220;</span>自动用印</div>
-            <div class="menu-item" onclick="alert('机构材料管理页面暂未收录')"><span class="menu-icon">&#128229;</span>机构材料管理</div>
+            <div class="menu-item is-disabled" onclick="showToast('机构材料管理页面暂未接入')" title="页面暂未接入"><span class="menu-icon">&#128229;</span>机构材料管理</div>
             <div class="menu-item" onclick="location.href='private-fund-manager-config.html'"><span class="menu-icon">&#128172;</span>私募群管理人关系配置</div>
             <div class="menu-item" onclick="location.href='email-config.html'"><span class="menu-icon">&#128231;</span>邮箱配置管理</div>
             <div class="menu-item"><span class="menu-icon">&#9881;&#65039;</span>系统设置</div>
@@ -1114,9 +1349,18 @@
     <div class="main-content">
         <!-- 顶部栏 -->
         <div class="top-bar">
-            <div class="search-bar">
-                <span style="color: #999;">🔍</span>
-                <input type="text" class="search-input" placeholder="搜索母基金/子基金/投资经理...">
+            <div class="top-query">
+                <div class="search-bar">
+                    <span style="color: #999;">🔍</span>
+                    <input type="search" id="globalSearch" class="search-input" placeholder="搜索母基金/子基金/投资经理..." aria-label="搜索订单">
+                </div>
+                <div class="trade-date-filter">
+                    <label for="tradeDateStart">拟交易日期</label>
+                    <input type="date" id="tradeDateStart" class="trade-date-input" aria-label="拟交易开始日期">
+                    <span>至</span>
+                    <input type="date" id="tradeDateEnd" class="trade-date-input" aria-label="拟交易结束日期">
+                    <button class="top-bar-btn" id="clearTradeDate" onclick="clearTradeDateFilter()" title="清空日期" aria-label="清空拟交易日期" style="display:none;">×</button>
+                </div>
             </div>
             <div class="top-bar-actions">
                 <button class="top-bar-btn">🔔</button>
@@ -1131,17 +1375,20 @@
             <!-- 筛选栏 -->
             <div class="filter-bar">
                 <div class="filter-tabs">
-                    <div class="filter-tab">全部</div>
-                    <div class="filter-tab active">订单执行中</div>
-                    <div class="filter-tab">未关联</div>
-                    <div class="filter-tab">已归档</div>
-                    <div class="filter-tab">订单异常</div>
-                    <span style="color: #666;">📅</span>
+                    <button class="filter-tab" data-filter="all" onclick="setOrderFilter('all', this)">全部 <span class="tab-count" data-count="all">0</span></button>
+                    <button class="filter-tab active" data-filter="running" onclick="setOrderFilter('running', this)">订单执行中 <span class="tab-count" data-count="running">0</span></button>
+                    <button class="filter-tab" data-filter="unmatched" onclick="setOrderFilter('unmatched', this)">未关联 <span class="tab-count" data-count="unmatched">0</span></button>
+                    <button class="filter-tab" data-filter="archived" onclick="setOrderFilter('archived', this)">已归档 <span class="tab-count" data-count="archived">0</span></button>
+                    <button class="filter-tab" data-filter="abnormal" onclick="setOrderFilter('abnormal', this)">订单异常 <span class="tab-count" data-count="abnormal">0</span></button>
                 </div>
                 <div class="filter-actions">
-                    <button class="filter-btn">列配置  ⋮⋮⋮</button>
-                    <button class="filter-btn">🔄</button>
-                    <button class="filter-btn">⬇️</button>
+                    <button class="filter-btn" onclick="toggleColumnPopover(event)" aria-expanded="false">列配置</button>
+                    <button class="filter-btn" onclick="refreshOrders()" title="刷新列表" aria-label="刷新列表">↻</button>
+                    <button class="filter-btn" onclick="exportOrders()" title="导出当前结果" aria-label="导出当前结果">↓</button>
+                    <div id="columnPopover" class="column-popover hidden" onclick="event.stopPropagation()">
+                        <div class="column-popover-title">显示字段</div>
+                        <div class="column-options" id="columnOptions"></div>
+                    </div>
                 </div>
             </div>
 
@@ -1159,12 +1406,12 @@
                         <span>📝</span>
                         <span>批量用印</span>
                     </button>
-                    <button class="batch-btn primary" onclick="openBatchEditModal()" style="background: #722ed1; border-color: #722ed1;">
+                    <button id="batchEditBtn" class="batch-btn primary" onclick="openBatchEditModal()" style="background: #722ed1; border-color: #722ed1;" disabled>
                         <span>⚙️</span>
                         <span>批量操作</span>
                     </button>
-                    <div class="batch-btn wechat wechat-dropdown-wrap">
-                        <button class="wechat-dropdown-btn" onclick="toggleWechatDropdown(event)">
+                    <div id="wechatBatchWrap" class="batch-btn wechat wechat-dropdown-wrap is-disabled">
+                        <button id="wechatBatchBtn" class="wechat-dropdown-btn" onclick="toggleWechatDropdown(event)" disabled>
                             <span>💬</span>
                             <span>发送企微消息</span>
                             <span style="margin-left:4px;font-size:10px;">▾</span>
@@ -1209,6 +1456,8 @@
             </div>
         </div>
     </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <!-- 批量用印弹窗 -->
     <div id="batchStampModal" class="modal-overlay hidden">
@@ -1368,7 +1617,6 @@
                         <option value="交易中">交易中</option>
                         <option value="交易已完成印">交易已完成印</option>
                         <option value="交易要素确认中">交易要素确认中</option>
-                        <option value="待交易">待交易</option>
                     </select>
                 </div>
 
@@ -1403,7 +1651,7 @@
 
     <!-- 匹配妥妥递订单弹窗 -->
     <div id="matchModal" class="modal-overlay hidden">
-        <div class="modal" style="width: 720px;">
+        <div class="modal match-modal">
             <div class="modal-header">
                 <div style="display:flex;align-items:center;gap:8px;">
                     <span style="font-size:12px;color:#999;">手动匹配</span>
@@ -1412,22 +1660,38 @@
                 <button class="modal-close" onclick="closeMatchModal()">×</button>
             </div>
             <div class="modal-body">
-                <p style="font-size:13px;color:#999;margin-bottom:16px;">从符合条件的候选订单中选择一条进行绑定</p>
+                <div class="match-section-label">当前投资计划</div>
+                <div id="matchCurrentOrderInfo" class="match-current-card"></div>
 
-                <!-- 当前订单信息 -->
-                <div id="matchCurrentOrderInfo" style="background:#fafafa;border:1px solid #e8e8e8;border-radius:6px;padding:14px 18px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:12px 32px;font-size:13px;">
-                </div>
-
-                <!-- 搜索框 -->
-                <div style="margin-bottom:12px;">
+                <div class="match-section-label">候选妥妥递订单</div>
+                <div class="match-toolbar">
                     <input type="text" id="matchSearchInput" class="search-input"
-                           placeholder="搜索交易编号、金额、开放日..."
-                           oninput="filterMatchCandidates()"
-                           style="width:100%;padding:10px 16px;">
+                           placeholder="搜索订单号、母基金、子基金管理人或基金名称"
+                           oninput="filterMatchCandidates()">
+                    <label class="match-show-all">
+                        <input type="checkbox" id="matchShowAll" onchange="toggleMatchShowAll(this.checked)">
+                        <span>显示全部订单</span>
+                    </label>
+                    <button class="btn match-fetch-btn" id="fetchTTDOrdersBtn" onclick="fetchTTDOrders()">↻ 获取妥妥递订单</button>
                 </div>
+                <div class="match-fetch-meta" id="matchFetchMeta">默认仅展示母基金、子基金管理人均相同且未作废的订单</div>
 
-                <!-- 候选列表 -->
-                <div id="matchCandidateList" style="max-height:320px;overflow-y:auto;border:1px solid #e8e8e8;border-radius:6px;">
+                <div class="match-table-wrap">
+                    <div class="match-table-inner">
+                        <div class="match-table-header">
+                            <span>选择</span>
+                            <span>订单号／状态</span>
+                            <span>金额／份额</span>
+                            <span>开放日</span>
+                            <span>基金</span>
+                            <span>母基金</span>
+                            <span>交易类型</span>
+                            <span>产品</span>
+                            <span>子基金管理人（私募）</span>
+                            <span>订单创建时间</span>
+                        </div>
+                        <div id="matchCandidateList" class="match-candidate-list"></div>
+                    </div>
                 </div>
 
                 <div style="margin-top:12px;font-size:13px;color:#999;">
@@ -1596,6 +1860,7 @@
                 motherFund: '国联FOF1号',
                 tradeDate: '2026-05-29',
                 childFund: '某某量化对冲A2号',
+                managerName: '诚奇投资',
                 tradeType: '追加',
                 progress: '交易已完成印',
                 amount: '1,500万',
@@ -1626,9 +1891,11 @@
                 motherFund: '国联FOF1号',
                 tradeDate: '2026-05-29',
                 childFund: '某某全天候A号',
+                managerName: '诚奇投资',
                 tradeType: '赎回',
                 progress: '交易已完成印',
                 amount: '500万',
+                tradeShares: '5,000,000.00份',
                 status: '适当性提交异常',
                 statusType: 'red',
                 platform: 'TTD',
@@ -1655,6 +1922,7 @@
                 motherFund: '国联FOF1号',
                 tradeDate: '2026-01-20',
                 childFund: '珠海宽德金刚钻16号',
+                managerName: '宽德投资',
                 tradeType: '申购',
                 progress: '交易要素确认中',
                 amount: '100.0万',
@@ -1685,6 +1953,7 @@
                 motherFund: '国联FOF1号',
                 tradeDate: '2026-06-01',
                 childFund: '上海幻方指数增强5号',
+                managerName: '幻方量化',
                 tradeType: '申购',
                 progress: '待交易',
                 amount: '200.0万',
@@ -1714,6 +1983,7 @@
                 motherFund: '国联FOF2号',
                 tradeDate: '2026-06-03',
                 childFund: '九坤投资多策略增强7号',
+                managerName: '九坤投资',
                 tradeType: '申购',
                 progress: '交易已完成印',
                 amount: '300万',
@@ -1740,6 +2010,7 @@
                 motherFund: '国联FOF2号',
                 tradeDate: '2026-06-04',
                 childFund: '明汯量化中性策略9号',
+                managerName: '明汯投资',
                 tradeType: '追加',
                 progress: '用印中',
                 amount: '800万',
@@ -1766,6 +2037,7 @@
                 motherFund: '国联FOF3号',
                 tradeDate: '2026-06-05',
                 childFund: '灵均中证500指增12号',
+                managerName: '灵均投资',
                 tradeType: '申购',
                 progress: '待交易',
                 amount: '120万',
@@ -1792,6 +2064,7 @@
                 motherFund: '国联FOF3号',
                 tradeDate: '2026-06-06',
                 childFund: '衍复中证1000增强A号',
+                managerName: '衍复投资',
                 tradeType: '申购',
                 progress: '交易要素确认中',
                 amount: '250万',
@@ -1818,6 +2091,7 @@
                 motherFund: '国联FOF1号',
                 tradeDate: '2026-06-07',
                 childFund: '诚奇灵活对冲6号',
+                managerName: '诚奇投资',
                 tradeType: '追加',
                 progress: '交易已完成印',
                 amount: '600万',
@@ -1844,6 +2118,7 @@
                 motherFund: '国联FOF2号',
                 tradeDate: '2026-06-08',
                 childFund: '宽德中证500指增3号',
+                managerName: '宽德投资',
                 tradeType: '申购',
                 progress: '用印中',
                 amount: '450万',
@@ -1866,6 +2141,16 @@
         // 当前选中的订单
         let currentSelectedOrders = [];
         let currentEditingOrderIndex = 0;
+        let currentOrderFilter = 'running';
+        let orderSearchKeyword = '';
+        let tradeDateStart = '';
+        let tradeDateEnd = '';
+        const hiddenColumns = new Set();
+        const configurableColumns = [
+            [3, '母基金'], [4, '拟交易日期'], [5, '子基金'], [6, '交易类型'],
+            [7, '完成情况'], [8, '计划金额'], [9, '妥妥递状态'], [10, '金证状态'],
+            [11, '消息状态'], [12, '划款截止']
+        ];
 
         // 默认文件列表
         function getDefaultFiles() {
@@ -1875,13 +2160,61 @@
             ];
         }
 
+        function isArchivedOrder(order) {
+            return order.progress.includes('交易已完成');
+        }
+
+        function matchesOrderFilter(order, filter = currentOrderFilter) {
+            if (filter === 'unmatched') return !order.matched;
+            if (filter === 'archived') return isArchivedOrder(order);
+            if (filter === 'abnormal') return order.statusType === 'red' || order.status.includes('异常');
+            if (filter === 'running') return !isArchivedOrder(order);
+            return true;
+        }
+
+        function getVisibleOrders() {
+            const keyword = orderSearchKeyword.toLowerCase();
+            return orders.filter(order => {
+                const searchable = [order.motherFund, order.managerName, order.childFund, order.tradeType, order.progress, order.status, order.amount, order.wechatGroup].join(' ').toLowerCase();
+                const dateMatched = (!tradeDateStart || order.tradeDate >= tradeDateStart) && (!tradeDateEnd || order.tradeDate <= tradeDateEnd);
+                return matchesOrderFilter(order) && dateMatched && (!keyword || searchable.includes(keyword));
+            });
+        }
+
+        function updateOrderOverview() {
+            const counts = {
+                all: orders.length,
+                running: orders.filter(o => matchesOrderFilter(o, 'running')).length,
+                unmatched: orders.filter(o => matchesOrderFilter(o, 'unmatched')).length,
+                archived: orders.filter(o => matchesOrderFilter(o, 'archived')).length,
+                abnormal: orders.filter(o => matchesOrderFilter(o, 'abnormal')).length
+            };
+            Object.entries(counts).forEach(([key, value]) => {
+                const el = document.querySelector(`[data-count="${key}"]`);
+                if (el) el.textContent = value;
+            });
+        }
+
+        function updateTradeDateFilter() {
+            tradeDateStart = document.getElementById('tradeDateStart').value;
+            tradeDateEnd = document.getElementById('tradeDateEnd').value;
+            document.getElementById('clearTradeDate').style.display = tradeDateStart || tradeDateEnd ? '' : 'none';
+            renderOrderTable();
+        }
+
+        function clearTradeDateFilter() {
+            document.getElementById('tradeDateStart').value = '';
+            document.getElementById('tradeDateEnd').value = '';
+            updateTradeDateFilter();
+        }
+
         // 渲染订单表格（按划款截止日倒序）
         function renderOrderTable() {
-            const sorted = [...orders].sort((a, b) => {
+            const sorted = [...getVisibleOrders()].sort((a, b) => {
                 return new Date(b.transferDeadline) - new Date(a.transferDeadline);
             });
             const tbody = document.getElementById('orderTableBody');
-            tbody.innerHTML = sorted.map(order => `
+            tbody.innerHTML = sorted.length ? sorted.map(order => `
                 <tr ondblclick="openOrderDetail(${order.id})" style="cursor:pointer;">
                     <td><span style="color: ${order.starred ? '#ffd700' : '#ddd'};">★</span></td>
                     <td>
@@ -1909,8 +2242,74 @@
                         <button class="action-dots" onclick="openOrderDetail(${order.id})" title="详情">⋮</button>
                     </td>
                 </tr>
-            `).join('');
+            `).join('') : '<tr class="empty-state"><td colspan="13">没有符合当前条件的订单，请调整筛选或搜索关键词</td></tr>';
+            updateOrderOverview();
             updateSelectedCount();
+            applyColumnVisibility();
+        }
+
+        function setOrderFilter(filter, trigger) {
+            currentOrderFilter = filter;
+            document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.toggle('active', tab === trigger));
+            renderOrderTable();
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(showToast.timer);
+            showToast.timer = setTimeout(() => toast.classList.remove('show'), 1800);
+        }
+
+        function refreshOrders() {
+            orderSearchKeyword = '';
+            document.getElementById('globalSearch').value = '';
+            orders.forEach(order => order.selected = false);
+            renderOrderTable();
+            showToast('列表已刷新');
+        }
+
+        function exportOrders() {
+            const visible = getVisibleOrders();
+            if (!visible.length) return showToast('当前没有可导出的订单');
+            const headers = ['母基金','拟交易日期','子基金','交易类型','完成情况','计划金额','妥妥递状态','金证状态','划款截止'];
+            const rows = visible.map(o => [o.motherFund,o.tradeDate,o.childFund,o.tradeType,o.progress,o.amount,o.status,o.goldCertStatus,o.transferDeadline]);
+            const csv = '\ufeff' + [headers, ...rows].map(row => row.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+            const url = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `自动用印订单_${new Date().toISOString().slice(0,10)}.csv`;
+            link.click();
+            URL.revokeObjectURL(url);
+            showToast(`已导出 ${visible.length} 条订单`);
+        }
+
+        function renderColumnOptions() {
+            document.getElementById('columnOptions').innerHTML = configurableColumns.map(([index, label]) => `
+                <label class="column-option"><input type="checkbox" checked onchange="toggleColumn(${index}, this.checked)">${label}</label>
+            `).join('');
+        }
+
+        function toggleColumnPopover(event) {
+            event.stopPropagation();
+            const popover = document.getElementById('columnPopover');
+            const willOpen = popover.classList.contains('hidden');
+            popover.classList.toggle('hidden');
+            event.currentTarget.setAttribute('aria-expanded', String(willOpen));
+        }
+
+        function toggleColumn(index, visible) {
+            visible ? hiddenColumns.delete(index) : hiddenColumns.add(index);
+            applyColumnVisibility();
+        }
+
+        function applyColumnVisibility() {
+            configurableColumns.forEach(([index]) => {
+                document.querySelectorAll(`table tr > *:nth-child(${index})`).forEach(cell => {
+                    cell.style.display = hiddenColumns.has(index) ? 'none' : '';
+                });
+            });
         }
 
         // 渲染消息状态（一行双色点）
@@ -1953,7 +2352,7 @@
         // 全选/取消全选
         function toggleSelectAll() {
             const selectAll = document.getElementById('selectAll');
-            orders.forEach(order => {
+            getVisibleOrders().forEach(order => {
                 if (order.canStamp) {
                     order.selected = selectAll.checked;
                 }
@@ -1965,6 +2364,14 @@
         function updateSelectedCount() {
             const selectedOrders = orders.filter(o => o.selected);
             document.getElementById('selectedCount').textContent = selectedOrders.length;
+            const selectableVisible = getVisibleOrders().filter(o => o.canStamp);
+            const selectedVisible = selectableVisible.filter(o => o.selected);
+            const selectAll = document.getElementById('selectAll');
+            selectAll.checked = selectableVisible.length > 0 && selectedVisible.length === selectableVisible.length;
+            selectAll.indeterminate = selectedVisible.length > 0 && selectedVisible.length < selectableVisible.length;
+            document.getElementById('batchEditBtn').disabled = selectedOrders.length === 0;
+            document.getElementById('wechatBatchBtn').disabled = selectedOrders.length === 0;
+            document.getElementById('wechatBatchWrap').classList.toggle('is-disabled', selectedOrders.length === 0);
         }
 
         // 批量用印
@@ -2198,17 +2605,19 @@
         // ===== 匹配/解绑 =====
         let matchCurrentOrderId = null;
         let matchSelectedCandidateId = null;
+        let matchShowAll = false;
 
         // 模拟妥妥递候选订单数据
         const ttdCandidates = [
-            { id: 'TTD001', orderNo: '2026060817585188', status: '订单待确认', matchScore: 8, amount: '90000', tradeDate: '2026-06-11', fundName: 'TA30号MOM集合资产管理计划', product: 'SAJP17' },
-            { id: 'TTD002', orderNo: '2026060875896390', status: '订单待确认', matchScore: 6, amount: '85666', tradeDate: '2026-06-08', fundName: 'TA30号MOM集合资产管理计划', product: 'SAJP17' },
-            { id: 'TTD003', orderNo: '2026060807454558', status: '文件待签署', matchScore: 3, amount: '60000', tradeDate: '2026-06-09', fundName: '大理财量化4号私募资产', product: 'SANS95' },
-            { id: 'TTD004', orderNo: '2026060799112233', status: '订单待确认', matchScore: 5, amount: '120000', tradeDate: '2026-06-10', fundName: '启林量化中性3号', product: 'QLZN03' },
-            { id: 'TTD005', orderNo: '2026060655443322', status: '订单待确认', matchScore: 7, amount: '75000', tradeDate: '2026-06-12', fundName: '天演资本多策略A号', product: 'TYCD01' },
-            { id: 'TTD006', orderNo: '2026060522119988', status: '文件待签署', matchScore: 4, amount: '50000', tradeDate: '2026-06-07', fundName: '黑翼资产CTA增强1号', product: 'HYCT01' },
-            { id: 'TTD007', orderNo: '2026060488776655', status: '订单待确认', matchScore: 9, amount: '200000', tradeDate: '2026-06-13', fundName: '佳期投资股票增强号', product: 'JQCG02' },
-            { id: 'TTD008', orderNo: '2026060333445566', status: '订单待确认', matchScore: 2, amount: '35000', tradeDate: '2026-06-05', fundName: '龙旗科技指增Alpha号', product: 'LQZQ01' },
+            { id: 'TTD001', orderNo: '2026060817585188', status: '订单待确认', tradeType: '赎回', amount: '', shares: '5,000,000.00份', tradeDate: '2026-05-29', motherFund: '国联FOF1号', managerName: '诚奇投资', fundName: '某某全天候A号', product: 'SANS95', createdAt: '2026-05-27 14:36:20' },
+            { id: 'TTD002', orderNo: '2026060875896390', status: '文件待签署', tradeType: '申购', amount: '1,500万', shares: '', tradeDate: '2026-05-29', motherFund: '国联FOF1号', managerName: '诚奇投资', fundName: '诚奇灵活对冲6号', product: 'SAJP17', createdAt: '2026-05-28 09:18:45' },
+            { id: 'TTD003', orderNo: '2026060807454558', status: '订单已作废', tradeType: '赎回', amount: '', shares: '5,000,000.00份', tradeDate: '2026-05-28', motherFund: '国联FOF1号', managerName: '诚奇投资', fundName: '某某全天候A号', product: 'SANS95', createdAt: '2026-05-26 16:42:11' },
+            { id: 'TTD004', orderNo: '2026060799112233', status: '订单待确认', tradeType: '申购', amount: '300万', shares: '', tradeDate: '2026-06-03', motherFund: '国联FOF2号', managerName: '九坤投资', fundName: '九坤投资多策略增强7号', product: 'JKCL07', createdAt: '2026-06-01 10:05:37' },
+            { id: 'TTD005', orderNo: '2026060655443322', status: '订单待确认', tradeType: '申购', amount: '120万', shares: '', tradeDate: '2026-06-05', motherFund: '国联FOF3号', managerName: '灵均投资', fundName: '灵均中证500指增12号', product: 'LJ50012', createdAt: '2026-06-03 11:22:09' },
+            { id: 'TTD006', orderNo: '2026060522119988', status: '文件待签署', tradeType: '申购', amount: '800万', shares: '', tradeDate: '2026-06-04', motherFund: '国联FOF2号', managerName: '明汯投资', fundName: '明汯量化中性策略9号', product: 'MHZX09', createdAt: '2026-06-02 15:08:54' },
+            { id: 'TTD007', orderNo: '2026060488776655', status: '订单待确认', tradeType: '申购', amount: '250万', shares: '', tradeDate: '2026-06-06', motherFund: '国联FOF3号', managerName: '衍复投资', fundName: '衍复中证1000增强A号', product: 'YF1000A', createdAt: '2026-06-04 13:17:28' },
+            { id: 'TTD008', orderNo: '2026060333445566', status: '订单待确认', tradeType: '申购', amount: '450万', shares: '', tradeDate: '2026-06-08', motherFund: '国联FOF2号', managerName: '宽德投资', fundName: '宽德中证500指增3号', product: 'KD50003', createdAt: '2026-06-06 09:45:33' },
+            { id: 'TTD009', orderNo: '2026060299221155', status: '订单待确认', tradeType: '申购', amount: '200万', shares: '', tradeDate: '2026-06-09', motherFund: '国联FOF1号', managerName: '宽德投资', fundName: '宽德量化精选1号', product: 'KDLH01', createdAt: '2026-06-07 10:12:48' },
         ];
 
         // 打开匹配弹窗
@@ -2218,25 +2627,22 @@
 
             matchCurrentOrderId = orderId;
             matchSelectedCandidateId = null;
+            matchShowAll = false;
 
-            // 显示当前订单信息
             document.getElementById('matchCurrentOrderInfo').innerHTML = `
-                <div><span style="color:#999;">子基金</span><div style="font-weight:500;color:#333;">${order.childFund}</div></div>
-                <div><span style="color:#999;">交易类型</span><div style="font-weight:500;color:#333;">${order.tradeType}</div></div>
-                <div><span style="color:#999;">金额</span><div style="font-weight:500;color:#333;">${order.amount.replace('万','')}元</div></div>
-                <div><span style="color:#999;">拟交易日</span><div style="font-weight:500;color:#333;">${order.tradeDate}</div></div>
-                <div><span style="color:#999;">产品</span><div style="font-weight:500;color:#333;">--</div></div>
+                <div><span class="match-info-label">母基金</span><div class="match-info-value">${order.motherFund}</div></div>
+                <div><span class="match-info-label">子基金管理人（私募）</span><div class="match-info-value">${order.managerName}</div></div>
+                <div><span class="match-info-label">子基金</span><div class="match-info-value">${order.childFund}</div></div>
+                <div><span class="match-info-label">交易类型</span><div class="match-info-value">${order.tradeType}</div></div>
+                <div><span class="match-info-label">拟交易日期</span><div class="match-info-value">${order.tradeDate}</div></div>
+                <div><span class="match-info-label">${order.tradeType === '赎回' ? '计划份额' : '计划金额'}</span><div class="match-info-value">${order.tradeType === '赎回' ? (order.tradeShares || '--') : order.amount}</div></div>
             `;
 
-            // 清空搜索
             document.getElementById('matchSearchInput').value = '';
-
-            // 渲染候选列表
-            renderMatchCandidates(ttdCandidates);
-
-            // 重置按钮状态
+            document.getElementById('matchShowAll').checked = false;
+            document.getElementById('matchFetchMeta').textContent = '默认仅展示母基金、子基金管理人均相同且未作废的订单';
             document.getElementById('confirmMatchBtn').disabled = true;
-
+            filterMatchCandidates();
             document.getElementById('matchModal').classList.remove('hidden');
         }
 
@@ -2244,6 +2650,7 @@
             document.getElementById('matchModal').classList.add('hidden');
             matchCurrentOrderId = null;
             matchSelectedCandidateId = null;
+            matchShowAll = false;
         }
 
         // 渲染候选列表
@@ -2257,24 +2664,17 @@
 
             container.innerHTML = candidates.map(c => `
                 <div class="match-candidate-item ${matchSelectedCandidateId === c.id ? 'selected' : ''}"
-                     onclick="selectMatchCandidate('${c.id}')"
-                     style="display:flex;align-items:center;gap:16px;padding:14px 18px;border-bottom:1px solid #f0f0f0;cursor:pointer;transition:background 0.15s;"
-                     onmouseenter="this.style.background='#fafafa'" onmouseleave="this.style.background='#fff'">
-                    <input type="radio" name="matchCandidate" ${matchSelectedCandidateId === c.id ? 'checked' : ''} onclick="event.stopPropagation();selectMatchCandidate('${c.id}')">
-                    <div style="flex:1;min-width:0;">
-                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-                            <span style="font-size:14px;font-weight:600;color:#333;white-space:nowrap;">${c.orderNo}</span>
-                            <span class="status-tag blue" style="font-size:11px;">${c.status}</span>
-                            <span style="font-size:12px;color:#999;background:#f5f5f5;padding:1px 8px;border-radius:10px;">匹配分 ${c.matchScore}</span>
-                        </div>
-                        <div style="display:flex;flex-wrap:wrap;gap:12px 24px;font-size:13px;color:#666;">
-                            <span>金额/<b>${c.amount}</b>份</span>
-                            <span>开放日 <b>${c.tradeDate}</b></span>
-                            <span>基金 <b>${c.fundName}</b></span>
-                            <span>产品 <b>${c.product}</b></span>
-                            <span>私募 <b>--</b></span>
-                        </div>
-                    </div>
+                     onclick="selectMatchCandidate('${c.id}')">
+                    <input type="radio" name="matchCandidate" ${matchSelectedCandidateId === c.id ? 'checked' : ''} ${c.status.includes('作废') ? 'disabled' : ''} onclick="event.stopPropagation();selectMatchCandidate('${c.id}')">
+                    <div><div class="match-cell-main">${c.orderNo}</div><span class="match-status ${c.status.includes('作废') ? 'void' : ''}">${c.status}</span></div>
+                    <div><div class="match-cell-main">${c.tradeType === '赎回' ? c.shares : c.amount}</div></div>
+                    <div><div class="match-cell-main">${c.tradeDate}</div></div>
+                    <div><div class="match-cell-main">${c.fundName}</div></div>
+                    <div><div class="match-cell-main">${c.motherFund}</div>${getMatchFieldWarning(c, 'motherFund')}</div>
+                    <div><div class="match-cell-main">${c.tradeType}</div></div>
+                    <div><div class="match-cell-main">${c.product}</div></div>
+                    <div><div class="match-cell-main">${c.managerName}</div>${getMatchFieldWarning(c, 'managerName')}</div>
+                    <div><div class="match-cell-main">${c.createdAt.split(' ')[0]}</div><div class="match-cell-sub">${c.createdAt.split(' ')[1]}</div></div>
                 </div>
             `).join('');
 
@@ -2283,22 +2683,67 @@
 
         // 选择候选订单
         function selectMatchCandidate(candidateId) {
+            const candidate = ttdCandidates.find(c => c.id === candidateId);
+            if (!candidate || candidate.status.includes('作废')) return;
             matchSelectedCandidateId = candidateId;
             document.getElementById('confirmMatchBtn').disabled = false;
-            // 重新渲染以更新选中态
             filterMatchCandidates();
         }
 
-        // 搜索过滤候选
+        function getMatchFieldWarning(candidate, field) {
+            const order = orders.find(o => o.id === matchCurrentOrderId);
+            if (!order || candidate[field] === order[field]) return '';
+            return `<span class="match-mismatch">${field === 'motherFund' ? '母基金不同' : '子基金管理人不同'}</span>`;
+        }
+
         function filterMatchCandidates() {
             const keyword = document.getElementById('matchSearchInput').value.toLowerCase();
-            const filtered = ttdCandidates.filter(c =>
-                c.orderNo.toLowerCase().includes(keyword) ||
-                c.amount.includes(keyword) ||
-                c.tradeDate.includes(keyword) ||
-                c.fundName.toLowerCase().includes(keyword)
-            );
+            const order = orders.find(o => o.id === matchCurrentOrderId);
+            const filtered = ttdCandidates.filter(c => {
+                const defaultMatched = order && c.motherFund === order.motherFund && c.managerName === order.managerName && !c.status.includes('作废');
+                const keywordMatched = [c.orderNo, c.amount, c.shares, c.tradeType, c.tradeDate, c.motherFund, c.managerName, c.fundName, c.product, c.createdAt].join(' ').toLowerCase().includes(keyword);
+                return (matchShowAll || defaultMatched) && keywordMatched;
+            });
+            if (matchShowAll && order) {
+                filtered.sort((a, b) => {
+                    const rankDiff = getMatchPriority(a, order) - getMatchPriority(b, order);
+                    if (rankDiff) return rankDiff;
+                    const voidDiff = Number(a.status.includes('作废')) - Number(b.status.includes('作废'));
+                    if (voidDiff) return voidDiff;
+                    return new Date(b.createdAt) - new Date(a.createdAt);
+                });
+            }
             renderMatchCandidates(filtered);
+        }
+
+        function getMatchPriority(candidate, order) {
+            const sameMotherFund = candidate.motherFund === order.motherFund;
+            if (sameMotherFund && candidate.fundName === order.childFund) return 0;
+            if (sameMotherFund && candidate.managerName === order.managerName) return 1;
+            if (sameMotherFund) return 2;
+            return 3;
+        }
+
+        function toggleMatchShowAll(checked) {
+            matchShowAll = checked;
+            matchSelectedCandidateId = null;
+            document.getElementById('confirmMatchBtn').disabled = true;
+            document.getElementById('matchFetchMeta').textContent = checked
+                ? '已显示全部订单；作废订单仅供查看，不能绑定'
+                : '默认仅展示母基金、子基金管理人均相同且未作废的订单';
+            filterMatchCandidates();
+        }
+
+        function fetchTTDOrders() {
+            const button = document.getElementById('fetchTTDOrdersBtn');
+            button.disabled = true;
+            button.textContent = '获取中...';
+            setTimeout(() => {
+                button.disabled = false;
+                button.textContent = '↻ 获取妥妥递订单';
+                document.getElementById('matchFetchMeta').textContent = `最近获取：${new Date().toLocaleString()} · ${matchShowAll ? '全部订单' : '已按母基金和子基金管理人筛选'}`;
+                filterMatchCandidates();
+            }, 650);
         }
 
         // 确认匹配
@@ -2386,14 +2831,18 @@
                 if (!order.selected) return;
                 let changed = false;
                 if (progressVal) { order.progress = progressVal; changed = true; }
-                if (statusVal) { order.status = statusVal; changed = true; }
+                if (statusVal) {
+                    order.status = statusVal;
+                    order.statusType = statusVal.includes('异常') ? 'red' : (statusVal.includes('签署') ? 'orange' : 'blue');
+                    changed = true;
+                }
                 if (followerVal) { order.follower = followerVal; changed = true; }
                 if (changed) changedCount++;
             });
 
             alert(`已成功修改 ${changedCount} 个订单！`);
             closeBatchEditModal();
-            renderTable(); // 刷新表格
+            renderOrderTable(); // 刷新表格
         }
 
         // ===== 发送企微消息 =====
@@ -2567,8 +3016,9 @@
             renderWechatFileList();
 
             // 文件收集链接（每个订单独立）
+            const linkUrl = `seal-payment-workflow.html?orderId=${order.id}&type=supplement`;
             const linkText = document.getElementById('wechatLinkText');
-            linkText.innerHTML = '<span style="color:#999">文件收集页面暂未收录</span>';
+            linkText.innerHTML = `<a href="${linkUrl}" target="_blank">${linkUrl}</a>`;
 
             // 拟发送群
             const groupNameEl = document.getElementById('wechatGroupName');
@@ -2763,6 +3213,27 @@
             }, 200);
         }
 
+        document.getElementById('globalSearch').addEventListener('input', function(event) {
+            orderSearchKeyword = event.target.value.trim();
+            renderOrderTable();
+        });
+        document.getElementById('tradeDateStart').addEventListener('change', updateTradeDateFilter);
+        document.getElementById('tradeDateEnd').addEventListener('change', updateTradeDateFilter);
+
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.filter-actions')) {
+                document.getElementById('columnPopover').classList.add('hidden');
+            }
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key !== 'Escape') return;
+            document.querySelectorAll('.modal-overlay:not(.hidden)').forEach(modal => modal.classList.add('hidden'));
+            document.getElementById('columnPopover').classList.add('hidden');
+            document.getElementById('wechatDropdownMenu').classList.add('hidden');
+        });
+
+        renderColumnOptions();
         // 初始化
         renderOrderTable();
     </script>
