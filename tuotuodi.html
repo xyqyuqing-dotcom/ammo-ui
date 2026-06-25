@@ -1333,13 +1333,13 @@
         <div class="sidebar-menu">
             <div class="menu-title">功能菜单</div>
             <div class="menu-item" onclick="location.href='ta-data-send.html'"><span class="menu-icon">&#128231;</span>TA数据发送</div>
-            <div class="menu-item" onclick="location.href='investment-committee.html'"><span class="menu-icon">&#128203;</span>上会主功能</div>
+            <div class="menu-item" onclick="location.href='上会主功能界面.html'"><span class="menu-icon">&#128203;</span>上会主功能</div>
             <div class="menu-item"><span class="menu-icon">&#128101;</span>投资主体</div>
             <div class="menu-item"><span class="menu-icon">&#128193;</span>准入管理</div>
             <div class="menu-item active"><span class="menu-icon">&#128220;</span>自动用印</div>
             <div class="menu-item is-disabled" onclick="showToast('机构材料管理页面暂未接入')" title="页面暂未接入"><span class="menu-icon">&#128229;</span>机构材料管理</div>
-            <div class="menu-item" onclick="location.href='private-fund-manager-config.html'"><span class="menu-icon">&#128172;</span>私募群管理人关系配置</div>
-            <div class="menu-item" onclick="location.href='email-config.html'"><span class="menu-icon">&#128231;</span>邮箱配置管理</div>
+            <div class="menu-item" onclick="location.href='私募群管理人关系配置.html'"><span class="menu-icon">&#128172;</span>私募群管理人关系配置</div>
+            <div class="menu-item" onclick="location.href='邮箱配置管理.html'"><span class="menu-icon">&#128231;</span>邮箱配置管理</div>
             <div class="menu-item"><span class="menu-icon">&#9881;&#65039;</span>系统设置</div>
             <div class="menu-item"><span class="menu-icon">&#128267;</span>模拟器</div>
         </div>
@@ -1754,7 +1754,7 @@
                         <label class="wechat-section-title">拟发送群</label>
                         <div style="margin-top: 8px; display: flex; align-items: center; gap: 8px;">
                             <span id="wechatGroupName" style="font-size: 14px; color: #1890ff;">--</span>
-                            <a href="private-fund-manager-config.html" target="_blank" style="font-size: 12px; color: #1890ff; text-decoration: none; white-space: nowrap;">🔗 私募群管理人关系配置 →</a>
+                            <a href="私募群管理人关系配置.html" target="_blank" style="font-size: 12px; color: #1890ff; text-decoration: none; white-space: nowrap;">🔗 私募群管理人关系配置 →</a>
                         </div>
                     </div>
 
@@ -1804,7 +1804,7 @@
                             <label class="wechat-section-title">拟发送群</label>
                             <div style="margin-top: 8px; display: flex; align-items: center; gap: 8px;">
                                 <span id="wechatEmailGroupName" style="font-size: 14px; color: #1890ff;">--</span>
-                                <a href="private-fund-manager-config.html" target="_blank" style="font-size: 12px; color: #1890ff; text-decoration: none; white-space: nowrap;">🔗 私募群管理人关系配置 →</a>
+                                <a href="私募群管理人关系配置.html" target="_blank" style="font-size: 12px; color: #1890ff; text-decoration: none; white-space: nowrap;">🔗 私募群管理人关系配置 →</a>
                             </div>
                         </div>
 
@@ -2594,12 +2594,12 @@
 
         // 打开用印划款流程
         function openTransferWorkflow(orderId) {
-            window.location.href = `seal-payment-workflow.html?orderId=${orderId}`;
+            window.location.href = `用印划款流程.html?orderId=${orderId}`;
         }
 
         // 打开补充材料流程（与用印划款流程类似，但不需要用印前附件自动挂接）
         function openSupplementWorkflow(orderId) {
-            window.location.href = `seal-payment-workflow.html?orderId=${orderId}&type=supplement`;
+            window.location.href = `用印划款流程.html?orderId=${orderId}&type=supplement`;
         }
 
         // ===== 匹配/解绑 =====
@@ -3016,7 +3016,7 @@
             renderWechatFileList();
 
             // 文件收集链接（每个订单独立）
-            const linkUrl = `seal-payment-workflow.html?orderId=${order.id}&type=supplement`;
+            const linkUrl = `用印划款流程.html?orderId=${order.id}&type=supplement`;
             const linkText = document.getElementById('wechatLinkText');
             linkText.innerHTML = `<a href="${linkUrl}" target="_blank">${linkUrl}</a>`;
 

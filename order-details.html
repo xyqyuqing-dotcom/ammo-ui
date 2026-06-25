@@ -1455,17 +1455,17 @@
         <div class="flow-status-bar">
             <span class="flow-label">用印划款流程</span>
             <div class="flow-nodes">
-                <a class="flow-node active" href="seal-payment-workflow.html?orderId=3" target="_blank" id="flowNode0">
+                <a class="flow-node active" href="用印划款流程.html?orderId=3" target="_blank" id="flowNode0">
                     <span class="flow-dot done"></span>
                     <span class="flow-text">已发起</span>
                 </a>
                 <span class="flow-line"></span>
-                <a class="flow-node" href="seal-payment-workflow.html?orderId=3" target="_blank" id="flowNode1">
+                <a class="flow-node" href="用印划款流程.html?orderId=3" target="_blank" id="flowNode1">
                     <span class="flow-dot"></span>
                     <span class="flow-text">可用印</span>
                 </a>
                 <span class="flow-line"></span>
-                <a class="flow-node" href="seal-payment-workflow.html?orderId=3" target="_blank" id="flowNode2">
+                <a class="flow-node" href="用印划款流程.html?orderId=3" target="_blank" id="flowNode2">
                     <span class="flow-dot"></span>
                     <span class="flow-text">可划款</span>
                 </a>
@@ -2240,7 +2240,7 @@
 
             // 1. 主流程按钮
             if (mainFlow) {
-                html += `<a class="flow-btn flow-btn-main" href="seal-payment-workflow.html?orderId=${currentOrderId}" target="_blank">
+                html += `<a class="flow-btn flow-btn-main" href="用印划款流程.html?orderId=${currentOrderId}" target="_blank">
                     <span>用印划款流程</span>
                 </a>`;
             } else {
@@ -2251,7 +2251,7 @@
 
             // 2. 补充材料流程按钮（统一紫色样式）
             suppFlows.forEach(flow => {
-                const url = `seal-payment-workflow.html?orderId=${currentOrderId}&type=supplement&flowId=${flow.id}`;
+                const url = `用印划款流程.html?orderId=${currentOrderId}&type=supplement&flowId=${flow.id}`;
 
                 html += `<a class="flow-btn flow-btn-supp" href="${url}" target="_blank">
                     <span>${flow.label}</span>
@@ -2283,7 +2283,7 @@
             renderFlowActionsBar();
 
             // 打开流程页面
-            window.open(`seal-payment-workflow.html?orderId=${currentOrderId}`, '_blank');
+            window.open(`用印划款流程.html?orderId=${currentOrderId}`, '_blank');
         }
 
         // 发起补充材料流程
@@ -2312,7 +2312,7 @@
             renderFlowActionsBar();
 
             // 打开流程页面
-            window.open(`seal-payment-workflow.html?orderId=${currentOrderId}&type=supplement&flowId=${flowId}`, '_blank');
+            window.open(`用印划款流程.html?orderId=${currentOrderId}&type=supplement&flowId=${flowId}`, '_blank');
         }
         // ========== 流程管理结束 ==========
 
@@ -3130,7 +3130,7 @@
 
         // 返回
         function goBack() {
-            window.location.href = 'tuotuodi.html';
+            window.location.href = '5-自动用印.html';
         }
 
         // ===== 金证接口状态初始化（三态） =====
