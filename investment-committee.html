@@ -136,6 +136,31 @@
             overflow: hidden;
             box-shadow: 0 1px 2px rgba(0,0,0,0.06);
         }
+        .main-table-wrapper {
+            overflow-x: auto;
+            max-width: 100%;
+        }
+        .main-table-wrapper table {
+            min-width: 1680px;
+        }
+        .main-table-wrapper th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        .sticky-action-col {
+            position: sticky;
+            right: 0;
+            z-index: 3;
+            background: #fff;
+            min-width: 104px;
+            box-shadow: -8px 0 12px rgba(0,0,0,0.04);
+        }
+        th.sticky-action-col {
+            background: #fafafa;
+            z-index: 4;
+        }
+        tr:hover .sticky-action-col { background: #fafafa; }
         /* 母基金视图中的表格支持水平滚动 */
         .detail-main .table-wrapper {
             overflow-x: auto;
@@ -174,55 +199,55 @@
         .tag-blue {
             display: inline-block;
             padding: 2px 10px;
-            background: #e6f7ff;
-            color: #1890ff;
-            border: 1px solid #91d5ff;
+            background: #eef4ff;
+            color: #1f4f99;
+            border: 1px solid #c9d8f2;
             border-radius: 3px;
             font-size: 12px;
         }
         .tag-purple {
             display: inline-block;
             padding: 2px 10px;
-            background: #f9f0ff;
-            color: #722ed1;
-            border: 1px solid #d3adf7;
+            background: #f5f7fa;
+            color: #4b5563;
+            border: 1px solid #d9dee7;
             border-radius: 3px;
             font-size: 12px;
         }
         .status-exempt {
             display: inline-block;
             padding: 2px 10px;
-            background: #fff7e6;
-            color: #fa8c16;
-            border: 1px solid #ffd591;
-            border-radius: 10px;
+            background: #f7f8fa;
+            color: #5f6b7a;
+            border: 1px solid #d9dee7;
+            border-radius: 4px;
             font-size: 12px;
         }
         .status-done {
             display: inline-block;
             padding: 2px 10px;
-            background: #f6ffed;
-            color: #52c41a;
-            border: 1px solid #b7eb8f;
-            border-radius: 10px;
+            background: #eef8f1;
+            color: #2f6b43;
+            border: 1px solid #c9e5d0;
+            border-radius: 4px;
             font-size: 12px;
         }
         .status-pending {
             display: inline-block;
             padding: 2px 10px;
-            background: #e6f7ff;
-            color: #1890ff;
-            border: 1px solid #91d5ff;
-            border-radius: 10px;
+            background: #eef4ff;
+            color: #1f4f99;
+            border: 1px solid #c9d8f2;
+            border-radius: 4px;
             font-size: 12px;
         }
         .status-waiting {
             display: inline-block;
             padding: 2px 10px;
-            background: #fff1f0;
-            color: #cf1322;
-            border: 1px solid #ffa39e;
-            border-radius: 10px;
+            background: #fff8ed;
+            color: #8a5a16;
+            border: 1px solid #ead6b8;
+            border-radius: 4px;
             font-size: 12px;
         }
 
@@ -733,10 +758,76 @@
         }
         .exempt-btn:hover { border-color:#1890ff; color:#1890ff; }
         .exempt-btn.active {
-            background:#e6f7ff;
-            border-color:#1890ff;
-            color:#1890ff;
+            background:#eef4ff;
+            border-color:#8fb4e8;
+            color:#1f4f99;
             font-weight:500;
+        }
+
+        .field-config-panel {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.28);
+            z-index: 2100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .field-config-panel.show { display: flex; }
+        .field-config-box {
+            width: min(760px, calc(100vw - 32px));
+            max-height: 82vh;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 10px 32px rgba(15,23,42,0.18);
+            display: flex;
+            flex-direction: column;
+        }
+        .field-config-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #edf0f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .field-config-title { font-size: 16px; font-weight: 600; }
+        .field-config-body {
+            padding: 16px 20px;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px 16px;
+        }
+        .field-check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #333;
+        }
+        .field-config-footer {
+            padding: 12px 20px;
+            border-top: 1px solid #edf0f5;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        @media (max-width: 1200px) {
+            .fund-info-grid { grid-template-columns: repeat(3, 1fr); }
+            .form-row { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 900px) {
+            .main-content { padding: 0 12px; }
+            .toolbar { align-items: flex-start; }
+            .toolbar-left,
+            .toolbar-right { width: 100%; flex-wrap: wrap; }
+            .detail-layout { flex-direction: column; }
+            .detail-sidebar { width: 100%; max-height: 260px; }
+            .fund-info-grid,
+            .form-row { grid-template-columns: 1fr; }
+            .modal-box { width: calc(100% - 24px); max-height: 92vh; }
         }
     </style>
 </head>
@@ -768,7 +859,7 @@
             <!-- 工具栏 -->
             <div class="toolbar">
                 <div class="toolbar-left">
-                    <button class="tool-btn">🔧 列配置</button>
+                    <button class="tool-btn" onclick="openColumnConfig('table')">字段配置</button>
                     <button class="tool-btn">🔽 筛选</button>
                 </div>
                 <div class="toolbar-right">
@@ -781,7 +872,7 @@
             </div>
 
             <!-- 数据表格 -->
-            <div class="table-wrapper">
+            <div class="table-wrapper main-table-wrapper">
                 <table>
                     <thead>
                         <tr>
@@ -799,10 +890,11 @@
                             <th>金额(万)</th>
                             <th>配置比例</th>
                             <th>调仓金额(万)</th>
-                            <th>池子</th>
+                            <th>上分池</th>
+                            <th>资配池</th>
                             <th>已排期金额</th>
                             <th>待排期金额</th>
-                            <th>操作</th>
+                            <th class="sticky-action-col">操作</th>
                         </tr>
                     </thead>
                     <tbody id="mainTableBody"></tbody>
@@ -884,7 +976,8 @@
                                 <th>策略</th>
                                 <th>配置比例 <label style="font-weight:normal;font-size:12px;margin-left:4px;"><input type="radio" name="npRatioType" checked onclick="toggleNpInputMode()"> 按比例</label></th>
                                 <th>金额(万) <label style="font-weight:normal;font-size:12px;margin-left:4px;"><input type="radio" name="npRatioType" onclick="toggleNpInputMode()"> 按金额</label></th>
-                                <th>池子</th>
+                                <th>上分池</th>
+                                <th>资配池</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
@@ -960,7 +1053,8 @@
                                 <th>配置比例 <label style="font-weight:normal;font-size:12px;margin-left:4px;"><input type="radio" name="naRatioType" checked onclick="toggleNaInputMode()"> 按比例</label></th>
                                 <th>金额(万) <label style="font-weight:normal;font-size:12px;margin-left:4px;"><input type="radio" name="naRatioType" onclick="toggleNaInputMode()"> 按金额</label></th>
                                 <th>调仓份额</th>
-                                <th>池子</th>
+                                <th>上分池</th>
+                                <th>资配池</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
@@ -1199,7 +1293,57 @@ const positionRecords = [
     }
 ];
 
+let currentTab = 'table';
 let currentDetailFundIndex = 0;
+let sidebarFundKeyword = '';
+let sidebarDateKeyword = '';
+
+const tableColumns = [
+    { key: 'status', label: '上会状态', width: 90, visible: true },
+    { key: 'opType', label: '操作类型', width: 90, visible: true },
+    { key: 'meetingDate', label: '上会日期/方案日期', width: 130, visible: true },
+    { key: 'assistant', label: '投资助理', width: 90, visible: true },
+    { key: 'totalAmount', label: '本次建仓/调仓总金额(万)', width: 150, visible: true },
+    { key: 'adjustReason', label: '调仓原因', width: 180, visible: true },
+    { key: 'parentFund', label: '母基金', width: 180, visible: true },
+    { key: 'dept', label: '营业部/部门', width: 150, visible: true },
+    { key: 'servicePerson', label: '服务人员/客户经理', width: 140, visible: true },
+    { key: 'expectedReturn', label: '预期收益', width: 90, visible: false },
+    { key: 'drawdownTolerance', label: '回撤容忍', width: 90, visible: false },
+    { key: 'subFund', label: '子基金', width: 190, visible: true },
+    { key: 'subManager', label: '子基金管理人', width: 120, visible: true },
+    { key: 'tradeType', label: '交易类型', width: 90, visible: true },
+    { key: 'strategy', label: '策略', width: 100, visible: true },
+    { key: 'strategyRatio', label: '策略比例', width: 90, visible: true },
+    { key: 'upperPool', label: '上分池', width: 90, visible: true },
+    { key: 'assetPool', label: '资配池', width: 90, visible: true },
+    { key: 'securitiesDept', label: '证券交易落地营业部', width: 150, visible: true },
+    { key: 'futuresDept', label: '期货交易落地营业部', width: 150, visible: true },
+    { key: 'amount', label: '建仓金额(万)', width: 110, visible: true },
+    { key: 'configRatio', label: '配置比例', width: 90, visible: true },
+    { key: 'evalDate', label: '最新估值日期', width: 120, visible: true },
+    { key: 'investedAmt', label: '已投金额(万)', width: 110, visible: true },
+    { key: 'adjAmt', label: '调仓金额(万)', width: 110, visible: true },
+    { key: 'adjShare', label: '调仓份额', width: 100, visible: false },
+    { key: 'afterAmount', label: '调仓后金额(万)', width: 120, visible: true },
+    { key: 'afterConfigRatio', label: '调仓后配置比例', width: 130, visible: true },
+    { key: 'scheduled', label: '已排期(万)', width: 100, visible: true },
+    { key: 'pending', label: '待排期(万)', width: 100, visible: true },
+    { key: 'executed', label: '已执行(万)', width: 100, visible: true },
+    { key: 'action', label: '操作', width: 110, visible: true, locked: true }
+];
+
+const detailColumns = tableColumns
+    .filter(col => !['opType', 'totalAmount', 'meetingDate', 'assistant'].includes(col.key))
+    .map(col => ({
+        ...col,
+        visible: !['parentFund', 'dept', 'servicePerson', 'expectedReturn', 'drawdownTolerance'].includes(col.key)
+    }));
+
+const columnState = {
+    table: Object.fromEntries(tableColumns.map(col => [col.key, col.visible])),
+    detail: Object.fromEntries(detailColumns.map(col => [col.key, col.visible]))
+};
 
 // ============================================================
 //  视图切换
@@ -1238,7 +1382,8 @@ function switchTab(tab) {
 // ============================================================
 function renderMainTable() {
     const tbody = document.getElementById('mainTableBody');
-    const isBuild = row => row.opType === '建仓';
+    const headerRow = document.querySelector('.main-table-wrapper thead tr');
+    const visibleColumns = tableColumns.filter(col => columnState.table[col.key] || col.locked);
 
     // 计算每个策略的合并比例（相同策略的比例相加）
     const strategyRatioMap = {};
@@ -1251,32 +1396,100 @@ function renderMainTable() {
         }
     });
 
+    headerRow.innerHTML = `
+        <th style="width:36px"><input type="checkbox" onclick="toggleAll(this)"></th>
+        ${visibleColumns.map(col => `<th data-field="${col.key}" class="${col.key === 'action' ? 'sticky-action-col' : ''}" style="min-width:${col.width || 100}px">${col.label}</th>`).join('')}
+    `;
     tbody.innerHTML = mainTableData.map(row => `
         <tr>
             <td><input type="checkbox"></td>
-            <td><span class="${row.opType === '建仓' ? 'tag-blue' : 'tag-purple'}">${row.opType}</span></td>
-            <td><span class="${getStatusClass(row.status)}">${row.status}</span></td>
-            <td>${row.totalAmount}</td>
-            <td>${row.assistant}</td>
-            <td style="max-width:160px">${row.parentFund}</td>
-            <td>${row.subManager}</td>
-            <td>${row.subCode}</td>
-            <td>${row.subName}</td>
-            <td>${row.strategy}</td>
-            <td>${strategyRatioMap[row.strategy] ? strategyRatioMap[row.strategy].toFixed(2) + '%' : '-'}</td>
-            <td style="color:${isBuild(row) ? '' : '#ccc'}">${row.amount}</td>
-            <td style="color:${isBuild(row) ? '' : '#ccc'}">${row.ratio}</td>
-            <td style="color:${!isBuild(row) ? '' : '#ccc'}">${row.adjAmt}</td>
-            <td>${row.pool}</td>
-            <td>${row.scheduled > 0 ? '<a class="action-link" style="color:#1890ff;cursor:pointer;" onclick="openModal(\'scheduledPlansModal\')">' + row.scheduled + '</a>' : row.scheduled}</td>
-            <td>${row.pending}</td>
-            <td>
-                <a class="action-link" onclick="editRow(${row.id})">编辑</a>
-                <a class="action-link" onclick="openScheduleOrder(${row.id})">排期</a>
-            </td>
+            ${visibleColumns.map(col => `<td data-field="${col.key}" class="${col.key === 'action' ? 'sticky-action-col' : ''}">${renderColumnValue(row, col.key, strategyRatioMap)}</td>`).join('')}
         </tr>
     `).join('');
     document.getElementById('recordCount').textContent = `共 ${mainTableData.length} 条记录`;
+    const minWidth = 36 + visibleColumns.reduce((sum, col) => sum + (col.width || 100), 0);
+    document.querySelector('.main-table-wrapper table').style.minWidth = `${Math.max(minWidth, 1200)}px`;
+}
+
+function getParentFundByRow(row) {
+    const code = String(row.parentFund || '').split(' ')[0];
+    return parentFunds.find(fund => fund.code === code) || {};
+}
+
+function numericValue(value) {
+    const n = parseFloat(value);
+    return Number.isFinite(n) ? n : 0;
+}
+
+function formatMoney(value) {
+    const n = numericValue(value);
+    return n ? n.toFixed(2) : '-';
+}
+
+function normalizeUpperPool(value) {
+    const text = String(value || '');
+    return text.includes('核心') ? '核心池' : '配置池';
+}
+
+function normalizeAssetPool(value, fallback = '') {
+    const text = String(value || fallback || '');
+    if (text.includes('不在池')) return '不在池';
+    return '在池';
+}
+
+function formatCodeName(value, name) {
+    const text = String(value || '').trim();
+    if (!text && !name) return '-';
+    if (name) return `${text}(${name})`;
+    const compact = text.match(/^([A-Za-z0-9]+)\s+(.+)$/);
+    if (compact) return `${compact[1]}(${compact[2]})`;
+    return text;
+}
+
+function renderColumnValue(row, key, strategyRatioMap = {}) {
+    const fund = getParentFundByRow(row);
+    const isBuild = row.opType === '建仓';
+    const amount = numericValue(row.amount);
+    const adjAmt = numericValue(row.adjAmt);
+    const investedAmt = numericValue(row.investedAmt || (isBuild ? 0 : 520 + row.id * 9));
+    const afterAmount = isBuild ? amount : investedAmt + adjAmt;
+    const securitiesDept = row.securitiesDept || (fund.dept && fund.dept.startsWith('证券') ? fund.dept.replace('证券-', '') + '营业部' : '上海陆家嘴营业部');
+    const futuresDept = row.futuresDept || (fund.dept && fund.dept.startsWith('期货') ? fund.dept.replace('期货-', '') + '营业部' : '期货资管部');
+    const values = {
+        opType: `<span class="${isBuild ? 'tag-blue' : 'tag-purple'}">${row.opType}</span>`,
+        totalAmount: row.totalAmount ?? '-',
+        meetingDate: row.meetingDate || (isBuild ? '2025-10-12' : '2026-01-10'),
+        assistant: row.assistant || '-',
+        adjustReason: isBuild ? '-' : (row.reason || '根据市场环境调整策略配置'),
+        parentFund: formatCodeName(row.parentFund),
+        dept: fund.dept || '-',
+        servicePerson: fund.servicePerson || '-',
+        expectedReturn: fund.expectedReturn || '-',
+        drawdownTolerance: fund.drawdownTolerance || '-',
+        subFund: formatCodeName(row.subCode, row.subName),
+        subManager: row.subManager || '-',
+        tradeType: row.tradeType || (isBuild ? '申购' : '申购'),
+        strategy: row.strategy || '-',
+        strategyRatio: strategyRatioMap[row.strategy] ? `${strategyRatioMap[row.strategy].toFixed(2)}%` : (row.strategyRatio || row.ratio || '-'),
+        amount: isBuild ? row.amount : '-',
+        configRatio: isBuild ? row.ratio : '-',
+        evalDate: row.evalDate || (isBuild ? '-' : '2026-05-13'),
+        investedAmt: isBuild ? '-' : formatMoney(investedAmt),
+        adjAmt: isBuild ? '-' : row.adjAmt,
+        adjShare: row.adjShare || '-',
+        afterAmount: afterAmount ? afterAmount.toFixed(2) : '-',
+        afterConfigRatio: row.afterConfigRatio || (afterAmount ? `${(afterAmount / 9000 * 100).toFixed(2)}%` : '-'),
+        upperPool: normalizeUpperPool(row.upperPool || row.pool),
+        assetPool: normalizeAssetPool(row.assetPool, row.pool),
+        securitiesDept,
+        futuresDept,
+        status: `<span class="${getStatusClass(row.status)}">${row.status}</span>`,
+        scheduled: row.scheduled > 0 ? `<a class="action-link" style="color:#1890ff;cursor:pointer;" onclick="openModal('scheduledPlansModal')">${row.scheduled}</a>` : (row.scheduled ?? 0),
+        pending: row.pending ?? '-',
+        executed: row.executed ?? '0.00',
+        action: `<a class="action-link" onclick="editRow(${row.id})">编辑</a><a class="action-link" onclick="openScheduleOrder(${row.id})">排期</a>`
+    };
+    return values[key] ?? '-';
 }
 
 function getStatusClass(status) {
@@ -1298,15 +1511,34 @@ function scheduleRow(id) { showPage('schedule'); }
 function renderDetailView() {
     // 渲染左侧边栏
     const sidebarList = document.getElementById('sidebarList');
-    sidebarList.innerHTML = parentFunds.map((fund, i) => `
+    const fundKeyword = sidebarFundKeyword.trim().toLowerCase();
+    const dateKeyword = sidebarDateKeyword.trim();
+    const visibleFunds = parentFunds
+        .map((fund, i) => ({ fund, i }))
+        .filter(({ fund }) => {
+            const fundText = `${fund.name} ${fund.code}`.toLowerCase();
+            const dateText = `${fund.establishDate || ''} ${fund.latestDate || ''}`;
+            return (!fundKeyword || fundText.includes(fundKeyword)) &&
+                (!dateKeyword || dateText.includes(dateKeyword));
+        });
+
+    if (!visibleFunds.some(({ i }) => i === currentDetailFundIndex) && visibleFunds.length) {
+        currentDetailFundIndex = visibleFunds[0].i;
+    }
+
+    sidebarList.innerHTML = visibleFunds.length ? visibleFunds.map(({ fund, i }) => `
         <div class="sidebar-item ${i === currentDetailFundIndex ? 'active' : ''}" onclick="selectFund(${i})">
             <span class="sidebar-item-name">${fund.name}</span>
             <span class="sidebar-item-code">${fund.code}</span>
             ${fund.status === 'pending' ? '<span class="sidebar-item-tag">今日上会</span>' : ''}
         </div>
-    `).join('');
+    `).join('') : '<div style="padding:16px;color:#999;font-size:13px;">暂无匹配母基金</div>';
 
-    renderFundDetail(parentFunds[currentDetailFundIndex]);
+    if (visibleFunds.length) {
+        renderFundDetail(parentFunds[currentDetailFundIndex]);
+    } else {
+        document.getElementById('detailMainContent').innerHTML = '<div class="fund-info-card" style="color:#999;">暂无匹配数据</div>';
+    }
 }
 
 function selectFund(index) {
@@ -1415,6 +1647,7 @@ function renderFundDetail(fund) {
                     <input type="date" id="recordDateStart" onchange="filterRecordsByDate()" style="padding:5px 8px;border:1px solid #d9d9d9;border-radius:4px;font-size:13px;outline:none;width:150px;">
                     <span style="font-size:13px;color:#999;">至</span>
                     <input type="date" id="recordDateEnd" onchange="filterRecordsByDate()" style="padding:5px 8px;border:1px solid #d9d9d9;border-radius:4px;font-size:13px;outline:none;width:150px;">
+                    <button class="tool-btn" style="padding:5px 10px;font-size:12px" onclick="openColumnConfig('detail')">字段配置</button>
                 </div>
             </div>
             <div class="record-body">
@@ -1432,6 +1665,7 @@ function renderFundDetail(fund) {
     const endEl = document.getElementById('recordDateEnd');
     if (startEl && !startEl.value) startEl.value = fmt(oneYearAgo);
     if (endEl && !endEl.value) endEl.value = fmt(today);
+    applyDetailColumnConfig();
 }
 
 function renderRecordTable() {
@@ -1503,7 +1737,7 @@ function renderRecordTable() {
                         <td>幻方量化</td><td>HF002</td><td>幻方量化中性3号</td><td>赎回</td><td>量化中性</td>
                         <td>25.36%</td>
                         <td>2026-05-04</td><td>663.00</td>
-                        <td style="max-width:140px;font-size:12px;">平滑组合整体收益风险特征</td><td>57.00</td>
+                        <td style="max-width:140px;font-size:12px;">平滑组合整体收益风险特征</td><td>57.00</td><td></td>
                         <td>720.00</td><td>8.11%</td>
                         <td style="font-size:12px;">北京金融街营业部总部</td><td style="font-size:12px;">北京金融街营业部总部</td>
                         <td>57.00</td><td>0.00</td>
@@ -1561,7 +1795,8 @@ function renderRecordTable() {
                     <th>策略比例</th>
                     <th>金额(万)</th>
                     <th>配置比例</th>
-                    <th>池子</th>
+                    <th>上分池</th>
+                    <th>资配池</th>
                     <th>证券交易落地营业部</th>
                     <th>期货交易落地营业部</th>
                     <th>已排期(万)</th>
@@ -1574,7 +1809,7 @@ function renderRecordTable() {
                         <td><span class="status-exempt">豁免上会</span></td>
                         <td>幻方量化</td><td>HF002</td><td>幻方量化中性3号</td><td>量化中性</td>
                         <td>25.36%</td>
-                        <td>229.00</td><td>19.98%</td><td>上分50池-核心池</td>
+                        <td>229.00</td><td>19.98%</td><td>核心池</td><td>在池</td>
                         <td style="font-size:12px;">北京金融街营业部总部</td><td style="font-size:12px;">北京金融街营业部总部</td>
                         <td>0.00</td><td>229.00</td>
                         <td><a class="action-link" onclick="openScheduleOrderFromDetail('幻方量化','HF002','幻方量化中性3号','量化中性',229,'申购')" style="margin-right:4px">排期</a><a class="action-link delete" onclick="this.closest('tr').remove()" title="删除该条">删除</a></td>
@@ -1584,7 +1819,7 @@ function renderRecordTable() {
                         <td><span class="status-exempt">豁免上会</span></td>
                         <td>宁波幻方</td><td>NB008</td><td>宁波幻方混合1号</td><td>混合策略</td>
                         <td>8.99%</td>
-                        <td>231.00</td><td>20.16%</td><td>上分50池-配置池</td>
+                        <td>231.00</td><td>20.16%</td><td>配置池</td><td>在池</td>
                         <td style="font-size:12px;">北京金融街营业部</td><td style="font-size:12px;">杭州西湖营业部</td>
                         <td>0.00</td><td>231.00</td>
                         <td><a class="action-link" onclick="openScheduleOrderFromDetail('宁波幻方','NB008','宁波幻方混合1号','混合策略',231,'申购')" style="margin-right:4px">排期</a><a class="action-link delete" onclick="this.closest('tr').remove()" title="删除该条">删除</a></td>
@@ -1594,7 +1829,7 @@ function renderRecordTable() {
                         <td><span class="status-pending">豁免上会</span></td>
                         <td>九坤投资</td><td>JK001</td><td>九坤量化对冲1号</td><td>量化对冲</td>
                         <td>48.05%</td>
-                        <td>289.00</td><td>25.22%</td><td>上分50池-配置池</td>
+                        <td>289.00</td><td>25.22%</td><td>配置池</td><td>在池</td>
                         <td style="font-size:12px;">深圳福田营业部</td><td style="font-size:12px;">上海陆家嘴营业部</td>
                         <td>0.00</td><td>289.00</td>
                         <td><a class="action-link" onclick="openScheduleOrderFromDetail('九坤投资','JK001','九坤量化对冲1号','量化对冲',289,'申购')" style="margin-right:4px">排期</a><a class="action-link delete" onclick="this.closest('tr').remove()" title="删除该条">删除</a></td>
@@ -1604,7 +1839,7 @@ function renderRecordTable() {
                         <td><span class="status-waiting">待上会</span></td>
                         <td>衍复投资</td><td>YF005</td><td>衍复量化增强1号</td><td>量化指增</td>
                         <td>32.78%</td>
-                        <td>199.00</td><td>17.36%</td><td>上分50池-核心池</td>
+                        <td>199.00</td><td>17.36%</td><td>核心池</td><td>在池</td>
                         <td style="font-size:12px;">深圳福田营业部</td><td style="font-size:12px;">南京新街口营业部</td>
                         <td><a style="color:#1890ff;cursor:pointer;font-weight:500;" onclick="openModal('scheduledPlansModal')">573.00</a></td><td>199.00</td>
                         <td><a class="action-link" onclick="openScheduleOrderFromDetail('衍复投资','YF005','衍复量化增强1号','量化指增',199,'申购')" style="margin-right:4px">排期</a><a class="action-link delete" onclick="this.closest('tr').remove()" title="删除该条">删除</a></td>
@@ -1614,7 +1849,7 @@ function renderRecordTable() {
                         <td><span class="status-waiting">待豁免</span></td>
                         <td>明汯投资</td><td>MH001</td><td>明汯多策略1号</td><td>混合策略</td>
                         <td>8.99%</td>
-                        <td>180.00</td><td>15.71%</td><td>上分50池-配置池</td>
+                        <td>180.00</td><td>15.71%</td><td>配置池</td><td>不在池</td>
                         <td style="font-size:12px;">上海浦东营业部</td><td style="font-size:12px;">上海陆家嘴营业部</td>
                         <td>0.00</td><td>180.00</td>
                         <td><a class="action-link" onclick="openScheduleOrderFromDetail('明汯投资','MH001','明汯多策略1号','混合策略',180,'申购')" style="margin-right:4px">排期</a><a class="action-link delete" onclick="this.closest('tr').remove()" title="删除该条">删除</a></td>
@@ -1655,7 +1890,8 @@ function addNpDetailRow() {
         <td><span class="np-strategy-display" style="color:#666;font-size:13px;">-</span></td>
         <td><input type="text" class="form-input np-ratio" style="width:80px" placeholder="" oninput="calcNpAmount(this)"></td>
         <td><input type="text" class="form-input np-amount" style="width:90px" placeholder="" oninput="calcNpRatio(this)" readonly></td>
-        <td>上分50池</td>
+        <td>核心池</td>
+        <td>在池</td>
         <td style="white-space:nowrap;">
             <button class="exempt-btn" onclick="toggleExempt(this)">豁免</button>
             <button class="icon-btn" title="复制" onclick="copyNpRow(this)">📋</button>
@@ -1848,7 +2084,8 @@ function addNaDetailRow() {
         <td><input type="text" class="form-input na-ratio" style="width:80px" placeholder="" oninput="calcNaAmount(this)"></td>
         <td class="na-amount-cell"><input type="text" class="form-input na-amount" style="width:90px" placeholder="" oninput="calcNaRatio(this)"></td>
         <td class="na-share-cell"><input type="text" class="form-input na-share" style="width:90px;display:none" placeholder=""></td>
-        <td>上分50池</td>
+        <td>配置池</td>
+        <td>在池</td>
         <td style="white-space:nowrap;">
             <button class="exempt-btn" onclick="toggleExempt(this)">豁免</button>
             <button class="icon-btn" title="复制" onclick="copyNaRow(this)">📋</button>
@@ -1897,8 +2134,14 @@ function showToast(msg) {
     setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; setTimeout(() => t.remove(), 300); }, 2000);
 }
 
-function filterSidebar(val) {}
-function filterSidebarDate(val) {}
+function filterSidebar(val) {
+    sidebarFundKeyword = val || '';
+    renderDetailView();
+}
+function filterSidebarDate(val) {
+    sidebarDateKeyword = val || '';
+    renderDetailView();
+}
 
 function editRecord() { showToast('编辑模式'); }
 function deleteRecord() { if(confirm('确定删除？')) showToast('已删除'); }
@@ -1910,12 +2153,6 @@ function batchSchedule() { openModal('batchCreatePlanModal'); }
 //  批量修改状态下拉菜单
 // ============================================================
 let activeDropdown = null;
-document.addEventListener('click', function(e) {
-    if (activeDropdown && !e.target.closest('.dropdown-menu') && !e.target.closest('.batch-btn')) {
-        activeDropdown.style.display = 'none';
-        activeDropdown = null;
-    }
-});
 
 function showBatchStatusMenu(event) {
     event.stopPropagation();
@@ -1984,6 +2221,246 @@ document.querySelectorAll('.modal-overlay').forEach(modal => {
     });
 });
 
+function openColumnConfig(scope) {
+    const columns = scope === 'detail' ? detailColumns : tableColumns;
+    let panel = document.getElementById('columnConfigPanel');
+    if (!panel) {
+        panel = document.createElement('div');
+        panel.id = 'columnConfigPanel';
+        panel.className = 'field-config-panel';
+        document.body.appendChild(panel);
+        panel.addEventListener('click', e => {
+            if (e.target === panel) closeColumnConfig();
+        });
+    }
+    const title = scope === 'detail' ? '母基金视图字段配置' : '表格视图字段配置';
+    const hint = scope === 'detail' ? '母基金、营业部、服务人员、预期收益、回撤容忍等字段已在头部展示，分表默认隐藏，可在这里打开。' : '按文档字段维护表格视图可见列。';
+    panel.innerHTML = `
+        <div class="field-config-box">
+            <div class="field-config-header">
+                <div>
+                    <div class="field-config-title">${title}</div>
+                    <div style="font-size:12px;color:#8a94a6;margin-top:4px;">${hint}</div>
+                </div>
+                <button class="modal-close" onclick="closeColumnConfig()">×</button>
+            </div>
+            <div class="field-config-body">
+                ${columns.map(col => `
+                    <label class="field-check">
+                        <input type="checkbox" ${columnState[scope][col.key] || col.locked ? 'checked' : ''} ${col.locked ? 'disabled' : ''} onchange="toggleColumn('${scope}','${col.key}',this.checked)">
+                        <span>${col.label}</span>
+                    </label>
+                `).join('')}
+            </div>
+            <div class="field-config-footer">
+                <button class="btn btn-default" onclick="resetColumns('${scope}')">恢复默认</button>
+                <button class="btn btn-primary" onclick="closeColumnConfig()">完成</button>
+            </div>
+        </div>
+    `;
+    panel.classList.add('show');
+}
+
+function closeColumnConfig() {
+    const panel = document.getElementById('columnConfigPanel');
+    if (panel) panel.classList.remove('show');
+}
+
+function toggleColumn(scope, key, checked) {
+    columnState[scope][key] = checked;
+    if (scope === 'table') {
+        renderMainTable();
+    } else {
+        applyDetailColumnConfig();
+    }
+}
+
+function resetColumns(scope) {
+    const columns = scope === 'detail' ? detailColumns : tableColumns;
+    columns.forEach(col => { columnState[scope][col.key] = col.visible || col.locked; });
+    openColumnConfig(scope);
+    if (scope === 'table') {
+        renderMainTable();
+    } else {
+        applyDetailColumnConfig();
+    }
+}
+
+const detailHeaderKeyMap = {
+    '上会状态': 'status',
+    '子基金管理人': 'subManager',
+    '交易类型': 'tradeType',
+    '策略': 'strategy',
+    '策略比例': 'strategyRatio',
+    '金额(万)': 'amount',
+    '配置比例': 'configRatio',
+    '最新估值日期': 'evalDate',
+    '已投金额(万)': 'investedAmt',
+    '调仓原因': 'adjustReason',
+    '调仓金额(万)': 'adjAmt',
+    '调仓份额': 'adjShare',
+    '调仓后金额(万)': 'afterAmount',
+    '调仓后配置比例': 'afterConfigRatio',
+    '池子': 'upperPool',
+    '上分池': 'upperPool',
+    '资配池': 'assetPool',
+    '证券交易落地营业部': 'securitiesDept',
+    '期货交易落地营业部': 'futuresDept',
+    '已排期(万)': 'scheduled',
+    '待排期(万)': 'pending',
+    '操作': 'action'
+};
+
+function applyDetailColumnConfig() {
+    const tables = document.querySelectorAll('.record-body table');
+    tables.forEach(table => {
+        mapDetailHeaderFields(table);
+        normalizeDetailRowCells(table);
+        ensureDetailExtraColumns(table);
+        mapDetailHeaderFields(table);
+        normalizePoolCellValues(table);
+        reorderDetailTableColumns(table);
+        const headers = Array.from(table.querySelectorAll('thead th'));
+        headers.forEach((th, index) => {
+            const field = th.dataset.field;
+            const visible = field === 'action' || field === 'legacySubFundPart'
+                ? field === 'action' || !columnState.detail.subFund
+                : field ? columnState.detail[field] !== false : true;
+            th.style.display = visible ? '' : 'none';
+            table.querySelectorAll('tbody tr').forEach(row => {
+                const cell = row.children[index];
+                if (cell) cell.style.display = visible ? '' : 'none';
+            });
+        });
+    });
+}
+
+function normalizeDetailRowCells(table) {
+    const expectedCount = table.querySelectorAll('thead th').length;
+    table.querySelectorAll('tbody tr').forEach(row => {
+        while (row.children.length < expectedCount) {
+            const td = document.createElement('td');
+            const actionCell = Array.from(row.children).find(cell => cell.querySelector('.action-link'));
+            if (actionCell) {
+                row.insertBefore(td, actionCell);
+            } else {
+                row.appendChild(td);
+            }
+        }
+    });
+}
+
+function normalizePoolCellValues(table) {
+    const headers = Array.from(table.querySelectorAll('thead th'));
+    const upperPoolIndex = headers.findIndex(th => th.dataset.field === 'upperPool');
+    const assetPoolIndex = headers.findIndex(th => th.dataset.field === 'assetPool');
+    table.querySelectorAll('tbody tr').forEach(row => {
+        if (upperPoolIndex >= 0 && row.children[upperPoolIndex]) {
+            row.children[upperPoolIndex].textContent = normalizeUpperPool(row.children[upperPoolIndex].innerText);
+        }
+        if (assetPoolIndex >= 0 && row.children[assetPoolIndex]) {
+            row.children[assetPoolIndex].textContent = normalizeAssetPool(row.children[assetPoolIndex].innerText);
+        }
+    });
+}
+
+function getDetailColumnOrder() {
+    const order = ['select'];
+    detailColumns.forEach(col => {
+        if (col.key === 'subFund') order.push('subFund', 'legacySubFundPart');
+        else order.push(col.key);
+    });
+    return order;
+}
+
+function reorderDetailTableColumns(table) {
+    const order = getDetailColumnOrder();
+    const headerRow = table.querySelector('thead tr');
+    const headers = Array.from(headerRow.children);
+    const columnItems = headers.map((th, index) => ({
+        th,
+        index,
+        field: th.dataset.field || (th.querySelector('input[type="checkbox"]') ? 'select' : `__unknown_${index}`)
+    }));
+    const sortedItems = columnItems.slice().sort((a, b) => {
+        const ai = order.indexOf(a.field);
+        const bi = order.indexOf(b.field);
+        if (ai === -1 && bi === -1) return a.index - b.index;
+        if (ai === -1) return 1;
+        if (bi === -1) return -1;
+        return ai - bi || a.index - b.index;
+    });
+
+    sortedItems.forEach(item => headerRow.appendChild(item.th));
+    table.querySelectorAll('tbody tr').forEach(row => {
+        const cells = Array.from(row.children);
+        sortedItems.forEach(item => {
+            if (cells[item.index]) row.appendChild(cells[item.index]);
+        });
+    });
+}
+
+function mapDetailHeaderFields(table) {
+    Array.from(table.querySelectorAll('thead th')).forEach(th => {
+        const label = th.textContent.trim();
+        if (th.querySelector('input[type="checkbox"]')) th.dataset.field = 'select';
+        if (detailHeaderKeyMap[label]) th.dataset.field = detailHeaderKeyMap[label];
+        if (label === '子基金代码' || label === '子基金名称') th.dataset.field = 'legacySubFundPart';
+    });
+}
+
+function ensureDetailExtraColumns(table) {
+    const extraKeys = ['parentFund', 'dept', 'servicePerson', 'expectedReturn', 'drawdownTolerance', 'subFund', 'upperPool', 'assetPool', 'executed'];
+    extraKeys.forEach(key => {
+        if (table.querySelector(`th[data-field="${key}"]`)) return;
+        const col = detailColumns.find(item => item.key === key);
+        if (!col) return;
+        const actionTh = table.querySelector('thead th[data-field="action"]') || Array.from(table.querySelectorAll('thead th')).find(th => th.textContent.trim() === '操作');
+        const th = document.createElement('th');
+        th.dataset.field = key;
+        th.textContent = col.label;
+        if (actionTh) {
+            actionTh.parentNode.insertBefore(th, actionTh);
+        } else {
+            table.querySelector('thead tr').appendChild(th);
+        }
+        table.querySelectorAll('tbody tr').forEach(row => {
+            const td = document.createElement('td');
+            td.dataset.field = key;
+            td.textContent = getDetailExtraValue(table, row, key);
+            const actionCell = Array.from(row.children).find(cell => cell.querySelector('.action-link'));
+            if (actionCell) {
+                row.insertBefore(td, actionCell);
+            } else {
+                row.appendChild(td);
+            }
+        });
+    });
+}
+
+function getDetailExtraValue(table, row, key) {
+    const fund = parentFunds[currentDetailFundIndex] || {};
+    const textByHeader = label => {
+        const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+        const index = headers.indexOf(label);
+        return index >= 0 && row.children[index] ? row.children[index].innerText.trim() : '';
+    };
+    const pool = textByHeader('池子');
+    const upperPool = textByHeader('上分池') || pool;
+    const values = {
+        parentFund: formatCodeName(fund.code, fund.name),
+        dept: fund.dept || '',
+        servicePerson: fund.servicePerson || '',
+        expectedReturn: fund.expectedReturn || '',
+        drawdownTolerance: fund.drawdownTolerance || '',
+        subFund: formatCodeName(textByHeader('子基金代码'), textByHeader('子基金名称')),
+        upperPool: normalizeUpperPool(upperPool),
+        assetPool: normalizeAssetPool(textByHeader('资配池') || upperPool),
+        executed: '0.00'
+    };
+    return values[key] || '-';
+}
+
 
 // ============================================================
 //  批量创建投资计划
@@ -2013,29 +2490,58 @@ function submitBatchPlan() {
     setTimeout(() => openModal('scheduledPlansModal'), 800);
 }
 
+function setSelectByTextOrValue(id, targetText) {
+    const select = document.getElementById(id);
+    if (!select) return;
+    const target = String(targetText || '').trim();
+    const option = Array.from(select.options).find(opt => {
+        const text = opt.textContent.trim();
+        return opt.value === target || text === target || text.includes(target) || target.includes(text);
+    });
+    if (option) {
+        select.selectedIndex = option.index;
+        return;
+    }
+    if (target && select.options.length) {
+        select.options[0].textContent = target;
+        select.selectedIndex = 0;
+    }
+}
+
+function fillScheduleOrderModal(data) {
+    setSelectByTextOrValue('modalSoParentFund', data.parentFund);
+    setSelectByTextOrValue('modalSoSubFund', data.subFund);
+    setSelectByTextOrValue('modalSoStrategy', data.strategy);
+    setSelectByTextOrValue('modalSoTradeType', data.tradeType || '申购');
+    const amountEl = document.getElementById('modalSoAmount');
+    if (amountEl) amountEl.value = data.amount || '';
+    const infoLine = document.getElementById('modalSoTradeTip');
+    if (infoLine) infoLine.innerHTML = `最近交易日:<strong>2026-05-13</strong>(赎回); 最新持仓日:<strong>2026-05-10</strong>`;
+}
+
 // 排期下单（单行）- 自动填充（从表格视图）
 function openScheduleOrder(rowId) {
     const row = mainTableData.find(r => r.id === rowId);
     if (!row) { openModal('scheduleOrderModal'); return; }
-    document.getElementById('soParentFund').value = row.parentFund.split(' ')[0] || '';
-    document.getElementById('soSubFund').value = `${row.subCode} ${row.subName}`;
-    document.getElementById('soStrategy').value = row.strategy;
-    document.getElementById('soAmount').value = row.amount !== '-' ? row.amount : '';
-    document.getElementById('soTradeType').value = row.tradeType || '申购';
-    const infoLine = document.querySelector('#scheduleOrderModal .modal-body > div:nth-child(2)');
-    if (infoLine) infoLine.innerHTML = `最近交易日:<strong>2026-05-13</strong>(赎回); 最新持仓日:<strong>2026-05-10</strong>`;
+    fillScheduleOrderModal({
+        parentFund: row.parentFund,
+        subFund: `${row.subCode} ${row.subName}`,
+        strategy: row.strategy,
+        amount: row.amount !== '-' ? row.amount : row.adjAmt,
+        tradeType: row.tradeType
+    });
     openModal('scheduleOrderModal');
 }
 
 // 排期下单（单行）- 自动填充（从母基金视图详情）
 function openScheduleOrderFromDetail(subManager, subCode, subName, strategy, amount, tradeType) {
-    document.getElementById('soParentFund').value = 'SKZX001 私客尊享FOF1号';
-    document.getElementById('soSubFund').value = `${subCode} ${subName}`;
-    document.getElementById('soStrategy').value = strategy;
-    document.getElementById('soAmount').value = amount || '';
-    document.getElementById('soTradeType').value = tradeType || '申购';
-    const infoLine = document.querySelector('#scheduleOrderModal .modal-body > div:nth-child(2)');
-    if (infoLine) infoLine.innerHTML = `最近交易日:<strong>2026-05-13</strong>(赎回); 最新持仓日:<strong>2026-05-10</strong>`;
+    fillScheduleOrderModal({
+        parentFund: parentFunds[currentDetailFundIndex]?.name || 'SKZX001 私客尊享FOF1号',
+        subFund: `${subCode} ${subName}`,
+        strategy,
+        amount,
+        tradeType
+    });
     openModal('scheduleOrderModal');
 }
 
@@ -2129,7 +2635,8 @@ function addErDetailRow(data) {
         <td><span style="color:#666;font-size:13px;">${data ? data.strategy : '-'}</span></td>
         <td><input type="text" class="form-input er-ratio" style="width:80px" value="${data ? data.ratio.replace('%','') : ''}"></td>
         <td><input type="text" class="form-input er-amount" style="width:90px" value="${data ? data.amount : ''}" readonly></td>
-        <td>${data ? data.pool : '上分50池'}</td>
+        <td>${normalizeUpperPool(data ? data.pool : '核心池')}</td>
+        <td>${normalizeAssetPool(data ? data.assetPool : '在池')}</td>
         <td style="white-space:nowrap;">
             <button class="exempt-btn" onclick="toggleExempt(this)">豁免</button>
             <button class="icon-btn" title="删除" onclick="this.closest('tr').remove()">🗑</button>
@@ -2355,7 +2862,7 @@ for (let i = 0; i < 2; i++) addNaDetailRow();
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px;">
                 <div class="form-group">
                     <label class="form-label">母基金</label>
-                    <select class="form-select" id="soParentFund" disabled style="background:#f5f5f5;">
+                    <select class="form-select" id="modalSoParentFund" disabled style="background:#f5f5f5;">
                         <option value="" selected>SKZX001 私客尊享FOF1号</option>
                         <option value="">SKZX002 私客尊享FOF2号</option>
                         <option value="">SKZX003 私客尊享FOF3号</option>
@@ -2363,7 +2870,7 @@ for (let i = 0; i < 2; i++) addNaDetailRow();
                 </div>
                 <div class="form-group">
                     <label class="form-label">子基金</label>
-                    <select class="form-select" id="soSubFund" disabled style="background:#f5f5f5;">
+                    <select class="form-select" id="modalSoSubFund" disabled style="background:#f5f5f5;">
                         <option value="" selected>NB008 宁波幻方混合1号</option>
                         <option value="">HF002 幻方量化中性3号</option>
                         <option value="">YF005 衍复量化增强1号</option>
@@ -2371,7 +2878,7 @@ for (let i = 0; i < 2; i++) addNaDetailRow();
                 </div>
                 <div class="form-group">
                     <label class="form-label">投资策略</label>
-                    <select class="form-select" id="soStrategy">
+                    <select class="form-select" id="modalSoStrategy">
                         <option value="" selected>混合策略</option>
                         <option value="">量化中性</option>
                         <option value="">量化指增</option>
@@ -2379,14 +2886,14 @@ for (let i = 0; i < 2; i++) addNaDetailRow();
                 </div>
             </div>
             <!-- 最近交易/持仓信息行 -->
-            <div style="font-size:13px;color:#666;margin-bottom:18px;padding-left:2px;">
+            <div id="modalSoTradeTip" style="font-size:13px;color:#666;margin-bottom:18px;padding-left:2px;">
                 最近交易日:<strong>2026-05-13</strong>(赎回); 最新持仓日:<strong>2026-05-10</strong>
             </div>
             <!-- 第二行：交易类型 / 计划金额 / 拟交易日期 -->
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px;">
                 <div class="form-group">
                     <label class="form-label">交易类型</label>
-                    <select class="form-select" id="soTradeType" disabled style="background:#f5f5f5;">
+                    <select class="form-select" id="modalSoTradeType" disabled style="background:#f5f5f5;">
                         <option value="">请选择</option>
                         <option value="申购">申购</option>
                         <option value="赎回">赎回</option>
@@ -2395,18 +2902,18 @@ for (let i = 0; i < 2; i++) addNaDetailRow();
                 </div>
                 <div class="form-group">
                     <label class="form-label">计划金额（万）</label>
-                    <input type="text" class="form-input" id="soAmount" placeholder="" value="295">
+                    <input type="text" class="form-input" id="modalSoAmount" placeholder="" value="295">
                 </div>
                 <div class="form-group">
                     <label class="form-label">拟交易日期</label>
-                    <input type="date" class="form-input" id="soTradeDate">
+                    <input type="date" class="form-input" id="modalSoTradeDate">
                 </div>
             </div>
             <!-- 第三行：材料形式 / 加急理由 / 加急转换 -->
             <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:16px;align-items:flex-end;margin-bottom:20px;">
                 <div class="form-group">
                     <label class="form-label">材料形式</label>
-                    <select class="form-select" id="soMaterial">
+                    <select class="form-select" id="modalSoMaterial">
                         <option value="">请选择</option>
                         <option value="直销-妥妥递">直销-妥妥递</option>
                         <option value="纸质">纸质</option>
@@ -2414,11 +2921,11 @@ for (let i = 0; i < 2; i++) addNaDetailRow();
                 </div>
                 <div class="form-group">
                     <label class="form-label">加急理由</label>
-                    <input type="text" class="form-input" id="soUrgentReason">
+                    <input type="text" class="form-input" id="modalSoUrgentReason">
                 </div>
                 <div style="display:flex;align-items:center;gap:14px;padding-bottom:4px;">
-                    <label class="checkbox-option"><input type="checkbox" id="soUrgent"> 加急</label>
-                    <label class="checkbox-option"><input type="checkbox" id="soConvert"> 转换</label>
+                    <label class="checkbox-option"><input type="checkbox" id="modalSoUrgent"> 加急</label>
+                    <label class="checkbox-option"><input type="checkbox" id="modalSoConvert"> 转换</label>
                     <span style="font-size:12px;color:#999;">每个工作日开放</span>
                 </div>
             </div>
@@ -2426,7 +2933,7 @@ for (let i = 0; i < 2; i++) addNaDetailRow();
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                 <div class="form-group">
                     <label class="form-label">投资理由</label>
-                    <select class="form-select" id="soReason">
+                    <select class="form-select" id="modalSoReason">
                         <option value="">请选择</option>
                         <option value="新发产品">新发产品</option>
                         <option value="业绩优秀">业绩优秀</option>
@@ -2435,7 +2942,7 @@ for (let i = 0; i < 2; i++) addNaDetailRow();
                 </div>
                 <div class="form-group">
                     <label class="form-label">投资备注</label>
-                    <input type="text" class="form-input" id="soRemark">
+                    <input type="text" class="form-input" id="modalSoRemark">
                 </div>
             </div>
             <div style="margin-top:16px;padding:12px 16px;background:#fff7e6;border:1px solid #ffd591;border-radius:4px;">
@@ -2598,7 +3105,8 @@ for (let i = 0; i < 2; i++) addNaDetailRow();
                         <th>策略</th>
                         <th>配置比例 <label style="font-weight:normal;font-size:12px;margin-left:4px;"><input type="radio" name="erRatioType" checked> 按比例</label></th>
                         <th>金额(万) <label style="font-weight:normal;font-size:12px;margin-left:4px;"><input type="radio" name="erRatioType"> 按金额</label></th>
-                        <th>池子</th>
+                        <th>上分池</th>
+                        <th>资配池</th>
                         <th>操作</th>
                     </tr></thead>
                     <tbody id="erDetailBody"></tbody>
