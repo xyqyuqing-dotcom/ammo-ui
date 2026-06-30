@@ -937,7 +937,7 @@
                     <span class="record-count" id="recordCount">共 36 条记录</span>
                     <button class="batch-btn" onclick="showBatchExemptMenu(event)">批量豁免</button>
                     <button class="batch-btn" onclick="showBatchStatusMenu(event)">批量修改状态</button>
-                    <button class="batch-btn" onclick="openModal('batchCreatePlanModal')">批量排期下单</button>
+                    <button class="batch-btn" onclick="openBatchCreatePlanModal(event)">批量排期下单</button>
                     <button class="batch-btn" onclick="alert('导出功能开发中')">📥 下载</button>
                 </div>
             </div>
@@ -1549,8 +1549,19 @@ function normalizeUpperPool(value) {
 
 function normalizeAssetPool(value, fallback = '') {
     const text = String(value || fallback || '');
-    if (text.includes('不在池')) return '不在池';
-    return '在池';
+    if (text.includes('不在资配池') || text.includes('不在池')) return '不在资配池';
+    if (text.includes('无额度')) return '在池，无额度';
+    if (text.includes('不可新增')) return '在池，不可新增';
+    if (text.includes('可下投')) return '在池，可下投';
+    return '在池，可下投';
+}
+
+function getDemoAssetPoolStatusText(productName, fallback = '') {
+    const normalizedName = normalizeProductName(productName);
+    if (!normalizedName) return normalizeAssetPool(fallback);
+    const matchedKey = Object.keys(demoAssetPoolStatusMap).find(key => normalizedName.includes(key) || key.includes(normalizedName));
+    if (matchedKey) return demoAssetPoolStatusMap[matchedKey].statusText;
+    return normalizeAssetPool(fallback);
 }
 
 function formatCodeName(value, name) {
@@ -1602,7 +1613,7 @@ function renderColumnValue(row, key, strategyRatioMap = {}) {
         afterAmount: afterAmount ? afterAmount.toFixed(2) : '-',
         afterConfigRatio: row.afterConfigRatio || (afterAmount ? `${(afterAmount / 9000 * 100).toFixed(2)}%` : '-'),
         upperPool: normalizeUpperPool(row.upperPool || row.pool),
-        assetPool: normalizeAssetPool(row.assetPool, row.pool),
+        assetPool: getDemoAssetPoolStatusText(row.subName, row.assetPool || row.pool),
         securitiesDept,
         futuresDept,
         status: `<span class="${getStatusClass(row.status)}">${row.status}</span>`,
@@ -1639,7 +1650,7 @@ function editRow(id) {
         tradeType: row.tradeType || '申购',
         amount: row.opType === '建仓' ? row.amount : (isShareTradeType(row.tradeType) ? row.adjShare : row.adjAmt),
         upperPool: normalizeUpperPool(row.upperPool || row.pool),
-        assetPool: normalizeAssetPool(row.assetPool, row.pool)
+        assetPool: getDemoAssetPoolStatusText(row.subName, row.assetPool || row.pool)
     });
 }
 function scheduleRow(id) { showPage('schedule'); }
@@ -1747,7 +1758,7 @@ function renderFundDetail(fund) {
             <div class="fund-info-grid" style="border-top:1px solid #f0f0f0;padding-top:12px;margin-top:4px;">
                 <div class="info-item">
                     <span class="info-label">营业部/部门</span>
-                    <select class="form-select" style="padding:4px 8px;font-size:13px;width:100%;">
+                    <select class="form-select" id="fundDeptInput" style="padding:4px 8px;font-size:13px;width:100%;">
                         <option value="">请选择</option>
                         <optgroup label="证券营业部">
                             <option value="证券-上海大渡河路" ${fund.dept === '证券-上海大渡河路' ? 'selected' : ''}>证券-上海大渡河路</option>
@@ -1764,15 +1775,18 @@ function renderFundDetail(fund) {
                 </div>
                 <div class="info-item">
                     <span class="info-label">服务人员/客户经理</span>
-                    <input type="text" class="form-input" style="padding:4px 8px;font-size:13px;width:100%;" placeholder="请输入" value="${fund.servicePerson || ''}">
+                    <input type="text" class="form-input" id="fundServicePersonInput" style="padding:4px 8px;font-size:13px;width:100%;" placeholder="请输入" value="${fund.servicePerson || ''}">
                 </div>
                 <div class="info-item">
                     <span class="info-label">预期收益</span>
-                    <input type="text" class="form-input" style="padding:4px 8px;font-size:13px;width:100%;" placeholder="请输入" value="${fund.expectedReturn || ''}">
+                    <input type="text" class="form-input" id="fundExpectedReturnInput" style="padding:4px 8px;font-size:13px;width:100%;" placeholder="请输入" value="${fund.expectedReturn || ''}">
                 </div>
                 <div class="info-item">
                     <span class="info-label">回撤容忍</span>
-                    <input type="text" class="form-input" style="padding:4px 8px;font-size:13px;width:100%;" placeholder="请输入" value="${fund.drawdownTolerance || ''}">
+                    <input type="text" class="form-input" id="fundDrawdownToleranceInput" style="padding:4px 8px;font-size:13px;width:100%;" placeholder="请输入" value="${fund.drawdownTolerance || ''}">
+                </div>
+                <div class="info-item" style="justify-content:flex-end;">
+                    <button class="btn btn-primary" style="height:32px;padding:0 18px;font-size:13px;" onclick="saveFundEditableInfo()">保存</button>
                 </div>
             </div>
         </div>
@@ -1807,6 +1821,18 @@ function renderFundDetail(fund) {
     applyDetailColumnConfig();
 }
 
+function saveFundEditableInfo() {
+    const fund = parentFunds[currentDetailFundIndex];
+    if (!fund) return;
+    fund.dept = document.getElementById('fundDeptInput')?.value || '';
+    fund.servicePerson = document.getElementById('fundServicePersonInput')?.value || '';
+    fund.expectedReturn = document.getElementById('fundExpectedReturnInput')?.value || '';
+    fund.drawdownTolerance = document.getElementById('fundDrawdownToleranceInput')?.value || '';
+    applyDetailColumnConfig();
+    renderMainTable();
+    showToast('保存成功');
+}
+
 function renderRecordTable() {
     let html = '';
 
@@ -1817,7 +1843,7 @@ function renderRecordTable() {
             <div style="display:flex;gap:6px;">
                 <button class="tool-btn" style="padding:4px 10px;font-size:12px" onclick="showBatchExemptMenu(event)">批量豁免</button>
                 <button class="tool-btn" style="padding:4px 10px;font-size:12px" onclick="showBatchStatusMenu(event)">批量修改状态</button>
-                <button class="tool-btn primary" style="padding:4px 10px;font-size:12px" onclick="openModal('batchCreatePlanModal')">批量排期下单</button>
+                <button class="tool-btn primary" style="padding:4px 10px;font-size:12px" onclick="openBatchCreatePlanModal(event)">批量排期下单</button>
                 <button class="tool-btn" style="padding:4px 10px;font-size:12px" onclick="alert('导出功能开发中')">📥 下载</button>
             </div>
         </div>
@@ -1930,7 +1956,7 @@ function renderRecordTable() {
             <div style="display:flex;gap:6px;">
                 <button class="tool-btn" style="padding:4px 10px;font-size:12px" onclick="showBatchExemptMenu(event)">批量豁免</button>
                 <button class="tool-btn" style="padding:4px 10px;font-size:12px" onclick="showBatchStatusMenu(event)">批量修改状态</button>
-                <button class="tool-btn primary" style="padding:4px 10px;font-size:12px" onclick="openModal('batchCreatePlanModal')">批量排期下单</button>
+                <button class="tool-btn primary" style="padding:4px 10px;font-size:12px" onclick="openBatchCreatePlanModal(event)">批量排期下单</button>
                 <button class="tool-btn" style="padding:4px 10px;font-size:12px" onclick="alert('导出功能开发中')">📥 下载</button>
             </div>
         </div>
@@ -2292,7 +2318,7 @@ function filterSidebarDate(val) {
 function editRecord() { showToast('编辑模式'); }
 function deleteRecord() { if(confirm('确定删除？')) showToast('已删除'); }
 function batchModifyStatus() { showBatchStatusMenu(event); }
-function batchSchedule() { openModal('batchCreatePlanModal'); }
+function batchSchedule() { openBatchCreatePlanModal(event); }
 
 
 // ============================================================
@@ -2657,12 +2683,19 @@ function normalizePoolCellValues(table) {
     const headers = Array.from(table.querySelectorAll('thead th'));
     const upperPoolIndex = headers.findIndex(th => th.dataset.field === 'upperPool');
     const assetPoolIndex = headers.findIndex(th => th.dataset.field === 'assetPool');
+    const subFundIndex = headers.findIndex(th => th.dataset.field === 'subFund');
+    const legacySubFundIndexes = headers
+        .map((th, index) => th.dataset.field === 'legacySubFundPart' ? index : -1)
+        .filter(index => index >= 0);
     table.querySelectorAll('tbody tr').forEach(row => {
         if (upperPoolIndex >= 0 && row.children[upperPoolIndex]) {
             row.children[upperPoolIndex].textContent = normalizeUpperPool(row.children[upperPoolIndex].innerText);
         }
         if (assetPoolIndex >= 0 && row.children[assetPoolIndex]) {
-            row.children[assetPoolIndex].textContent = normalizeAssetPool(row.children[assetPoolIndex].innerText);
+            const productName = subFundIndex >= 0 && row.children[subFundIndex]
+                ? row.children[subFundIndex].innerText
+                : legacySubFundIndexes.map(index => row.children[index]?.innerText || '').join(' ');
+            row.children[assetPoolIndex].textContent = getDemoAssetPoolStatusText(productName, row.children[assetPoolIndex].innerText);
         }
     });
 }
@@ -2758,7 +2791,10 @@ function getDetailExtraValue(table, row, key) {
         drawdownTolerance: fund.drawdownTolerance || '',
         subFund: formatCodeName(textByHeader('子基金代码'), textByHeader('子基金名称')),
         upperPool: normalizeUpperPool(upperPool),
-        assetPool: normalizeAssetPool(textByHeader('资配池') || upperPool),
+        assetPool: getDemoAssetPoolStatusText(
+            `${textByHeader('子基金代码')} ${textByHeader('子基金名称')} ${textByHeader('子基金')}`,
+            textByHeader('资配池') || upperPool
+        ),
         executed: '0.00'
     };
     return values[key] || '-';
@@ -2768,6 +2804,114 @@ function getDetailExtraValue(table, row, key) {
 // ============================================================
 //  批量创建投资计划
 // ============================================================
+function openBatchCreatePlanModal(event) {
+    const items = collectBatchScheduleItems(event);
+    if (!items.length) {
+        showToast('请先勾选需要排期下单的记录');
+        return;
+    }
+    renderBatchPlanRows(items);
+    openModal('batchCreatePlanModal');
+}
+
+function collectBatchScheduleItems(event) {
+    const detailTable = findRelatedDetailTable(event);
+    return detailTable ? collectDetailSelectedScheduleItems(detailTable) : collectMainSelectedScheduleItems();
+}
+
+function findRelatedDetailTable(event) {
+    let node = event?.target;
+    while (node && node !== document.body) {
+        if (node.nextElementSibling?.classList?.contains('table-wrapper')) {
+            return node.nextElementSibling.querySelector('table');
+        }
+        node = node.parentElement;
+    }
+    return null;
+}
+
+function collectMainSelectedScheduleItems() {
+    return Array.from(document.querySelectorAll('#mainTableBody tr')).map((tr, index) => {
+        const checked = tr.querySelector('td:first-child input[type="checkbox"]')?.checked;
+        const row = mainTableData[index];
+        if (!checked || !row) return null;
+        const amount = row.amount && row.amount !== '-' ? row.amount : (row.adjAmt && row.adjAmt !== '-' ? row.adjAmt : row.adjShare);
+        return {
+            parentFund: formatCodeName(row.parentFund),
+            productName: formatCodeName(row.subCode, row.subName),
+            strategy: row.strategy || '-',
+            amount: amount || '-',
+            tradeType: row.tradeType || (row.opType === '建仓' ? '申购' : '申购'),
+            recentTrade: row.evalDate || '2026-05-13',
+            recentHolding: row.latestHolding || '2026-05-10'
+        };
+    }).filter(Boolean);
+}
+
+function collectDetailSelectedScheduleItems(table) {
+    const headers = Array.from(table.querySelectorAll('thead th'));
+    const fieldIndex = field => headers.findIndex(th => th.dataset.field === field);
+    const valueByField = (row, field) => {
+        const index = fieldIndex(field);
+        return index >= 0 && row.children[index] ? row.children[index].innerText.trim() : '';
+    };
+    const labelIndex = pattern => headers.findIndex(th => pattern.test(th.textContent.trim()));
+    const codeIndex = labelIndex(/代码/);
+    const nameIndex = labelIndex(/名称/);
+    return Array.from(table.querySelectorAll('tbody tr')).map(row => {
+        const checked = row.querySelector('td:first-child input[type="checkbox"]')?.checked;
+        if (!checked) return null;
+        const code = codeIndex >= 0 ? row.children[codeIndex]?.innerText.trim() : '';
+        const name = nameIndex >= 0 ? row.children[nameIndex]?.innerText.trim() : '';
+        const subFund = valueByField(row, 'subFund') || formatCodeName(code, name);
+        const amount = valueByField(row, 'amount') || valueByField(row, 'adjAmt') || valueByField(row, 'adjShare') || valueByField(row, 'pending') || '-';
+        return {
+            parentFund: parentFunds[currentDetailFundIndex]?.name || '-',
+            productName: subFund || '-',
+            strategy: valueByField(row, 'strategy') || '-',
+            amount,
+            tradeType: valueByField(row, 'tradeType') || '申购',
+            recentTrade: valueByField(row, 'evalDate') || '-',
+            recentHolding: valueByField(row, 'investedAmt') && valueByField(row, 'investedAmt') !== '-' ? '2026-05-19' : '-'
+        };
+    }).filter(Boolean);
+}
+
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    }[ch]));
+}
+
+function renderBatchPlanRows(items) {
+    const countEl = document.getElementById('bcpCount');
+    if (countEl) countEl.textContent = `（${items.length}条）`;
+    document.getElementById('bcpDetailBody').innerHTML = items.map(item => `
+        <tr>
+            <td>${escapeHtml(item.parentFund)}</td>
+            <td>${escapeHtml(item.productName)}</td>
+            <td>${escapeHtml(item.strategy)}</td>
+            <td>${escapeHtml(item.amount)}</td>
+            <td><select class="form-select" disabled style="background:#f5f5f5;"><option selected>${escapeHtml(item.tradeType || '申购')}</option></select></td>
+            <td><input type="date" class="form-input"></td>
+            <td><select class="form-select"><option value=""></option><option>直销-妥妥递</option><option>纸质</option></select></td>
+            <td style="font-size:12px;">${escapeHtml(item.recentTrade || '-')}</td>
+            <td style="font-size:12px;color:${item.recentHolding && item.recentHolding !== '-' ? '#333' : '#999'};">${escapeHtml(item.recentHolding || '-')}</td>
+            <td><a class="action-link delete" onclick="this.closest('tr').remove();updateBatchPlanCount();" style="margin-right:0;">删除</a></td>
+        </tr>
+    `).join('');
+}
+
+function updateBatchPlanCount() {
+    const count = document.querySelectorAll('#bcpDetailBody tr').length;
+    const countEl = document.getElementById('bcpCount');
+    if (countEl) countEl.textContent = `（${count}条）`;
+}
+
 function applyBatchFill() {
     const tradeDate = document.getElementById('bcpTradeDate').value;
     const material = document.getElementById('bcpMaterial').value;
@@ -2787,10 +2931,89 @@ function applyBatchFill() {
     showToast('✅ 已应用到所有行');
 }
 
-function submitBatchPlan() {
-    closeModal('batchCreatePlanModal');
-    showToast('✅ 投资计划创建成功！');
-    setTimeout(() => openModal('scheduledPlansModal'), 800);
+const demoAssetPoolStatusMap = {
+    '宁波幻方混合1号': { status: 'notInPool', statusText: '不在资配池' },
+    '幻方量化中性3号': { status: 'noQuota', statusText: '在池，无额度' },
+    '九坤量化对冲1号': { status: 'notAddable', statusText: '在池，不可新增' },
+    '衍复量化增强1号': { status: 'inPool', statusText: '在池，可下投' },
+    '黑翼对冲基金6号': { status: 'inPool', statusText: '在池，可下投' },
+    '明汯多策略1号': { status: 'notAddable', statusText: '在池，不可新增' }
+};
+
+function normalizeProductName(text) {
+    return String(text || '')
+        .replace(/^[A-Z]{1,6}\d{3,}\s*/, '')
+        .replace(/^[A-Z]{1,6}\d{3,}\(/, '(')
+        .replace(/[()]/g, '')
+        .trim();
+}
+
+function getDemoAssetPoolStatus(items) {
+    return items.map(item => {
+        const productName = normalizeProductName(item.productName);
+        const matchedKey = Object.keys(demoAssetPoolStatusMap).find(key => productName.includes(key) || key.includes(productName));
+        const result = matchedKey ? demoAssetPoolStatusMap[matchedKey] : { status: 'inPool', statusText: '在池，可下投' };
+        return { ...item, productName: productName || item.productName, ...result };
+    });
+}
+
+function notifyAssetAllocationDemo(items) {
+    showToast(`已通知资配部安排尽调：${items.map(item => item.productName).join('、')}`);
+}
+
+function handleAssetPoolCheckBeforeCreate({ modeName, items, modalId, successMessage, afterSuccess }) {
+    const checkedItems = getDemoAssetPoolStatus(items);
+    const notInPoolItems = checkedItems.filter(item => item.status === 'notInPool');
+    const blockedInPoolItems = checkedItems.filter(item => item.status === 'noQuota' || item.status === 'notAddable');
+
+    if (modeName === '创建投资计划并确认' && notInPoolItems.length) {
+        alert(`产品${notInPoolItems.map(item => item.productName).join('、')}不在资配池，不可确认。`);
+        return;
+    }
+
+    if (modeName === '创建投资计划' && notInPoolItems.length) {
+        const shouldNotify = confirm(`产品${notInPoolItems.map(item => item.productName).join('、')}不在资配池，是否通知资配部安排尽调？`);
+        if (shouldNotify) notifyAssetAllocationDemo(notInPoolItems);
+    }
+
+    if (blockedInPoolItems.length) {
+        const shouldContinue = confirm(`产品${blockedInPoolItems.map(item => item.productName).join('、')}在资配池，但当前无法下投，是否继续创建？`);
+        if (!shouldContinue) return;
+    }
+
+    closeModal(modalId);
+    showToast(successMessage);
+    if (typeof afterSuccess === 'function') afterSuccess();
+}
+
+function getBatchPlanItems() {
+    return Array.from(document.querySelectorAll('#bcpDetailBody tr')).map(row => {
+        const cells = row.children;
+        const tradeTypeSelect = cells[4]?.querySelector('select');
+        return {
+            parentFund: cells[0]?.innerText.trim() || '',
+            productName: cells[1]?.innerText.trim() || '',
+            strategy: cells[2]?.innerText.trim() || '',
+            amount: cells[3]?.innerText.trim() || '',
+            tradeType: tradeTypeSelect ? tradeTypeSelect.options[tradeTypeSelect.selectedIndex]?.textContent.trim() : ''
+        };
+    });
+}
+
+function submitBatchPlan(confirmPlan = false) {
+    const modeName = confirmPlan ? '创建投资计划并确认' : '创建投资计划';
+    const items = getBatchPlanItems();
+    if (!items.length) {
+        showToast('请至少保留一条投资计划');
+        return;
+    }
+    handleAssetPoolCheckBeforeCreate({
+        modeName,
+        items,
+        modalId: 'batchCreatePlanModal',
+        successMessage: confirmPlan ? '投资计划创建并确认成功！' : '投资计划创建成功！',
+        afterSuccess: () => setTimeout(() => openModal('scheduledPlansModal'), 800)
+    });
 }
 
 function setSelectByTextOrValue(id, targetText) {
@@ -2848,9 +3071,28 @@ function openScheduleOrderFromDetail(subManager, subCode, subName, strategy, amo
     openModal('scheduleOrderModal');
 }
 
-function submitScheduleOrder() {
-    closeModal('scheduleOrderModal');
-    showToast('✅ 排期下单创建成功！');
+function getSingleScheduleItem() {
+    const subFund = document.getElementById('modalSoSubFund');
+    const parentFund = document.getElementById('modalSoParentFund');
+    const strategy = document.getElementById('modalSoStrategy');
+    const tradeType = document.getElementById('modalSoTradeType');
+    return [{
+        parentFund: parentFund?.options[parentFund.selectedIndex]?.textContent.trim() || '',
+        productName: subFund?.options[subFund.selectedIndex]?.textContent.trim() || '',
+        strategy: strategy?.options[strategy.selectedIndex]?.textContent.trim() || '',
+        amount: document.getElementById('modalSoAmount')?.value || '',
+        tradeType: tradeType?.options[tradeType.selectedIndex]?.textContent.trim() || ''
+    }];
+}
+
+function submitScheduleOrder(confirmPlan = false) {
+    const modeName = confirmPlan ? '创建投资计划并确认' : '创建投资计划';
+    handleAssetPoolCheckBeforeCreate({
+        modeName,
+        items: getSingleScheduleItem(),
+        modalId: 'scheduleOrderModal',
+        successMessage: confirmPlan ? '排期下单创建并确认成功！' : '排期下单创建成功！'
+    });
 }
 
 // 豁免上会审批单
@@ -3033,7 +3275,7 @@ for (let i = 0; i < 2; i++) addNaDetailRow();
 <div class="modal-overlay" id="batchCreatePlanModal">
     <div class="modal-box">
         <div class="modal-header">
-            <span><span class="modal-title">批量创建投资计划</span><span class="modal-subtitle">（3条）</span></span>
+            <span><span class="modal-title">批量创建投资计划</span><span class="modal-subtitle" id="bcpCount">（0条）</span></span>
             <button class="modal-close" onclick="closeModal('batchCreatePlanModal')">×</button>
         </div>
         <div class="modal-body">
