@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>未来头寸查询</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: #f4f6f9;
+      color: #1f2937;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .app-header {
+      height: 52px;
+      background: #004ea2;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+    .brand { font-size: 16px; font-weight: 600; letter-spacing: .5px; }
+    .user { display: flex; align-items: center; gap: 10px; color: #dcecff; font-size: 13px; }
+    .avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #fff;
+      color: #004ea2;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+    }
+    .breadcrumb {
+      padding: 12px 24px;
+      color: #667085;
+      font-size: 13px;
+    }
+    .breadcrumb span { margin: 0 6px; color: #98a2b3; }
+    main { padding: 0 24px 32px; }
+    .panel {
+      background: #fff;
+      border: 1px solid #e6eaf0;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(16,24,40,.04);
+      margin-bottom: 16px;
+    }
+    .filter-panel { padding: 18px 20px; }
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .filter-item { display: flex; align-items: center; gap: 8px; }
+    .filter-label { color: #344054; white-space: nowrap; font-weight: 500; }
+    .required { color: #d92d20; margin-right: 2px; }
+    input[type="date"] {
+      width: 180px;
+      height: 34px;
+      border: 1px solid #d0d5dd;
+      border-radius: 4px;
+      padding: 0 10px;
+      color: #101828;
+      background: #fff;
+      font: inherit;
+    }
+    input[type="date"]:focus {
+      outline: none;
+      border-color: #1890ff;
+      box-shadow: 0 0 0 2px rgba(24,144,255,.12);
+    }
+    .actions { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+    button {
+      height: 34px;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      padding: 0 16px;
+      cursor: pointer;
+      font: inherit;
+      transition: .16s ease;
+    }
+    .btn-primary { background: #1890ff; color: #fff; }
+    .btn-primary:hover { background: #096dd9; }
+    .btn-default { background: #fff; color: #344054; border-color: #d0d5dd; }
+    .btn-default:hover { color: #1890ff; border-color: #1890ff; }
+    .tip {
+      margin-top: 12px;
+      color: #667085;
+      font-size: 13px;
+    }
+    .message {
+      min-height: 22px;
+      margin-top: 8px;
+      color: #d92d20;
+      font-size: 13px;
+    }
+    .table-panel { overflow: hidden; }
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1420px;
+      background: #fff;
+    }
+    th {
+      background: #f8fafc;
+      color: #475467;
+      font-weight: 600;
+      text-align: right;
+      padding: 11px 12px;
+      border-bottom: 1px solid #e6eaf0;
+      white-space: nowrap;
+      font-size: 13px;
+    }
+    th:first-child, th:nth-child(2), td:first-child, td:nth-child(2) { text-align: left; }
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #eef1f5;
+      text-align: right;
+      white-space: nowrap;
+      color: #344054;
+    }
+    tbody tr:hover { background: #f9fbff; }
+    .fund-code { color: #667085; font-family: Consolas, "Courier New", monospace; }
+    .fund-name { font-weight: 600; color: #101828; }
+    .amount-positive { color: #067647; }
+    .amount-warning { color: #b54708; }
+    .amount-danger { color: #b42318; }
+    .link-btn {
+      border: none;
+      background: transparent;
+      color: #1677ff;
+      height: auto;
+      padding: 0;
+      font-weight: 500;
+    }
+    .link-btn:hover { color: #0958d9; }
+    .empty {
+      padding: 48px;
+      text-align: center;
+      color: #667085;
+      display: none;
+    }
+    .modal-mask {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      background: rgba(15,23,42,.45);
+      z-index: 20;
+      padding: 56px 20px 24px;
+    }
+    .modal-mask.active { display: flex; }
+    .modal {
+      width: min(980px, 100%);
+      max-height: calc(100vh - 80px);
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 18px 48px rgba(15,23,42,.22);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-header {
+      height: 52px;
+      background: #1890ff;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px 0 22px;
+    }
+    .modal-title { font-size: 16px; font-weight: 600; }
+    .modal-close {
+      width: 30px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      color: #fff;
+      font-size: 24px;
+      line-height: 1;
+    }
+    .modal-body { padding: 18px 20px 22px; overflow: auto; }
+    .detail-summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .detail-card {
+      border: 1px solid #e6eaf0;
+      border-radius: 6px;
+      padding: 12px 14px;
+      background: #fbfcfe;
+    }
+    .detail-card .label { color: #667085; font-size: 13px; }
+    .detail-card .value { color: #101828; font-size: 18px; font-weight: 650; margin-top: 2px; }
+    .detail-table { min-width: 760px; }
+    .detail-table th, .detail-table td { text-align: right; }
+    .detail-table th:first-child, .detail-table td:first-child { text-align: left; }
+    @media (max-width: 900px) {
+      main { padding: 0 14px 24px; }
+      .app-header { padding: 0 14px; }
+      .breadcrumb { padding: 10px 14px; }
+      .actions { margin-left: 0; width: 100%; }
+      .actions button { flex: 1; }
+    }
+    @media (max-width: 560px) {
+      .detail-summary { grid-template-columns: 1fr; }
+      input[type="date"] { width: 100%; }
+      .filter-item { width: 100%; align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">资管业务系统</div>
+    <div class="user"><span>产品经理</span><span class="avatar">PM</span></div>
+  </header>
+  <div class="breadcrumb">运营管理 <span>/</span> 未来头寸查询</div>
+
+  <main>
+    <section class="panel filter-panel">
+      <div class="filter-row">
+        <div class="filter-item">
+          <label class="filter-label" for="positionDate"><span class="required">*</span>日期</label>
+          <input id="positionDate" type="date" required>
+        </div>
+        <div class="actions">
+          <button class="btn-primary" id="queryBtn" type="button">查询</button>
+          <button class="btn-default" id="downloadBtn" type="button">下载</button>
+        </div>
+      </div>
+      <div class="tip">日期用于计算未来头寸，仅可选择今天及以后日期。</div>
+      <div class="message" id="message"></div>
+    </section>
+
+    <section class="panel table-panel">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>母基金代码</th>
+              <th>母基金名称</th>
+              <th>托管户余额</th>
+              <th>场内户可用</th>
+              <th>场内户可取</th>
+              <th>执行确认金额-直销</th>
+              <th>执行确认金额-代销</th>
+              <th>拟申购金额-直销</th>
+              <th>拟申购金额-代销</th>
+              <th>预计剩余额-直销</th>
+              <th>预计剩余额-代销</th>
+              <th>预计剩余额-总计</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="empty">暂无符合条件的数据</div>
+    </section>
+  </main>
+
+  <div class="modal-mask" id="detailModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="modalTitle">场内户详情</div>
+        <button class="modal-close" id="closeModal" type="button" aria-label="关闭">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-summary">
+          <div class="detail-card">
+            <div class="label">场内户可用合计</div>
+            <div class="value" id="detailAvailable">0.00</div>
+          </div>
+          <div class="detail-card">
+            <div class="label">场内户可取合计</div>
+            <div class="value" id="detailWithdrawable">0.00</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="detail-table">
+            <thead>
+              <tr>
+                <th>账户类型</th>
+                <th>可用资金</th>
+                <th>可取资金</th>
+                <th>数据来源</th>
+                <th>更新时间</th>
+              </tr>
+            </thead>
+            <tbody id="detailBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const sampleRows = [
+      {
+        code: "MF001",
+        name: "国泰君安期货稳享FOF一号",
+        a1: 12680000,
+        a2: 4820000,
+        a3: 4295000,
+        b1: 2200000,
+        b2: 850000,
+        c1: 5100000,
+        c2: 2600000,
+        details: [
+          { type: "期货（期货、期权）", available: 1850000, withdrawable: 1640000, source: "讯投接口", updatedAt: "09:00" },
+          { type: "证券（包括沪港通、深港通）", available: 1760000, withdrawable: 1595000, source: "讯投接口", updatedAt: "09:00" },
+          { type: "股票期权", available: 610000, withdrawable: 520000, source: "讯投接口", updatedAt: "09:00" },
+          { type: "信用", available: 600000, withdrawable: 540000, source: "讯投接口", updatedAt: "09:00" }
+        ]
+      },
+      {
+        code: "MF002",
+        name: "君享多策略母基金",
+        a1: 8040000,
+        a2: 3120000,
+        a3: 3015000,
+        b1: 960000,
+        b2: 1200000,
+        c1: 2880000,
+        c2: 1950000,
+        details: [
+          { type: "期货（期货、期权）", available: 920000, withdrawable: 890000, source: "讯投接口", updatedAt: "09:00" },
+          { type: "证券（包括沪港通、深港通）", available: 1410000, withdrawable: 1380000, source: "讯投接口", updatedAt: "09:00" },
+          { type: "股票期权", available: 360000, withdrawable: 335000, source: "讯投接口", updatedAt: "09:00" },
+          { type: "信用", available: 430000, withdrawable: 410000, source: "讯投接口", updatedAt: "09:00" }
+        ]
+      },
+      {
+        code: "MF003",
+        name: "量化增强MOM集合计划",
+        a1: 3950000,
+        a2: 0,
+        a3: 0,
+        b1: 640000,
+        b2: 0,
+        c1: 4600000,
+        c2: 0,
+        details: [
+          { type: "期货（期货、期权）", available: 0, withdrawable: 0, source: "讯投接口", updatedAt: "09:00" },
+          { type: "证券（包括沪港通、深港通）", available: 0, withdrawable: 0, source: "讯投接口", updatedAt: "09:00" },
+          { type: "股票期权", available: 0, withdrawable: 0, source: "讯投接口", updatedAt: "09:00" },
+          { type: "信用", available: 0, withdrawable: 0, source: "讯投接口", updatedAt: "09:00" }
+        ]
+      },
+      {
+        code: "MF004",
+        name: "宏观配置精选母基金",
+        a1: 0,
+        a2: 2160000,
+        a3: 1980000,
+        b1: 0,
+        b2: 760000,
+        c1: 0,
+        c2: 1380000,
+        details: [
+          { type: "期货（期货、期权）", available: 780000, withdrawable: 720000, source: "讯投接口", updatedAt: "09:00" },
+          { type: "证券（包括沪港通、深港通）", available: 860000, withdrawable: 800000, source: "讯投接口", updatedAt: "09:00" },
+          { type: "股票期权", available: 180000, withdrawable: 160000, source: "讯投接口", updatedAt: "09:00" },
+          { type: "信用", available: 340000, withdrawable: 300000, source: "讯投接口", updatedAt: "09:00" }
+        ]
+      }
+    ];
+
+    const positionDate = document.querySelector("#positionDate");
+    const queryBtn = document.querySelector("#queryBtn");
+    const downloadBtn = document.querySelector("#downloadBtn");
+    const message = document.querySelector("#message");
+    const tableBody = document.querySelector("#tableBody");
+    const empty = document.querySelector("#empty");
+    const detailModal = document.querySelector("#detailModal");
+    const modalTitle = document.querySelector("#modalTitle");
+    const detailBody = document.querySelector("#detailBody");
+    const detailAvailable = document.querySelector("#detailAvailable");
+    const detailWithdrawable = document.querySelector("#detailWithdrawable");
+    let currentRows = [];
+
+    function todayText() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function formatAmount(value) {
+      return Number(value).toLocaleString("zh-CN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function amountClass(value) {
+      if (value < 0) return "amount-danger";
+      if (value < 1000000) return "amount-warning";
+      return "amount-positive";
+    }
+
+    function buildRows() {
+      return sampleRows
+        .filter(row => row.a1 > 0 || row.a2 > 0)
+        .map(row => {
+          const d1 = row.a1 + row.b1 - row.c1;
+          const d2 = row.a2 + row.b2 - row.c2;
+          return { ...row, d1, d2, total: d1 + d2 };
+        });
+    }
+
+    function validateDate() {
+      if (!positionDate.value) {
+        message.textContent = "请选择日期。";
+        return false;
+      }
+      if (positionDate.value < positionDate.min) {
+        message.textContent = "日期仅可选择今天及以后日期。";
+        return false;
+      }
+      message.textContent = "";
+      return true;
+    }
+
+    function renderTable() {
+      currentRows = buildRows();
+      tableBody.innerHTML = currentRows.map((row, index) => `
+        <tr>
+          <td class="fund-code">${row.code}</td>
+          <td class="fund-name">${row.name}</td>
+          <td>${formatAmount(row.a1)}</td>
+          <td>${formatAmount(row.a2)}</td>
+          <td>${formatAmount(row.a3)}</td>
+          <td>${formatAmount(row.b1)}</td>
+          <td>${formatAmount(row.b2)}</td>
+          <td>${formatAmount(row.c1)}</td>
+          <td>${formatAmount(row.c2)}</td>
+          <td class="${amountClass(row.d1)}">${formatAmount(row.d1)}</td>
+          <td class="${amountClass(row.d2)}">${formatAmount(row.d2)}</td>
+          <td class="${amountClass(row.total)}">${formatAmount(row.total)}</td>
+          <td><button class="link-btn" type="button" data-index="${index}">场内户详情</button></td>
+        </tr>
+      `).join("");
+
+      empty.style.display = currentRows.length ? "none" : "block";
+    }
+
+    function query() {
+      if (!validateDate()) return;
+      renderTable();
+    }
+
+    function openDetail(index) {
+      const row = currentRows[index];
+      if (!row) return;
+      const available = row.details.reduce((sum, item) => sum + item.available, 0);
+      const withdrawable = row.details.reduce((sum, item) => sum + item.withdrawable, 0);
+      modalTitle.textContent = `场内户详情 - ${row.name}`;
+      detailAvailable.textContent = formatAmount(available);
+      detailWithdrawable.textContent = formatAmount(withdrawable);
+      detailBody.innerHTML = row.details.map(item => `
+        <tr>
+          <td>${item.type}</td>
+          <td>${formatAmount(item.available)}</td>
+          <td>${formatAmount(item.withdrawable)}</td>
+          <td>${item.source}</td>
+          <td>${positionDate.value} ${item.updatedAt}</td>
+        </tr>
+      `).join("");
+      detailModal.classList.add("active");
+      detailModal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeDetail() {
+      detailModal.classList.remove("active");
+      detailModal.setAttribute("aria-hidden", "true");
+    }
+
+    function downloadCsv() {
+      if (!validateDate()) return;
+      if (!currentRows.length) renderTable();
+      const header = [
+        "日期", "母基金代码", "母基金名称", "托管户余额", "场内户可用", "场内户可取",
+        "执行确认金额-直销", "执行确认金额-代销", "拟申购金额-直销", "拟申购金额-代销",
+        "预计剩余额-直销", "预计剩余额-代销", "预计剩余额-总计"
+      ];
+      const lines = currentRows.map(row => [
+        positionDate.value, row.code, row.name, row.a1, row.a2, row.a3, row.b1, row.b2, row.c1, row.c2, row.d1, row.d2, row.total
+      ]);
+      const csv = [header, ...lines].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
+      const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `未来头寸_${positionDate.value}.csv`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    positionDate.min = todayText();
+    positionDate.value = todayText();
+    queryBtn.addEventListener("click", query);
+    downloadBtn.addEventListener("click", downloadCsv);
+    tableBody.addEventListener("click", event => {
+      const button = event.target.closest(".link-btn");
+      if (button) openDetail(Number(button.dataset.index));
+    });
+    document.querySelector("#closeModal").addEventListener("click", closeDetail);
+    detailModal.addEventListener("click", event => {
+      if (event.target === detailModal) closeDetail();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeDetail();
+    });
+    query();
+  </script>
+</body>
+</html>
