@@ -668,6 +668,9 @@
             justify-content: center;
         }
         .modal-overlay.show { display: flex; }
+        .modal-overlay.modal-overlay-top {
+            z-index: 2600;
+        }
         .modal-box {
             background: white;
             border-radius: 8px;
@@ -2961,29 +2964,78 @@ function notifyAssetAllocationDemo(items) {
     showToast(`已通知资配部安排尽调：${items.map(item => item.productName).join('、')}`);
 }
 
+let pendingAssetPoolWarningContext = null;
+
 function handleAssetPoolCheckBeforeCreate({ modeName, items, modalId, successMessage, afterSuccess }) {
     const checkedItems = getDemoAssetPoolStatus(items);
     const notInPoolItems = checkedItems.filter(item => item.status === 'notInPool');
     const blockedInPoolItems = checkedItems.filter(item => item.status === 'noQuota' || item.status === 'notAddable');
 
-    if (modeName === '创建投资计划并确认' && notInPoolItems.length) {
-        alert(`产品${notInPoolItems.map(item => item.productName).join('、')}不在资配池，不可确认。`);
+    if (notInPoolItems.length || blockedInPoolItems.length) {
+        openAssetPoolWarningModal({
+            modeName,
+            modalId,
+            successMessage,
+            afterSuccess,
+            notInPoolItems,
+            blockedInPoolItems
+        });
         return;
     }
 
-    if (modeName === '创建投资计划' && notInPoolItems.length) {
-        const shouldNotify = confirm(`产品${notInPoolItems.map(item => item.productName).join('、')}不在资配池，是否通知资配部安排尽调？`);
-        if (shouldNotify) notifyAssetAllocationDemo(notInPoolItems);
-    }
+    finishCreateAfterAssetPoolCheck({ modalId, successMessage, afterSuccess });
+}
 
-    if (blockedInPoolItems.length) {
-        const shouldContinue = confirm(`产品${blockedInPoolItems.map(item => item.productName).join('、')}在资配池，但当前无法下投，是否继续创建？`);
-        if (!shouldContinue) return;
-    }
-
+function finishCreateAfterAssetPoolCheck({ modalId, successMessage, afterSuccess }) {
     closeModal(modalId);
     showToast(successMessage);
     if (typeof afterSuccess === 'function') afterSuccess();
+}
+
+function formatWarningProductNames(items) {
+    return items.map(item => item.productName).join('、');
+}
+
+function openAssetPoolWarningModal(context) {
+    pendingAssetPoolWarningContext = context;
+    const body = document.getElementById('assetPoolWarningBody');
+    const notInPoolNames = formatWarningProductNames(context.notInPoolItems);
+    const blockedNames = formatWarningProductNames(context.blockedInPoolItems);
+    body.innerHTML = `
+        ${context.notInPoolItems.length ? `
+            <div style="padding:12px 14px;border:1px solid #ffd591;background:#fff7e6;border-radius:6px;margin-bottom:12px;">
+                <div style="font-weight:600;color:#ad6800;margin-bottom:6px;">产品${notInPoolNames}不在资配池，是否通知资配部安排尽调？</div>
+                <label style="display:inline-flex;align-items:center;gap:8px;font-size:14px;color:#333;">
+                    <input type="checkbox" id="assetPoolNotifyCheck" checked>
+                    <span>通知资配部安排尽调</span>
+                </label>
+            </div>
+        ` : ''}
+        ${context.blockedInPoolItems.length ? `
+            <div style="padding:12px 14px;border:1px solid #ffccc7;background:#fff2f0;border-radius:6px;">
+                <div style="font-weight:600;color:#cf1322;margin-bottom:6px;">产品${blockedNames}在资配池，但当前无法下投，是否继续创建？</div>
+                <div style="font-size:13px;color:#666;">包含状态：在池，无额度 / 在池，不可新增。</div>
+            </div>
+        ` : ''}
+    `;
+    openModal('assetPoolWarningModal');
+}
+
+function cancelAssetPoolWarning() {
+    pendingAssetPoolWarningContext = null;
+    closeModal('assetPoolWarningModal');
+}
+
+function confirmAssetPoolWarning() {
+    const context = pendingAssetPoolWarningContext;
+    if (!context) return;
+    const shouldNotify = document.getElementById('assetPoolNotifyCheck')?.checked;
+    if (shouldNotify && context.notInPoolItems.length) {
+        notifyAssetAllocationDemo(context.notInPoolItems);
+    }
+    pendingAssetPoolWarningContext = null;
+    closeModal('assetPoolWarningModal');
+    finishCreateAfterAssetPoolCheck(context);
 }
 
 function getBatchPlanItems() {
@@ -3372,6 +3424,21 @@ for (let i = 0; i < 2; i++) addNaDetailRow();
             <button class="btn btn-default" onclick="closeModal('batchCreatePlanModal')">取消</button>
             <button class="btn btn-primary" onclick="submitBatchPlan()">创建投资计划</button>
             <button class="btn btn-primary" onclick="submitBatchPlan(true)">创建投资计划并确认</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 弹窗2.1：资配池状态提示 ===== -->
+<div class="modal-overlay modal-overlay-top" id="assetPoolWarningModal">
+    <div class="modal-box" style="max-width:680px;">
+        <div class="modal-header">
+            <span class="modal-title">资配池状态提示</span>
+            <button class="modal-close" onclick="cancelAssetPoolWarning()">×</button>
+        </div>
+        <div class="modal-body" id="assetPoolWarningBody"></div>
+        <div class="modal-footer">
+            <button class="btn btn-default" onclick="cancelAssetPoolWarning()">取消</button>
+            <button class="btn btn-primary" onclick="confirmAssetPoolWarning()">继续创建</button>
         </div>
     </div>
 </div>
