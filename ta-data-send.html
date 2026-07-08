@@ -586,6 +586,34 @@
             border: 1px solid #b7eb8f;
         }
 
+        .email-cell {
+            display: inline-block;
+            max-width: 180px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: help;
+        }
+
+        .email-extra-input {
+            margin-top: 8px;
+        }
+
+        .locked-required-checkbox {
+            cursor: default;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.18);
+            border-radius: 3px;
+        }
+
+        .locked-required-hint {
+            display: none;
+            margin-top: 8px;
+            color: #1890ff;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
         .switch {
             display: inline-flex;
             align-items: center;
@@ -1202,7 +1230,8 @@
                                 <!-- 交易确认数据行 -->
                                 <tr>
                                     <td class="checkbox-cell">
-                                        <input type="checkbox" id="checkTradeConfirm" checked onchange="onDataTypeChange()">
+                                        <input type="checkbox" id="checkTradeConfirm" checked onchange="onDataTypeChange()" onclick="return onTradeConfirmClick(event)">
+                                        <div id="tradeConfirmLockHint" class="locked-required-hint">必选</div>
                                     </td>
                                     <td><strong>交易确认数据</strong></td>
                                     <td>
@@ -1294,7 +1323,7 @@
                     <label class="form-label required">接收邮箱：</label>
                     <div class="form-control">
                         <div class="email-input-group">
-                            <input type="email" id="receiveEmail" placeholder="请输入数据接收邮箱">
+                            <input type="text" id="receiveEmail" placeholder="请输入数据接收邮箱，多个用逗号、分号或换行分隔">
                             <button class="add-btn-icon" title="添加" onclick="addEmailField('receive')">+</button>
                         </div>
                     </div>
@@ -1304,7 +1333,7 @@
                     <label class="form-label">抄送邮箱：</label>
                     <div class="form-control">
                         <div class="email-input-group">
-                            <input type="email" id="ccEmail" placeholder="请输入数据抄送邮箱">
+                            <input type="text" id="ccEmail" placeholder="请输入数据抄送邮箱，多个用逗号、分号或换行分隔">
                             <button class="add-btn-icon" title="添加" onclick="addEmailField('cc')">+</button>
                         </div>
                     </div>
@@ -1314,7 +1343,7 @@
                     <label class="form-label">密送邮箱：</label>
                     <div class="form-control">
                         <div class="email-input-group">
-                            <input type="email" id="bccEmail" placeholder="请输入数据密送邮箱">
+                            <input type="text" id="bccEmail" placeholder="请输入数据密送邮箱，多个用逗号、分号或换行分隔">
                             <button class="add-btn-icon" title="添加" onclick="addEmailField('bcc')">+</button>
                         </div>
                     </div>
@@ -1464,7 +1493,7 @@
                         </tr>
                         <tr>
                             <td>赵六安_核心优...</td>
-                            <td><span class="tag tag-green">基金</span></td>
+                            <td><span class="tag tag-green">产品</span></td>
                             <td>
                                 <div class="switch">
                                     <span class="switch-toggle active" onclick="this.classList.toggle('active')"></span>
@@ -1493,7 +1522,7 @@
                         </tr>
                         <tr>
                             <td>孙七巧_伯乐6...</td>
-                            <td><span class="tag tag-green">基金</span></td>
+                            <td><span class="tag tag-green">产品</span></td>
                             <td>
                                 <div class="switch">
                                     <span class="switch-toggle active" onclick="this.classList.toggle('active')"></span>
@@ -1605,8 +1634,8 @@
                             <td>2026-06-12</td>
                             <td><span style="color: #52c41a;">● 已发送</span></td>
                             <td style="color: #1890ff; font-weight: 600;">2026-06-12 16:48:45</td>
-                            <td>jgrfof@gtht.com</td>
-                            <td>1</td>
+                            <td><span class="email-cell" title="jgrfof@gtht.com; ta_ops@gtht.com">jgrfof@gtht.com; ta_ops@gtht.com</span></td>
+                            <td><span class="email-cell" title="service@gtht.com">service@gtht.com</span></td>
                             <td>
                                 <div class="action-links">
                                     <a class="link-action" onclick="openFileDetailModal(this)">查看详情</a>
@@ -1624,8 +1653,8 @@
                             <td>2026-06-12</td>
                             <td><span style="color: #52c41a;">● 已发送</span></td>
                             <td style="color: #1890ff; font-weight: 600;">2026-06-12 16:48:44</td>
-                            <td>cpgz@brytasset.c...</td>
-                            <td>3</td>
+                            <td><span class="email-cell" title="cpgz@brytasset.com; ops@brytasset.com; ta_notice@brytasset.com">cpgz@brytasset.com; ops@brytasset.com; ta_notice@brytasset.com</span></td>
+                            <td><span class="email-cell" title="fundadmin@brytasset.com; checker@brytasset.com; product@brytasset.com">fundadmin@brytasset.com; checker@brytasset.com; product@brytasset.com</span></td>
                             <td>
                                 <div class="action-links">
                                     <a class="link-action" onclick="openFileDetailModal(this)">查看详情</a>
@@ -1645,8 +1674,8 @@
                             <td>-</td>
                             <td><span style="color: #faad14;">● 未发送</span></td>
                             <td>-</td>
-                            <td>cpgz@brytasset.c...</td>
-                            <td>3</td>
+                            <td><span class="email-cell" title="cpgz@brytasset.com; ops@brytasset.com; ta_notice@brytasset.com">cpgz@brytasset.com; ops@brytasset.com; ta_notice@brytasset.com</span></td>
+                            <td><span class="email-cell" title="fundadmin@brytasset.com; checker@brytasset.com; product@brytasset.com">fundadmin@brytasset.com; checker@brytasset.com; product@brytasset.com</span></td>
                             <td>
                                 <div class="action-links">
                                     <a class="link-action" onclick="openFileDetailModal(this)">查看详情</a>
@@ -1666,8 +1695,8 @@
                             <td>-</td>
                             <td><span style="color: #faad14;">● 未发送</span></td>
                             <td>-</td>
-                            <td>jgrfof@gtht.com</td>
-                            <td>1</td>
+                            <td><span class="email-cell" title="jgrfof@gtht.com; ta_ops@gtht.com">jgrfof@gtht.com; ta_ops@gtht.com</span></td>
+                            <td><span class="email-cell" title="service@gtht.com">service@gtht.com</span></td>
                             <td>
                                 <div class="action-links">
                                     <a class="link-action" onclick="openFileDetailModal(this)">查看详情</a>
@@ -1687,8 +1716,8 @@
                             <td>-</td>
                             <td><span style="color: #faad14;">● 未发送</span></td>
                             <td>-</td>
-                            <td>cpgz@brytasset.c...</td>
-                            <td>2</td>
+                            <td><span class="email-cell" title="cpgz@brytasset.com; ops@brytasset.com; ta_notice@brytasset.com">cpgz@brytasset.com; ops@brytasset.com; ta_notice@brytasset.com</span></td>
+                            <td><span class="email-cell" title="fundadmin@brytasset.com; checker@brytasset.com">fundadmin@brytasset.com; checker@brytasset.com</span></td>
                             <td>
                                 <div class="action-links">
                                     <a class="link-action" onclick="openFileDetailModal(this)">查看详情</a>
@@ -1708,8 +1737,8 @@
                             <td>-</td>
                             <td><span style="color: #faad14;">● 未发送</span></td>
                             <td>-</td>
-                            <td>cpgz@brytasset.c...</td>
-                            <td>1</td>
+                            <td><span class="email-cell" title="cpgz@brytasset.com; ops@brytasset.com; ta_notice@brytasset.com">cpgz@brytasset.com; ops@brytasset.com; ta_notice@brytasset.com</span></td>
+                            <td><span class="email-cell" title="service@gtht.com">service@gtht.com</span></td>
                             <td>
                                 <div class="action-links">
                                     <a class="link-action" onclick="openFileDetailModal(this)">查看详情</a>
@@ -2244,7 +2273,11 @@
                 // 3. 默认勾选"交易确认数据"和"份额持有数据"
                 // 其中"交易确认数据"不可取消勾选
                 checkTradeConfirm.checked = true;
-                checkTradeConfirm.disabled = true;
+                checkTradeConfirm.disabled = false;
+                checkTradeConfirm.classList.add('locked-required-checkbox');
+                checkTradeConfirm.title = '发送划款指令数据时，交易确认数据为必选项';
+                checkTradeConfirm.setAttribute('aria-disabled', 'true');
+                document.getElementById('tradeConfirmLockHint').style.display = 'block';
                 formState.dataType.tradeConfirm = true;
                 
                 // 4. 份额持有数据默认勾选
@@ -2263,6 +2296,10 @@
 
                 // 3. 交易确认数据可正常勾选/取消
                 checkTradeConfirm.disabled = false;
+                checkTradeConfirm.classList.remove('locked-required-checkbox');
+                checkTradeConfirm.removeAttribute('title');
+                checkTradeConfirm.removeAttribute('aria-disabled');
+                document.getElementById('tradeConfirmLockHint').style.display = 'none';
 
                 formState.isAutoGenerateTaskName = false;
             }
@@ -2271,8 +2308,24 @@
             generateTaskName();
         }
 
+        function onTradeConfirmClick(event) {
+            if (!formState.sendInstruction) {
+                return true;
+            }
+
+            event.preventDefault();
+            const checkbox = document.getElementById('checkTradeConfirm');
+            checkbox.checked = true;
+            formState.dataType.tradeConfirm = true;
+            return false;
+        }
+
         // ==================== 数据类型勾选逻辑 ====================
         function onDataTypeChange() {
+            if (formState.sendInstruction) {
+                document.getElementById('checkTradeConfirm').checked = true;
+            }
+
             const tradeChecked = document.getElementById('checkTradeConfirm').checked;
             const shareChecked = document.getElementById('checkShareHold').checked;
 
@@ -2294,8 +2347,13 @@
 
         // 重置数据类型默认值
         function resetDataTypeDefaults() {
-            document.getElementById('checkTradeConfirm').checked = true;
-            document.getElementById('checkTradeConfirm').disabled = false;
+            const tradeConfirm = document.getElementById('checkTradeConfirm');
+            tradeConfirm.checked = true;
+            tradeConfirm.disabled = false;
+            tradeConfirm.classList.remove('locked-required-checkbox');
+            tradeConfirm.removeAttribute('title');
+            tradeConfirm.removeAttribute('aria-disabled');
+            document.getElementById('tradeConfirmLockHint').style.display = 'none';
             document.getElementById('checkShareHold').checked = true;
             
             formState.dataType.tradeConfirm = true;
@@ -2382,11 +2440,53 @@
         }
 
         // ==================== 邮箱字段动态添加 ====================
+        const emailFieldLabels = {
+            receive: '接收邮箱',
+            cc: '抄送邮箱',
+            bcc: '密送邮箱'
+        };
+
         function addEmailField(type) {
-            // 简单演示:实际项目中可以实现多邮箱输入
-            alert('可在此处扩展添加多个邮箱的功能');
+            const button = event.currentTarget;
+            const group = button.closest('.email-input-group');
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'email-extra-input';
+            input.dataset.emailType = type;
+            input.placeholder = emailFieldLabels[type] + '，多个用逗号、分号或换行分隔';
+            group.parentElement.appendChild(input);
+            input.focus();
         }
 
+        function splitEmailList(value) {
+            return value
+                .split(/[;,；，、\n\r]+/)
+                .map(item => item.trim())
+                .filter(Boolean);
+        }
+
+        function getEmailValues(type) {
+            const firstInput = document.getElementById(type === 'receive' ? 'receiveEmail' : type + 'Email');
+            const extraInputs = Array.from(document.querySelectorAll('.email-extra-input[data-email-type="' + type + '"]'));
+            return [firstInput, ...extraInputs]
+                .flatMap(input => splitEmailList(input.value))
+                .join('; ');
+        }
+
+        function validateEmailList(type, required, errors) {
+            const label = emailFieldLabels[type];
+            const emails = splitEmailList(getEmailValues(type));
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (required && emails.length === 0) {
+                errors.push('请填写' + label);
+                return;
+            }
+
+            if (emails.some(email => !emailRegex.test(email))) {
+                errors.push(label + '格式不正确');
+            }
+        }
         // ==================== 表单验证与提交 ====================
         function validateForm() {
             const errors = [];
@@ -2407,16 +2507,10 @@
                 }
             }
 
-            if (!document.getElementById('receiveEmail').value.trim()) {
-                errors.push('请填写接收邮箱');
-            }
-
-            // 验证邮箱格式
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const receiveEmail = document.getElementById('receiveEmail').value;
-            if (receiveEmail && !emailRegex.test(receiveEmail)) {
-                errors.push('接收邮箱格式不正确');
-            }
+            // 验证邮箱格式，支持多个地址
+            validateEmailList('receive', true, errors);
+            validateEmailList('cc', false, errors);
+            validateEmailList('bcc', false, errors);
 
             // 验证数据类型
             if (!formState.dataType.tradeConfirm && !formState.dataType.shareHold) {
@@ -2443,9 +2537,9 @@
                     : document.getElementById('productName').value,
                 taskName: document.getElementById('taskName').value,
                 dataType: formState.dataType,
-                receiveEmail: document.getElementById('receiveEmail').value,
-                ccEmail: document.getElementById('ccEmail').value,
-                bccEmail: document.getElementById('bccEmail').value,
+                receiveEmail: getEmailValues('receive'),
+                ccEmail: getEmailValues('cc'),
+                bccEmail: getEmailValues('bcc'),
                 // 按投资者发送时的产品选择信息
                 ...(formState.dimension === 'investor' && {
                     productSelectMode: formState.productSelectMode,
@@ -2517,6 +2611,7 @@
                 document.getElementById('receiveEmail').value = '';
                 document.getElementById('ccEmail').value = '';
                 document.getElementById('bccEmail').value = '';
+                document.querySelectorAll('.email-extra-input').forEach(input => input.remove());
 
                 // 重置数据类型
                 resetDataTypeDefaults();
@@ -3021,8 +3116,8 @@
                     <td>-</td>
                     <td><span style="color: #faad14;">● 未发送</span></td>
                     <td>-</td>
-                    <td>jgrfof@gtht.com</td>
-                    <td>1</td>
+                    <td><span class="email-cell" title="jgrfof@gtht.com; ta_ops@gtht.com">jgrfof@gtht.com; ta_ops@gtht.com</span></td>
+                    <td><span class="email-cell" title="service@gtht.com">service@gtht.com</span></td>
                     <td>
                         <div class="action-links">
                             <a class="link-action">查看详情</a>
