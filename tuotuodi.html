@@ -2594,12 +2594,12 @@
 
         // 打开用印划款流程
         function openTransferWorkflow(orderId) {
-            window.location.href = `seal-payment-workflow.html?orderId=${orderId}`;
+            window.location.href = `seal-payment-workflow-v2.html?orderId=${orderId}`;
         }
 
         // 打开补充材料流程（与用印划款流程类似，但不需要用印前附件自动挂接）
         function openSupplementWorkflow(orderId) {
-            window.location.href = `seal-payment-workflow.html?orderId=${orderId}&type=supplement`;
+            window.location.href = `seal-payment-workflow-v2.html?orderId=${orderId}&type=supplement`;
         }
 
         // ===== 匹配/解绑 =====
@@ -3016,7 +3016,7 @@
             renderWechatFileList();
 
             // 文件收集链接（每个订单独立）
-            const linkUrl = `seal-payment-workflow.html?orderId=${order.id}&type=supplement`;
+            const linkUrl = `seal-payment-workflow-v2.html?orderId=${order.id}&type=supplement`;
             const linkText = document.getElementById('wechatLinkText');
             linkText.innerHTML = `<a href="${linkUrl}" target="_blank">${linkUrl}</a>`;
 

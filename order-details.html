@@ -1455,17 +1455,17 @@
         <div class="flow-status-bar">
             <span class="flow-label">用印划款流程</span>
             <div class="flow-nodes">
-                <a class="flow-node active" href="seal-payment-workflow.html?orderId=3" target="_blank" id="flowNode0">
+                <a class="flow-node active" href="seal-payment-workflow-v2.html?orderId=3" target="_blank" id="flowNode0">
                     <span class="flow-dot done"></span>
                     <span class="flow-text">已发起</span>
                 </a>
                 <span class="flow-line"></span>
-                <a class="flow-node" href="seal-payment-workflow.html?orderId=3" target="_blank" id="flowNode1">
+                <a class="flow-node" href="seal-payment-workflow-v2.html?orderId=3" target="_blank" id="flowNode1">
                     <span class="flow-dot"></span>
                     <span class="flow-text">可用印</span>
                 </a>
                 <span class="flow-line"></span>
-                <a class="flow-node" href="seal-payment-workflow.html?orderId=3" target="_blank" id="flowNode2">
+                <a class="flow-node" href="seal-payment-workflow-v2.html?orderId=3" target="_blank" id="flowNode2">
                     <span class="flow-dot"></span>
                     <span class="flow-text">可划款</span>
                 </a>
@@ -1495,63 +1495,17 @@
         </div>
         -->
 
-        <!-- 批量操作栏 -->
-        <div class="batch-bar">
-            <div class="batch-left">
-                <label class="select-all-group">
-                    <input type="checkbox" id="selectAllFiles" onchange="toggleSelectAllFiles()">
-                    <span>全选文件</span>
-                </label>
-                <div class="filter-tabs">
-                    <span class="filter-tab active" onclick="setFileFilter('all')">全部文件</span>
-                    <span class="filter-tab" onclick="setFileFilter('order')">仅订单文件</span>
-                    <span class="filter-tab" onclick="setFileFilter('suitability')">仅适当性文件</span>
-                </div>
-            </div>
-            <div class="batch-right">
-                <button class="btn" onclick="refreshFiles()">🔄 刷新</button>
-                <button class="btn btn-primary" onclick="startStampProcess()">📝 批量用印</button>
-                <button class="btn btn-success" onclick="transferToTTD()">📤 批量传输</button>
-            </div>
-        </div>
-
-        <!-- 适当性签约文件卡片 -->
-        <div class="file-card">
+        <!-- 用印后材料：仅展示双方用印文件及划款补充材料 -->
+        <div class="file-card" id="postStampMaterialsCard">
             <div class="file-card-header">
-                <span class="info-title">适当性签约文件</span>
-            </div>
-            <div class="file-card-body">
-                <!-- 子标签页 -->
-                <div class="sub-tabs">
-                    <span class="sub-tab active" onclick="switchSubTab('suitability', 'latest')">最新文件</span>
-                    <span class="sub-tab" onclick="switchSubTab('suitability', 'history')">历史记录</span>
-                </div>
-
-                <!-- 文件列表 -->
-                <div class="file-list" id="suitabilityFileList">
-                </div>
-            </div>
-        </div>
-
-        <!-- 订单签约文件卡片 -->
-        <div class="file-card">
-            <div class="file-card-header">
-                <span class="info-title">订单签约文件</span>
+                <span class="info-title">用印后材料（双方用印 + 上传）</span>
                 <div class="file-card-actions">
-                    <button class="archive-btn fetch-files-btn" id="fetchOrderFilesBtn" onclick="fetchOrderSigningFiles()">↻ 获取文件</button>
+                    <button class="archive-btn fetch-files-btn" id="fetchPostStampFilesBtn" onclick="fetchPostStampFiles()">↻ 获取文件</button>
                     <button class="archive-btn" id="archiveBtn" onclick="doArchive()">📦 归档</button>
                 </div>
             </div>
             <div class="file-card-body">
-                <!-- 子标签页 -->
-                <div class="sub-tabs">
-                    <span class="sub-tab active" onclick="switchSubTab('order', 'latest')">最新文件</span>
-                    <span class="sub-tab" onclick="switchSubTab('order', 'history')">历史记录</span>
-                </div>
-
-                <!-- 文件列表 -->
-                <div class="file-list" id="orderFileList">
-                </div>
+                <div class="file-list" id="postStampFileList"></div>
             </div>
         </div>
 
@@ -1796,16 +1750,13 @@
         // 模拟文件数据
         const orderFilesData = {
             '3': {
-                orderFiles: [
-                    { id: 'o1', name: '认申购单.pdf', type: 'order', status: 'stamped', isRegular: true, checked: false },
-                    { id: 'o2', name: '风险揭示书.pdf', type: 'order', status: 'stamped', isRegular: true, checked: false },
-                    { id: 'o3', name: '合同.pdf', type: 'order', status: 'stamped', isRegular: true, checked: false },
-                    { id: 'o4', name: '补充协议.pdf', type: 'order', status: 'pending', isRegular: true, checked: false }
-                ],
-                suitabilityFiles: [
-                    { id: 's1', name: '风险测评文件.pdf', type: 'suitability', status: 'stamped', isRegular: true, checked: false },
-                    { id: 's2', name: '投资者信息表.pdf', type: 'suitability', status: 'stamped', isRegular: true, checked: false },
-                    { id: 's3', name: '税收证明文件.pdf', type: 'suitability', status: 'stamped', isRegular: true, checked: false }
+                postStampFiles: [
+                    { id: 'p1', name: '认申购单（双方用印）.pdf', status: 'bothStamped', source: '妥妥递' },
+                    { id: 'p2', name: '风险揭示书（双方用印）.pdf', status: 'bothStamped', source: '妥妥递' },
+                    { id: 'p3', name: '合同（双方用印）.pdf', status: 'bothStamped', source: '妥妥递' },
+                    { id: 'p4', name: '估值表.pdf', status: 'bothStamped', source: 'RPA上传' },
+                    { id: 'p5', name: '投资承诺函.pdf', status: 'bothStamped', source: 'RPA上传' },
+                    { id: 'p6', name: '划款说明.pdf', status: 'supplement', source: '手工上传' }
                 ]
             }
         };
@@ -2240,7 +2191,7 @@
 
             // 1. 主流程按钮
             if (mainFlow) {
-                html += `<a class="flow-btn flow-btn-main" href="seal-payment-workflow.html?orderId=${currentOrderId}" target="_blank">
+                html += `<a class="flow-btn flow-btn-main" href="seal-payment-workflow-v2.html?orderId=${currentOrderId}" target="_blank">
                     <span>用印划款流程</span>
                 </a>`;
             } else {
@@ -2251,7 +2202,7 @@
 
             // 2. 补充材料流程按钮（统一紫色样式）
             suppFlows.forEach(flow => {
-                const url = `seal-payment-workflow.html?orderId=${currentOrderId}&type=supplement&flowId=${flow.id}`;
+                const url = `seal-payment-workflow-v2.html?orderId=${currentOrderId}&type=supplement&flowId=${flow.id}`;
 
                 html += `<a class="flow-btn flow-btn-supp" href="${url}" target="_blank">
                     <span>${flow.label}</span>
@@ -2283,7 +2234,7 @@
             renderFlowActionsBar();
 
             // 打开流程页面
-            window.open(`seal-payment-workflow.html?orderId=${currentOrderId}`, '_blank');
+            window.open(`seal-payment-workflow-v2.html?orderId=${currentOrderId}`, '_blank');
         }
 
         // 发起补充材料流程
@@ -2312,7 +2263,7 @@
             renderFlowActionsBar();
 
             // 打开流程页面
-            window.open(`seal-payment-workflow.html?orderId=${currentOrderId}&type=supplement&flowId=${flowId}`, '_blank');
+            window.open(`seal-payment-workflow-v2.html?orderId=${currentOrderId}&type=supplement&flowId=${flowId}`, '_blank');
         }
         // ========== 流程管理结束 ==========
 
@@ -2472,71 +2423,53 @@
         // 加载文件
         function loadFiles() {
             const data = orderFilesData[currentOrderId] || orderFilesData['3'];
-            allFiles = [...data.orderFiles, ...data.suitabilityFiles];
-            renderAllFileLists();
+            allFiles = [...data.postStampFiles];
+            renderPostStampFileList();
         }
 
-        function fetchOrderSigningFiles() {
-            const button = document.getElementById('fetchOrderFilesBtn');
+        function fetchPostStampFiles() {
+            const button = document.getElementById('fetchPostStampFilesBtn');
             button.disabled = true;
             button.textContent = '获取中...';
             setTimeout(() => {
                 loadFiles();
                 button.disabled = false;
                 button.textContent = '↻ 获取文件';
-                showAlert('success', '文件获取完成', ['已从妥妥递获取最新订单签约文件']);
+                showAlert('success', '文件获取完成', ['已获取双方用印文件及划款补充材料']);
             }, 650);
         }
 
-        // 渲染所有文件列表
+        // 兼容旧的刷新调用：详情页仅展示用印后材料
         function renderAllFileLists() {
-            renderFileList('suitability');
-            renderFileList('order');
+            renderPostStampFileList();
         }
 
-        // 渲染单个文件列表
-        function renderFileList(fileType) {
-            const containerId = fileType === 'suitability' ? 'suitabilityFileList' : 'orderFileList';
-            const container = document.getElementById(containerId);
-            const subTab = currentSubTabs[fileType];
-            
-            if (subTab === 'history') {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">📜</div>
-                        <div class="empty-text">历史记录请查看其他页面</div>
-                    </div>
-                `;
-                return;
-            }
-
-            let files = allFiles.filter(f => f.type === fileType);
-
-            if (files.length === 0) {
+        function renderPostStampFileList() {
+            const container = document.getElementById('postStampFileList');
+            if (!container) return;
+            if (!allFiles.length) {
                 container.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">📁</div>
-                        <div class="empty-text">暂无文件</div>
+                        <div class="empty-text">暂无用印后材料</div>
                     </div>
                 `;
                 return;
             }
 
-            container.innerHTML = files.map(file => `
-                <div class="file-item">
-                    <input type="checkbox" class="file-checkbox" 
-                           ${file.checked ? 'checked' : ''} 
-                           onchange="toggleFileCheck('${file.id}')">
+            container.innerHTML = allFiles.map(file => `
+                <div class="file-item post-stamp-file-item">
                     <span class="file-icon">📄</span>
                     <div class="file-info">
                         <div class="file-name">${file.name}</div>
                         <div class="file-meta">
                             <span class="file-status">${getFileStatusHtml(file)}</span>
-                            <span>${file.isRegular ? '常规文档' : '后补文档'}</span>
+                            <span>来源：${file.source}</span>
                         </div>
                     </div>
                     <div class="file-actions">
-                        ${getFileActionButtons(file)}
+                        <button class="btn btn-sm" onclick="viewFile('${file.id}')">预览</button>
+                        <button class="btn btn-sm" onclick="downloadFile('${file.id}')">下载</button>
                     </div>
                 </div>
             `).join('');
@@ -2548,6 +2481,8 @@
                 'needCheck': { icon: '🔍', text: '待检查', color: '#1890ff' },
                 'pending': { icon: '⏳', text: '待签署', color: '#fa8c16' },
                 'stamped': { icon: '✅', text: '已用印', color: '#52c41a' },
+                'bothStamped': { icon: '✅', text: '双方用印', color: '#52c41a' },
+                'supplement': { icon: '📎', text: '划款补充材料', color: '#1677ff' },
                 'transferred': { icon: '📤', text: '已传输', color: '#52c41a' },
                 'error': { icon: '❌', text: '异常', color: '#f5222d' }
             };
@@ -2556,19 +2491,10 @@
             return `<span style="color: ${status.color}">${status.icon} ${status.text}</span>`;
         }
 
-        // 获取文件操作按钮
+        // 详情页仅提供用印后材料的预览和下载
         function getFileActionButtons(file) {
-            if (file.type === 'suitability') {
-                return `<button class="btn btn-sm" onclick="viewFile('${file.id}')">预览</button>
-                        <button class="btn btn-sm" onclick="downloadFile('${file.id}')">下载</button>`;
-            }
-            // 订单签约文件：所有文件可预览、下载，待签署的额外有用印按钮
-            let buttons = `<button class="btn btn-sm" onclick="viewFile('${file.id}')">预览</button>
-                           <button class="btn btn-sm" onclick="downloadFile('${file.id}')">下载</button>`;
-            if (file.status === 'pending') {
-                buttons += ` <button class="btn btn-sm btn-primary" onclick="openStampModal('${file.id}')">用印</button>`;
-            }
-            return buttons;
+            return `<button class="btn btn-sm" onclick="viewFile('${file.id}')">预览</button>
+                    <button class="btn btn-sm" onclick="downloadFile('${file.id}')">下载</button>`;
         }
 
         // 切换子标签页
