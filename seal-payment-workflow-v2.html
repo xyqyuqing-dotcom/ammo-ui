@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FOF用印划款流程 V2</title>
+    <title>用印划款流程</title>
     <style>
         * {
             margin: 0;
@@ -45,6 +45,21 @@
             display: flex;
             gap: 12px;
             align-items: center;
+        }
+
+        .supplement-main-link {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #1890ff;
+            border-radius: 4px;
+            color: #1890ff;
+            font-size: 13px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        body.supplement-mode .supplement-main-link {
+            display: inline-block;
         }
 
         .priority-selector {
@@ -112,6 +127,97 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
+        .form-section.flow-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0 40px;
+        }
+
+        .flow-title-section {
+            background: white;
+            padding: 18px 24px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .flow-title-section .form-row {
+            margin-bottom: 0;
+        }
+
+        .flow-title-section .form-input {
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .info-subsection + .info-subsection {
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .info-subtitle {
+            margin-bottom: 12px;
+            color: #333;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .info-status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .info-status-row a {
+            color: #1890ff;
+            text-decoration: none;
+        }
+
+        .info-warning {
+            margin-bottom: 12px;
+            color: #ff4d4f;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .info-card table th,
+        .info-card table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #e8e8e8;
+        }
+
+        .info-card table th {
+            color: #666;
+            font-weight: 500;
+            background: #fafafa;
+        }
+
+        .info-card table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .flow-form .form-row {
+            min-width: 0;
+        }
+
+        .flow-form .form-row.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .flow-form .form-row.textarea-row {
+            align-items: flex-start;
+        }
+
+        .flow-form .textarea-row .form-label {
+            padding-top: 9px;
+        }
+
         .form-row {
             display: flex;
             margin-bottom: 16px;
@@ -175,6 +281,10 @@
             user-select: none;
             padding-bottom: 16px;
             border-bottom: 1px solid #f0f0f0;
+        }
+
+        .section-header.static-section-header {
+            cursor: default;
         }
 
         .section-title {
@@ -722,6 +832,13 @@
             border-color: #ffd591;
         }
 
+        @media (max-width: 760px) {
+            .form-section.flow-form {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+
         .ttd-source-tag.manual {
             background: #f6ffed;
             color: #389e0d;
@@ -813,63 +930,6 @@
             pointer-events: none;
         }
 
-        .v2-node-panel {
-            display: grid;
-            grid-template-columns: minmax(220px, 1fr) minmax(360px, 2fr);
-            gap: 18px;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 16px 18px;
-            border: 1px solid #d9e8ff;
-            border-radius: 10px;
-            background: #fbfdff;
-        }
-
-        .v2-node-panel-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #0f3f75;
-        }
-
-        .v2-node-panel-desc {
-            margin-top: 6px;
-            color: #6b7280;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        .v2-node-panel-actions {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .v2-node-upload-list {
-            width: 100%;
-            color: #64748b;
-            font-size: 12px;
-            text-align: right;
-        }
-
-        .v2-node-upload-list span {
-            display: inline-block;
-            margin: 4px 0 0 6px;
-            padding: 3px 8px;
-            border-radius: 999px;
-            color: #475569;
-            background: #f1f5f9;
-        }
-
-        .v2-amount-input {
-            width: 118px;
-            border: 1px solid #d9d9d9;
-            border-radius: 4px;
-            padding: 6px 9px;
-            font-size: 13px;
-        }
-
         @media (max-width: 1500px) {
             .v2-flow-dock {
                 right: 12px;
@@ -897,14 +957,19 @@
             .v2-flow-step:not(:last-child)::after {
                 display: none;
             }
-            .v2-node-panel {
-                grid-template-columns: 1fr;
-            }
-            .v2-node-panel-actions {
-                justify-content: flex-start;
-            }
-            .v2-node-upload-list {
-                text-align: left;
+        }
+
+        body.supplement-mode .v2-flow-dock,
+        body.supplement-mode .v2-flow-actions,
+        body.supplement-mode .v2-demo-banner,
+        body.supplement-mode #ttdSuitabilitySection,
+        body.supplement-mode #ttdOrderCombo {
+            display: none;
+        }
+
+        @media (min-width: 1181px) {
+            body.supplement-mode .container {
+                padding-right: 20px;
             }
         }
 
@@ -1055,27 +1120,10 @@
     </aside>
 
     <div class="container">
-        <!-- 补充材料流程提示（仅type=supplement时显示） -->
-        <div class="supplement-notice" id="supplementNotice">
-            <div class="supplement-notice-header">
-                <div class="supplement-notice-title">
-                    <span>📋</span>
-                    <span>补充材料子流程</span>
-                </div>
-                <a class="supplement-notice-link" id="mainFlowLink" href="#" target="_blank">
-                    查看主用印划款流程 →
-                </a>
-            </div>
-            <div class="supplement-notice-desc">
-                当前为<strong>补充材料子流程</strong>，已自动隐藏以下模块：附加信息、收款账户、申购/追加划款。
-                用印前附件区域保留（需手动上传，不自动挂接）。
-                如需查看完整的用印划款主流程，请点击右侧链接。
-            </div>
-        </div>
-
         <div class="header">
-            <div class="header-title">FOF用印划款流程 V2</div>
+            <div class="header-title">用印划款流程</div>
             <div class="header-actions">
+                <a class="supplement-main-link" id="mainFlowLink" href="#" target="_blank">查看用印划款主流程 →</a>
                 <div class="priority-selector">
                     <label>优先级</label>
                     <button class="priority-btn" onclick="setPriority('low', this)">低</button>
@@ -1088,137 +1136,87 @@
             </div>
         </div>
 
-        <div class="form-section">
+        <div class="flow-title-section">
             <div class="form-row">
-                <div class="form-label"><span class="required-mark">*</span>标题</div>
+                <div class="form-label"><span class="required-mark">*</span>流程标题</div>
                 <div class="form-value">
-                    <input type="text" class="form-input" value="私募基金备案/私募基金管理人登记/私募基金产品材料补正">
+                    <input type="text" class="form-input" value="AAA拟YYYYMMDD赎回/追加BBB的材料申请">
                 </div>
             </div>
+        </div>
 
+        <div class="form-section flow-form">
             <div class="form-row">
-                <div class="form-label">母基金</div>
-                <div class="form-value">
-                    <input type="text" class="form-input disabled" value="私募基金宝安号" readonly>
-                </div>
+                <div class="form-label">母层产品</div>
+                <div class="form-value"><input type="text" class="form-input disabled" value="STES09（妥妥递测试 sqy9）" readonly></div>
             </div>
-
             <div class="form-row">
                 <div class="form-label">产品类型</div>
-                <div class="form-value">
-                    <input type="text" class="form-input disabled" value="债券（S1B）" readonly>
-                </div>
+                <div class="form-value"><input type="text" class="form-input disabled" value="期货和衍生品类" readonly></div>
             </div>
-
             <div class="form-row">
                 <div class="form-label">产品风险等级</div>
-                <div class="form-value">
-                    <input type="text" class="form-input disabled" value="R1" readonly>
-                </div>
+                <div class="form-value"><input type="text" class="form-input disabled" value="R4" readonly></div>
             </div>
-
             <div class="form-row">
-                <div class="form-label">国家代码/地区</div>
-                <div class="form-value">
-                    <input type="text" class="form-input disabled" value="86" readonly>
-                </div>
+                <div class="form-label">国君代销评级</div>
+                <div class="form-value"><input type="text" class="form-input disabled" value="空" readonly></div>
             </div>
-
             <div class="form-row">
-                <div class="form-label">规模/份额</div>
-                <div class="form-value">
-                    <input type="text" class="form-input disabled" value="每份人民币1元" readonly>
-                </div>
+                <div class="form-label">拟投资标的</div>
+                <div class="form-value"><input type="text" class="form-input disabled" value="SAQP22（国泰君安期货苏安3号 MOM单一资产管理计划）" readonly></div>
             </div>
-
             <div class="form-row">
-                <div class="form-label">管理费率</div>
-                <div class="form-value">
-                    <input type="text" class="form-input disabled" value="固定值" readonly>
-                </div>
+                <div class="form-label">管理池类型</div>
+                <div class="form-value"><input type="text" class="form-input disabled" value="基础池" readonly></div>
             </div>
-
             <div class="form-row">
-                <div class="form-label">托管人名称</div>
-                <div class="form-value">
-                    <input type="text" class="form-input disabled" value="招商银行（总行）托管部某某支行" readonly>
-                </div>
+                <div class="form-label">管理人名称</div>
+                <div class="form-value"><input type="text" class="form-input disabled" value="国泰君安期货有限公司" readonly></div>
             </div>
-
             <div class="form-row">
-                <div class="form-label">交易日期</div>
-                <div class="form-value">
-                    <input type="text" class="form-input disabled" value="默认" readonly>
-                </div>
+                <div class="form-label">交易类型</div>
+                <div class="form-value"><input type="text" class="form-input disabled" value="追加" readonly></div>
             </div>
-
             <div class="form-row">
-                <div class="form-label">对方机构</div>
-                <div class="form-value">
-                    <input type="text" class="form-input disabled" value="2024-06-17" readonly>
-                </div>
+                <div class="form-label">拟交易日期</div>
+                <div class="form-value"><input type="text" class="form-input disabled" value="2026-07-16" readonly></div>
             </div>
-
+            <div class="form-row">
+                <div class="form-label">计划金额</div>
+                <div class="form-value"><input type="text" class="form-input disabled" value="350000" readonly></div>
+            </div>
+            <div class="form-row">
+                <div class="form-label"><span class="required-mark">*</span>业务类型</div>
+                <div class="form-value"><input type="text" class="form-input disabled" value="下投子基金追加或赎回的申请表" readonly></div>
+            </div>
+            <div class="form-row">
+                <div class="form-label"><span class="required-mark">*</span>印章类型</div>
+                <div class="form-value"><input type="text" class="form-input disabled" value="资管业务合同专用章" readonly></div>
+            </div>
             <div class="form-row">
                 <div class="form-label">投资经理</div>
-                <div class="form-value">
-                    <input type="text" class="form-input disabled" value="YIYIYIYI" readonly>
-                </div>
+                <div class="form-value"><input type="text" class="form-input disabled" value="投资经理（已脱敏）" readonly></div>
             </div>
-
             <div class="form-row">
-                <div class="form-label">已交易额</div>
-                <div class="form-value">
-                    <input type="text" class="form-input disabled" value="每份募集金额或投资额的计价单位" readonly>
-                </div>
+                <div class="form-label">授权审批人</div>
+                <div class="form-value"><input type="text" class="form-input disabled" value="审批人（已脱敏）" readonly></div>
             </div>
+            <div class="form-row full-width textarea-row">
+                <div class="form-label"><span class="required-mark">*</span>主要内容</div>
+                <div class="form-value"><textarea class="form-textarea">（投资经理）妥妥递测试 sqy9 拟交易日期 2026-07-16，追加国泰君安期货苏安3号 MOM 单一，金额 35.00 万元，选择直销-妥妥递签约，请审批。</textarea></div>
+            </div>
+            <div class="form-row full-width textarea-row">
+                <div class="form-label">备注</div>
+                <div class="form-value"><textarea class="form-textarea">1、具体交易日期以私募子基金开放日为准；
 
-            <div class="form-row">
-                <div class="form-label">认购/申购</div>
-                <div class="form-value">
-                    <input type="text" class="form-input disabled" value="需要提供相关资料等" readonly>
-                </div>
-            </div>
+2、妥妥递测试 sqy9 追加国泰君安期货苏安3号 MOM 单一，数量 35.00 万元（35.00 万元为上限金额，根据情况可下调）。
 
-            <div class="form-row">
-                <div class="form-label">风险等级</div>
-                <div class="form-value">
-                    <input type="text" class="form-input disabled" value="评级" readonly>
-                </div>
-            </div>
+风控备注（母层）：无
 
-            <div class="form-row">
-                <div class="form-label">初始投资人</div>
-                <div class="form-value">
-                    <input type="text" class="form-input disabled" value="曹雪芹" readonly>
-                </div>
-            </div>
-        </div>
+风控备注（子层）：无
 
-        <div class="collapsible-section">
-            <div class="section-header" onclick="toggleSection(this)">
-                <div class="section-title">
-                    <span class="collapse-icon">▼</span>
-                    主要内容
-                </div>
-                <span style="color: #999; font-size: 12px;">60</span>
-            </div>
-            <div class="section-content">
-                <textarea class="form-textarea">【说明】私募基金备案/私募基金管理人登记/私募基金产品材料补正11111.15万元，包括基金、基金规模、申请日期。</textarea>
-            </div>
-        </div>
-
-        <div class="collapsible-section">
-            <div class="section-header" onclick="toggleSection(this)">
-                <div class="section-title">
-                    <span class="collapse-icon">▼</span>
-                    备注
-                </div>
-                <span style="color: #999; font-size: 12px;">81</span>
-            </div>
-            <div class="section-content">
-                <textarea class="form-textarea">1、私交文日期以私募基金开户成功为准。
-2、私募基金备案/私募基金管理人登记的产品，我司111.13万元（11111.17元为上期金额，根据提交文件下调）。</textarea>
+估值日期：【无】，净资产：【无】，子基金市值：【无】，市值占净值：【无】</textarea></div>
             </div>
         </div>
 
@@ -1335,13 +1333,6 @@
             <strong>V2新增演示：</strong>保留老流程界面，在用印前附件后补充妥妥递用印主逻辑。适当性文件可自动用印；订单普通文件可自动用印，特殊文件必须手动用印。任何自动功能失败时，都可使用单份或批量手工用印兜底。适当性已审核成功或线下已完成时，直接进入订单用印。
         </div>
 
-        <div class="v2-node-panel" id="v2NodePanel">
-            <div>
-                <div class="v2-node-panel-title" id="v2NodePanelTitle">当前节点</div>
-                <div class="v2-node-panel-desc" id="v2NodePanelDesc">点击右侧节点模拟区切换场景。</div>
-            </div>
-            <div class="v2-node-panel-actions" id="v2NodePanelActions"></div>
-        </div>
         <input type="file" id="v2NodeFileInput" multiple hidden onchange="handleV2NodeFiles(this.files)">
 
         <div class="ttd-stamp-section" id="ttdSuitabilitySection">
@@ -1381,13 +1372,13 @@
             <div class="ttd-stamp-head">
                 <div>
                     <div class="ttd-stamp-title">妥妥递-订单用印</div>
-                    <div class="ttd-stamp-tip" id="orderTip">普通文件自动用印；特殊文件不可自动用印，需资管部用印岗手工完成。自动失败的普通文件也可手工兜底。</div>
+                    <div class="ttd-stamp-tip" id="orderTip">进入本节点后系统自动获取订单文件；普通文件自动用印，特殊文件不可自动用印，需资管部用印岗手工完成。自动失败时可手工兜底。</div>
                 </div>
                 <span class="ttd-status-pill pending" id="orderStatus">⏳ 等待适当性用印提交</span>
             </div>
             <div class="ttd-node-note" id="orderNodeNote">
                 <span>🤖</span>
-                <div>进入本节点后获取订单文件；点击“自动用印”后，特殊文件会继续保留为待手工用印。</div>
+                <div>进入本节点后系统自动获取订单文件；点击“自动用印”后，特殊文件会继续保留为待手工用印。</div>
             </div>
             <div class="ttd-stamp-toolbar">
                 <label class="ttd-stamp-filter">
@@ -1405,7 +1396,7 @@
             <div class="ttd-file-placeholder" id="orderFilePlaceholder">
                 <div style="font-size: 30px; margin-bottom: 6px;">📂</div>
                 <div>订单文件尚未获取</div>
-                <div style="font-size: 12px;">进入订单用印节点后，点击“获取文件”展示妥妥递订单文件。</div>
+                <div style="font-size: 12px;">系统将在进入订单用印节点后自动获取；获取异常时可点击“获取文件”重试。</div>
             </div>
             <div class="ttd-file-list" id="orderFileList" style="display: none;"></div>
         </div>
@@ -1414,7 +1405,7 @@
             <div class="ttd-stamp-head">
                 <div>
                     <div class="ttd-stamp-title">用印后材料（双方用印 + 上传）</div>
-                    <div class="ttd-stamp-tip">交易员复核时同步双方用印文件；投资经理二次确认时，可继续上传划款所需的补充材料。</div>
+                    <div class="ttd-stamp-tip">进入交易员复核或投资经理二次确认节点后，系统自动同步双方用印文件；投资经理可继续上传划款所需的补充材料。</div>
                 </div>
                 <span class="ttd-status-pill ready" id="postStampStatus">完成情况：交易已用印（63）</span>
             </div>
@@ -1434,91 +1425,65 @@
             <div class="ttd-file-placeholder" id="postStampPlaceholder">
                 <div style="font-size: 30px; margin-bottom: 6px;">📭</div>
                 <div>暂无用印后材料</div>
-                <div style="font-size: 12px;">点击“同步”取回妥妥递及 RPA 材料，也可手工上传补充文件。</div>
+                <div style="font-size: 12px;">系统将在进入对应节点后自动同步；同步异常时可点击“同步”重试，也可手工上传补充文件。</div>
             </div>
             <div class="ttd-file-list" id="postStampFileList" style="display: none;"></div>
         </div>
         </div>
 
-        <div class="collapsible-section" id="section-additional-info">
-            <div class="section-header" onclick="toggleSection(this)">
-                <div class="section-title">
-                    <span class="collapse-icon">▼</span>
-                    附加信息
-                </div>
-                <span style="color: #ff4d4f; font-size: 12px;">新增行</span>
+        <div class="collapsible-section info-card" id="section-additional-info">
+            <div class="section-header static-section-header">
+                <div class="section-title">附加信息</div>
             </div>
             <div class="section-content">
-                <div style="margin-bottom: 20px;">
-                    <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 12px; color: #333;">关联交易审批流程</h3>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                        <span style="color: #999; font-size: 13px;">没有可选的流程</span>
-                        <button style="padding: 6px 16px; background: #fff; border: 1px solid #ff4d4f; border-radius: 4px; cursor: pointer; font-size: 13px; color: #ff4d4f;" onmouseover="this.style.background='#fff1f0'" onmouseout="this.style.background='#fff'">发起流程</button>
-                    </div>
-
-                    <table style="width: 100%; margin-bottom: 20px;">
-                        <thead>
-                            <tr style="background: #fafafa;">
-                                <th style="padding: 12px; text-align: left; font-weight: 500; color: #666; border: 1px solid #e8e8e8;">是否重大投资</th>
-                                <th style="padding: 12px; text-align: left; font-weight: 500; color: #666; border: 1px solid #e8e8e8;">是否重大关联交易</th>
-                                <th style="padding: 12px; text-align: left; font-weight: 500; color: #666; border: 1px solid #e8e8e8;">管理人关联方</th>
-                                <th style="padding: 12px; text-align: left; font-weight: 500; color: #666; border: 1px solid #e8e8e8;">托管人关联方</th>
-                                <th style="padding: 12px; text-align: left; font-weight: 500; color: #666; border: 1px solid #e8e8e8;">估值标准</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style="padding: 12px; border: 1px solid #e8e8e8; color: #333;">否</td>
-                                <td style="padding: 12px; border: 1px solid #e8e8e8; color: #333;">否</td>
-                                <td style="padding: 12px; border: 1px solid #e8e8e8; color: #1890ff;">光融七号（天津）航空租赁有限公司</td>
-                                <td style="padding: 12px; border: 1px solid #e8e8e8; color: #333;">无</td>
-                                <td style="padding: 12px; border: 1px solid #e8e8e8; color: #333;">估值表日期：无，净资产：无元</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <table style="width: 100%; margin-bottom: 24px;">
-                        <thead>
-                            <tr style="background: #fafafa;">
-                                <th style="padding: 12px; text-align: left; font-weight: 500; color: #666; border: 1px solid #e8e8e8;">托管户余额</th>
-                                <th style="padding: 12px; text-align: left; font-weight: 500; color: #666; border: 1px solid #e8e8e8;">最新估值日期</th>
-                                <th style="padding: 12px; text-align: left; font-weight: 500; color: #666; border: 1px solid #e8e8e8;">母产品净资产</th>
-                                <th style="padding: 12px; text-align: left; font-weight: 500; color: #666; border: 1px solid #e8e8e8;">子基金持仓市值</th>
-                                <th style="padding: 12px; text-align: left; font-weight: 500; color: #666; border: 1px solid #e8e8e8;">市值占净值</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style="padding: 12px; border: 1px solid #e8e8e8;"></td>
-                                <td style="padding: 12px; border: 1px solid #e8e8e8;"></td>
-                                <td style="padding: 12px; border: 1px solid #e8e8e8;"></td>
-                                <td style="padding: 12px; border: 1px solid #e8e8e8;"></td>
-                                <td style="padding: 12px; border: 1px solid #e8e8e8;"></td>
-                            </tr>
-                        </tbody>
+                <div class="info-subsection">
+                    <div class="info-subtitle">关联交易审批流程</div>
+                    <div class="info-status-row"><span>不涉及关联交易</span><a href="#">选择流程</a></div>
+                    <div class="info-warning">北京海鹏私募基金管理有限公司 因公司缺失统一信用代码，无法判定是否关联交易，请注意人工确认</div>
+                    <table>
+                        <thead><tr><th>是否重大投资</th><th>是否重大关联交易</th><th>管理人关联方</th><th>托管人关联方</th><th>估算标准</th></tr></thead>
+                        <tbody><tr><td>否</td><td>/</td><td>无</td><td>无</td><td>估值表日期：2025-11-30，净资产：3921898.59</td></tr></tbody>
                     </table>
                 </div>
+                <div class="info-subsection">
+                    <div class="info-subtitle">资产估值信息</div>
+                    <table>
+                        <thead><tr><th>托管户余额</th><th>最新估值日期</th><th>母产品净资产</th><th>子基金持仓市值</th><th>市值占净值</th></tr></thead>
+                        <tbody><tr><td></td><td>2025-11-30</td><td>3921898.59</td><td></td><td></td></tr></tbody>
+                    </table>
+                </div>
+                <div class="info-subsection">
+                    <div class="info-subtitle">在途及风控试算</div>
+                    <table>
+                        <thead><tr><th>在途子基金</th><th>TA在途资金</th><th>预估市值占净值</th></tr></thead>
+                        <tbody><tr><td>—</td><td>—</td><td>待风控试算</td></tr></tbody>
+                    </table>
+                </div>
+                <div class="info-subsection">
+                    <div class="info-subtitle">妥妥递订单</div>
+                    <table>
+                        <thead><tr><th></th><th>交易编号</th><th>订单状态</th><th>金额/份额</th><th>开放日</th><th>母基金</th><th>子基金</th><th>私募</th><th>订单创建时间</th></tr></thead>
+                        <tbody><tr><td>◯</td><td>2026062581604423_FOF</td><td>交易已生效</td><td>100万元</td><td>2026-06-25</td><td>CTA全明星3号FOF集合</td><td>国泰君安期货光大理财量化4号MOM集合资产管理计划（SANS95）</td><td>国泰君安期货有限公司</td><td>2026-06-25 17:18:52</td></tr></tbody>
+                    </table>
+                </div>
+                <div class="info-subsection">
+                    <div class="info-subtitle">是否风控二次审批</div>
+                    <label style="font-size:14px;"><span class="required-mark">*</span> 是否风控二次审批　<input type="radio" name="riskReview"> 是　<input type="radio" name="riskReview" checked> 否</label>
+                </div>
+            </div>
+        </div>
 
-                <div id="section-purchase-payment">
-                    <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 16px; color: #333;">申购/追加划款</h3>
-                    <div class="form-row" style="margin-bottom: 12px;">
-                        <div class="form-label" style="width: 100px;">划款指令编号</div>
-                        <div class="form-value">
-                            <input type="text" class="form-input" value="YYHK20260529152134677-70">
-                        </div>
-                    </div>
-                    <div class="form-row" style="margin-bottom: 12px;">
-                        <div class="form-label" style="width: 100px;">划款指令类型</div>
-                        <div class="form-value">
-                            <input type="text" class="form-input" value="子基金申购">
-                        </div>
-                    </div>
-                    <div class="form-row" style="margin-bottom: 12px;">
-                        <div class="form-label" style="width: 100px;">划款金额</div>
-                        <div class="form-value">
-                            <input type="text" class="form-input" value="11111100">
-                        </div>
-                    </div>
+        <div class="collapsible-section info-card" id="section-purchase-payment">
+            <div class="section-header static-section-header">
+                <div class="section-title">申购/追加划款</div>
+            </div>
+            <div class="section-content">
+                <div class="form-row"><div class="form-label">划款指令编号</div><div class="form-value"><input type="text" class="form-input" value="YYHK20260716093636722-594"></div></div>
+                <div class="form-row"><div class="form-label">划款指令类型</div><div class="form-value"><input type="text" class="form-input" value="子基金申购"></div></div>
+                <div class="form-row"><div class="form-label">划款金额</div><div class="form-value"><input type="text" class="form-input" value="350000"></div></div>
+                <div class="info-subsection">
+                    <div class="info-subtitle">上次申购用印材料（可删除）</div>
+                    <table><thead><tr><th>文件名</th><th style="width:220px;">操作</th></tr></thead><tbody><tr><td>test</td><td><a href="#" class="action-link">预览</a><a href="#" class="action-link">下载</a><a href="#" class="action-link" style="color:#ff4d4f;">删除</a></td></tr></tbody></table>
                 </div>
             </div>
         </div>
@@ -1535,21 +1500,18 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>银行户名</th>
-                                <th>账号</th>
                                 <th>开户行</th>
+                                <th>银行账号</th>
                                 <th>客户名称</th>
-                                <th>备注</th>
+                                <th>是否确认</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td colspan="5">
-                                    <div class="empty-state">
-                                        <div class="empty-icon">📄</div>
-                                        <div>暂无数据</div>
-                                    </div>
-                                </td>
+                                <td>测试开户行</td>
+                                <td>1234 8907</td>
+                                <td>4563 2345</td>
+                                <td>否</td>
                             </tr>
                         </tbody>
                     </table>
@@ -1591,23 +1553,6 @@
             { id: 'post_5', name: '投资承诺函.pdf', source: 'RPA上传', sourceType: 'rpa' }
         ];
         const v2PostStampFiles = [];
-        const v2NodeUploads = {
-            approval: [],
-            managerConfirm: [],
-            complianceReview: [],
-            payment: []
-        };
-
-        const v2NodeCopy = {
-            approval: ['章总/齐总审批', '前道审批已完成。可上传审批补充材料后，模拟审批通过。'],
-            suitabilitySeal: ['适当性用印', '适当性文件默认自动用印；自动功能异常时，保留手工单份或批量用印。'],
-            orderSeal: ['订单用印', '普通文件自动用印；风险不匹配警示函、补充协议等特殊文件需手工用印。'],
-            traderReview: ['交易员复核', '完成情况为“交易已用印（63）”。同步双方用印材料后进行复核。'],
-            managerConfirm: ['投资经理二次确认', '可重新同步双方用印文件并补充划款材料；金额只能确认原值或调低。'],
-            complianceReview: ['合规风控审批（按需）', '仅在需要时进入，可上传合规风控材料并模拟审批。'],
-            payment: ['划款岗划款', '上传划款指令或回单后，模拟完成划款。'],
-            done: ['流程完成', '本次主流程演示已完成，可重置后切换其他场景。']
-        };
 
         function initTtdSealDemo() {
             renderV2FileList('suitability');
@@ -1619,6 +1564,11 @@
         function setV2Node(node) {
             if (!v2Nodes.includes(node)) return;
             v2CurrentNode = node;
+
+            // 主流程进入对应环节时，自动获取订单文件及同步双方用印材料；页面按钮保留作失败后的手工兜底。
+            if (node === 'orderSeal' && !v2OrderFilesFetched) fetchV2OrderFiles();
+            if ((node === 'traderReview' || node === 'managerConfirm') && !v2PostStampSynced) syncPostStampFiles();
+
             const nodeIndex = v2Nodes.indexOf(node);
             document.querySelectorAll('.v2-flow-step').forEach(step => {
                 const stepIndex = v2Nodes.indexOf(step.dataset.node);
@@ -1639,7 +1589,6 @@
             updatePostStampActions(node);
             updateOrderFileVisibility();
             updateV2NodeCopy(node);
-            renderV2NodePanel(node);
         }
 
         function updatePostStampActions(node) {
@@ -1686,9 +1635,9 @@
             const textMap = {
                 approval: ['前道审批已完成，审批通过后进入适当性文件处理。', '订单文件尚未进入处理环节。'],
                 suitabilitySeal: ['点击“自动用印”模拟正常处理；如自动失败，可使用手工用印兜底。', '完成后可通过右侧节点模拟切换至订单用印。'],
-                orderSeal: [v2SuitabilitySkipped ? '适当性已审核成功或线下已完成，本环节已跳过。' : '适当性用印已处理。', '自动用印只处理普通文件，特殊文件会保留为待手工用印。'],
-                traderReview: ['适当性文件已处理。', '交易员同步双方用印材料并复核；后续节点通过右侧模拟区切换。'],
-                managerConfirm: ['适当性文件已处理。', '交易员复核已完成，等待投资经理二次确认。'],
+                orderSeal: [v2SuitabilitySkipped ? '适当性已审核成功或线下已完成，本环节已跳过。' : '适当性用印已处理。', '系统已自动获取订单文件；自动用印只处理普通文件，特殊文件会保留为待手工用印。'],
+                traderReview: ['适当性文件已处理。', '系统已自动同步双方用印材料；交易员进行复核，后续节点通过右侧模拟区切换。'],
+                managerConfirm: ['适当性文件已处理。', '系统已自动同步双方用印材料；投资经理可继续上传划款补充材料。'],
                 complianceReview: ['适当性文件已处理。', '投资经理已确认，本单按需进入合规风控审批。'],
                 payment: ['适当性文件已处理。', '前道节点已完成，等待划款岗处理。'],
                 done: ['适当性文件已处理。', '用印划款主流程演示已完成。']
@@ -1702,32 +1651,6 @@
                     ? '投资经理可再次点击“同步”补偿自动同步失败，也可上传划款所需的补充材料。'
                     : '这里统一展示双方用印文件及后续上传材料，与前面的订单用印文件分开处理。');
             postStampNote.innerHTML = `<span>📦</span><div>${postStampCopy}</div>`;
-        }
-
-        function renderV2NodePanel(node) {
-            const title = document.getElementById('v2NodePanelTitle');
-            const desc = document.getElementById('v2NodePanelDesc');
-            const actions = document.getElementById('v2NodePanelActions');
-            const copy = v2NodeCopy[node];
-            title.textContent = `当前节点：${copy[0]}`;
-            desc.textContent = copy[1];
-
-            const actionMap = {
-                approval: `<button class="ttd-ghost-btn" onclick="openV2Upload('approval')">↑ 上传审批附件</button><button class="ttd-primary-btn" onclick="setV2Node('suitabilitySeal')">审批通过 →</button>`,
-                suitabilitySeal: `<button class="ttd-ghost-btn" onclick="openV2Upload('suitability')">↑ 上传适当性文件</button><button class="ttd-primary-btn" onclick="autoSealV2('suitability')">自动用印</button><button class="ttd-ghost-btn" onclick="skipSuitabilityV2()">适当性已完成，跳过</button>`,
-                orderSeal: `<button class="ttd-ghost-btn" onclick="openV2Upload('order')">↑ 上传普通文件</button><button class="ttd-ghost-btn" onclick="openV2Upload('orderSpecial', true)">↑ 上传特殊文件</button><button class="ttd-primary-btn" onclick="autoSealV2('order')">自动用印普通文件</button>`,
-                traderReview: `<button class="ttd-primary-btn" onclick="syncPostStampFiles()">同步</button><button class="ttd-ghost-btn" onclick="openV2Upload('postStamp')">↑ 手工上传</button>`,
-                managerConfirm: `<button class="ttd-primary-btn" onclick="syncPostStampFiles()">同步</button><button class="ttd-ghost-btn" onclick="openV2Upload('postStamp')">↑ 上传划款补充材料</button><span style="font-size:13px;color:#64748b;">原金额 120 万；确认金额</span><input class="v2-amount-input" id="v2ManagerAmount" type="number" value="120" min="0" max="120"><button class="ttd-ghost-btn" onclick="lowerManagerAmountV2()">调低并退回</button><button class="ttd-primary-btn" onclick="confirmManagerV2(true)">确认并进入合规 →</button><button class="ttd-primary-btn" onclick="confirmManagerV2(false)">无需合规 →</button>`,
-                complianceReview: `<button class="ttd-ghost-btn" onclick="openV2Upload('complianceReview')">↑ 上传合规风控材料</button><button class="ttd-primary-btn" onclick="setV2Node('payment')">审批通过 →</button>`,
-                payment: `<button class="ttd-ghost-btn" onclick="openV2Upload('payment')">↑ 上传划款材料</button><button class="ttd-primary-btn" onclick="completePaymentV2()">确认划款完成 →</button>`,
-                done: `<button class="ttd-primary-btn" onclick="resetV2Demo()">重新演示</button>`
-            };
-
-            const uploads = v2NodeUploads[node] || [];
-            const uploadedHtml = uploads.length
-                ? `<div class="v2-node-upload-list">本节点已上传：${uploads.map(name => `<span>${escapeV2Html(name)}</span>`).join('')}</div>`
-                : '';
-            actions.innerHTML = actionMap[node] + uploadedHtml;
         }
 
         function renderV2FileList(group) {
@@ -1881,48 +1804,7 @@
             } else if (v2UploadTarget === 'postStamp') {
                 files.forEach((file, index) => v2PostStampFiles.push({ id: `post_upload_${now}_${index}`, name: file.name, source: '手工上传', sourceType: 'manual' }));
                 renderPostStampFileList();
-            } else if (v2NodeUploads[v2UploadTarget]) {
-                files.forEach(file => v2NodeUploads[v2UploadTarget].push(file.name));
-                renderV2NodePanel(v2CurrentNode);
             }
-        }
-
-        function confirmManagerV2(needsCompliance) {
-            const amountInput = document.getElementById('v2ManagerAmount');
-            const amount = amountInput ? Number(amountInput.value) : 120;
-            if (!amount || amount > 120) {
-                alert('投资经理只能确认原金额或调低金额，不能调高。');
-                return;
-            }
-            if (amount < 120) {
-                alert('金额已调低，请使用“调低并退回”重新处理订单文件。');
-                return;
-            }
-            setV2Node(needsCompliance ? 'complianceReview' : 'payment');
-        }
-
-        function lowerManagerAmountV2() {
-            const amountInput = document.getElementById('v2ManagerAmount');
-            const amount = amountInput ? Number(amountInput.value) : 120;
-            if (!amount || amount >= 120) {
-                alert('请输入低于 120 万的新金额。');
-                return;
-            }
-            v2Files.order.forEach(file => file.state = 'pending');
-            v2OrderFilesFetched = true;
-            v2PostStampSynced = false;
-            v2PostStampFiles.splice(0, v2PostStampFiles.length);
-            renderV2FileList('order');
-            renderPostStampFileList();
-            setV2Node('orderSeal');
-        }
-
-        function completePaymentV2() {
-            if (!v2NodeUploads.payment.length) {
-                alert('请先上传划款指令或回单。');
-                return;
-            }
-            setV2Node('done');
         }
 
         function previewV2File(fileName) {
@@ -1946,7 +1828,6 @@
             v2Files.suitability.forEach(file => file.state = 'pending');
             v2Files.order.forEach(file => file.state = 'pending');
             v2PostStampFiles.splice(0, v2PostStampFiles.length);
-            Object.keys(v2NodeUploads).forEach(key => v2NodeUploads[key].splice(0, v2NodeUploads[key].length));
             renderV2FileList('suitability');
             renderV2FileList('order');
             renderPostStampFileList();
@@ -1962,22 +1843,19 @@
 
             // 如果是补充材料流程
             if (flowType === 'supplement') {
-                // 1. 显示提示区域
-                document.getElementById('supplementNotice').classList.add('show');
+                document.body.classList.add('supplement-mode');
 
-                // 2. 设置主流程链接
-                const mainFlowLink = document.getElementById('mainFlowLink');
-                mainFlowLink.href = `seal-payment-workflow-v2.html?orderId=${orderId}`;
+                document.getElementById('mainFlowLink').href = `seal-payment-workflow-v2.html?orderId=${orderId}`;
 
-                // 3. 隐藏不需要的模块（保留用印前附件）
-                hideSection('section-additional-info');        // 附加信息（包含申购/追加划款）
+                // 隐藏不需要的模块（保留用印前附件）
+                hideSection('section-additional-info');
+                hideSection('section-purchase-payment');
                 hideSection('section-receiving-account');      // 收款账户
 
-                // 4. 用印前附件区域添加提示（手动上传模式）
+                // 用印前附件区域添加提示（手动上传模式）
                 addSupplementAttachmentNotice();
 
-                // 5. 更新页面标题
-                document.querySelector('.header-title').textContent = 'FOF用印划款流程 V2（补充材料）';
+                document.querySelector('.header-title').textContent = '补充材料流程';
             }
         }
 
@@ -2029,8 +1907,19 @@
             }
         }
 
+        function moveV2ModulesBeforeReceivingAccount() {
+            const receivingAccount = document.getElementById('section-receiving-account');
+            const v2Banner = document.querySelector('.v2-demo-banner');
+            const suitability = document.getElementById('ttdSuitabilitySection');
+            const orderCombo = document.getElementById('ttdOrderCombo');
+            if (receivingAccount && v2Banner && suitability && orderCombo) {
+                receivingAccount.before(v2Banner, suitability, orderCombo);
+            }
+        }
+
         // 页面加载时初始化
         window.addEventListener('DOMContentLoaded', function() {
+            moveV2ModulesBeforeReceivingAccount();
             initSupplementFlow();
             initTtdSealDemo();
         });
@@ -2060,14 +1949,12 @@
     <div id="annotationEditor" class="annotation-empty">请选择一个标注点。</div>
 </aside>
 <script type="application/json" id="annotationDefaults">[
-  {"id":"flow-dock","selector":".v2-flow-dock","name":"V2节点模拟","logic":"按章总/齐总审批、适当性用印、订单用印、交易员复核、投资经理二次确认、按需合规、划款、完成的顺序切换演示场景。","notes":"章总/齐总节点保留并标注前道审批已完成；虚拟检查只体现在模块说明中，不作为正式节点展示。"},
-  {"id":"flow-demo-actions","selector":".v2-flow-actions","name":"节点模拟操作","logic":"支持重置演示、跳到订单用印、模拟适当性已完成等快捷操作。","notes":"这些按钮只用于原型演示。"},
-  {"id":"supplement-notice","selector":"#supplementNotice","name":"补充材料提示区","logic":"补充材料入口进入时展示，提示当前页面只保留用印前附件区域，并隐藏不需要的主流程模块。","notes":"需确认补充材料入口参数和返回主流程规则。"},
+  {"id":"flow-dock","selector":".v2-flow-dock","name":"V2节点模拟","logic":"按章总/齐总审批、适当性用印、订单用印、交易员复核、投资经理二次确认、按需合规、划款、完成的顺序切换演示场景。","notes":"仅主流程展示。章总/齐总节点保留并标注前道审批已完成；虚拟检查只体现在模块说明中，不作为正式节点展示。"},
+  {"id":"flow-demo-actions","selector":".v2-flow-actions","name":"节点模拟操作","logic":"支持重置演示、跳到订单用印、模拟适当性已完成等快捷操作。","notes":"仅主流程展示；这些按钮只用于原型演示。"},
   {"id":"page-header","selector":".header","name":"页面头部操作区","logic":"展示流程标题、优先级、试算、保存、转存等页面级操作。","notes":"按钮需结合流程状态和用户权限控制。"},
-  {"id":"base-form","selector":".form-section","name":"基础信息表单","logic":"展示用印划款流程基础字段，包括标题、母基金、产品类型、风险等级、托管人、投资经理等。","notes":"只读字段应由订单、产品、账户或流程上下文自动带出。"},
+  {"id":"base-form","selector":".form-section.flow-form","name":"基础信息表单","logic":"按原流程展示母层产品、风险等级、拟投资标的、管理人、交易信息、业务类型、印章类型、投资经理与审批人等字段。","notes":"字段和值以原流程截图为准；只读字段应由订单、产品、账户或流程上下文自动带出。"},
   {"id":"pre-stamp-attachments","selector":"#pre-stamp-content","name":"用印前附件区域","logic":"展示用印前需要上传或下载的附件材料；补充材料模式下改为手动上传。","notes":"需明确附件类型、必传规则、批量下载范围和上传权限。"},
-  {"id":"v2-notice","selector":".v2-demo-banner","name":"V2新增说明","logic":"说明适当性自动用印、订单普通文件自动用印、特殊文件手工用印及自动失败手工兜底的主逻辑。","notes":"原型只展示主逻辑，详细状态规则以需求文档为准。"},
-  {"id":"node-panel","selector":"#v2NodePanel","name":"当前节点操作","logic":"随流程节点切换操作按钮，并通过一个复用上传入口模拟各节点上传不同文件。","notes":"章总/齐总、投资经理、合规风控、划款等节点共用该区域，避免重复模块。"},
+  {"id":"v2-notice","selector":".v2-demo-banner","name":"V2新增说明","logic":"说明适当性自动用印、订单普通文件自动用印、特殊文件手工用印及自动失败手工兜底的主逻辑。","notes":"仅主流程展示；原型只展示主逻辑，详细状态规则以需求文档为准。"},
   {"id":"suitability-seal","selector":"#ttdSuitabilitySection","name":"妥妥递-适当性用印","logic":"适当性文件默认自动用印；自动功能异常时可单份或批量手工用印；适当性已审核成功或线下已完成时可跳过。","notes":"印章只展示机构章和经办人印章，不展示具体人员姓名。"},
   {"id":"suitability-actions","selector":"#ttdSuitabilitySection .ttd-stamp-actions","name":"适当性用印操作","logic":"支持上传文件、自动用印和手工批量用印；节点切换通过右侧模拟区完成。","notes":"所有文件初始为待用印状态。"},
   {"id":"order-combo","selector":"#ttdOrderCombo","name":"订单文件处理总区","logic":"视觉上合并展示妥妥递订单用印与用印后材料（双方用印 + 上传），业务材料仍分别处理。","notes":"前者是我方用印过程文件，后者同时承载双方用印文件和后续划款补充材料。"},
