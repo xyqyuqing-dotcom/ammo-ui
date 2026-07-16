@@ -1066,6 +1066,31 @@
             opacity: 0.5;
         }
     </style>
+<!-- annotation-template-start -->
+<style>
+    body.annotation-mode { padding-right: 360px; }
+    .annotation-toolbar { position: fixed; right: 20px; bottom: 20px; z-index: 9020; display: flex; gap: 8px; padding: 10px; background: rgba(255,255,255,.96); border: 1px solid #d9e2ef; border-radius: 8px; box-shadow: 0 8px 24px rgba(15,23,42,.16); transition: right .2s ease; }
+    body.annotation-mode .annotation-toolbar { right: 360px; }
+    .annotation-toolbar button, .annotation-panel button { border: 1px solid #d9d9d9; border-radius: 6px; padding: 8px 12px; color: #334155; background: #fff; cursor: pointer; }
+    .annotation-toolbar button.primary, .annotation-panel button.primary { color: #fff; border-color: #1677ff; background: #1677ff; }
+    .annotation-dot { position: absolute; z-index: 8999; display: none; width: 24px; height: 24px; border: 2px solid #fff; border-radius: 50%; color: #fff; background: #fa8c16; box-shadow: 0 4px 12px rgba(250,140,22,.4); font-size: 13px; font-weight: 700; line-height: 20px; text-align: center; cursor: pointer; }
+    body.annotation-mode .annotation-dot { display: block; }
+    .annotation-dot.active { background: #1677ff; box-shadow: 0 4px 12px rgba(22,119,255,.4); }
+    .annotation-panel { position: fixed; top: 0; right: 0; bottom: 0; z-index: 9010; display: none; width: 340px; padding: 18px; overflow-y: auto; background: #fff; border-left: 1px solid #d9e2ef; box-shadow: -8px 0 24px rgba(15,23,42,.12); }
+    body.annotation-mode .annotation-panel { display: block; }
+    .annotation-panel-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+    .annotation-panel h2 { margin: 0; font-size: 18px; color: #172033; }
+    .annotation-close { width: 32px; height: 32px; padding: 0 !important; border-radius: 50% !important; font-size: 18px; line-height: 1; }
+    .annotation-panel .panel-tip { margin-bottom: 16px; color: #64748b; font-size: 12px; line-height: 1.6; }
+    .annotation-field { margin-bottom: 12px; }
+    .annotation-field label { display: block; margin-bottom: 6px; color: #334155; font-weight: 600; }
+    .annotation-field input, .annotation-field textarea { width: 100%; border: 1px solid #d9e2ef; border-radius: 6px; padding: 8px 10px; color: #172033; font: inherit; line-height: 1.5; resize: vertical; }
+    .annotation-field textarea { min-height: 120px; }
+    .annotation-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .annotation-empty { padding: 24px; color: #64748b; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; line-height: 1.7; }
+    @media (max-width: 980px) { body.annotation-mode { padding-right: 0; } body.annotation-mode .annotation-toolbar { right: 20px; bottom: calc(58vh + 20px); } .annotation-panel { top: auto; left: 0; width: 100%; max-height: 58vh; border-left: 0; border-top: 1px solid #d9e2ef; } }
+</style>
+<!-- annotation-template-end -->
 </head>
 <body>
     <!-- 顶部导航 -->
@@ -3596,5 +3621,221 @@
             */
         }
     </script>
+<!-- annotation-template-start -->
+<div class="annotation-toolbar" id="annotationToolbar">
+    <button type="button" class="primary" id="toggleAnnotationMode">标注模式</button>
+    <button type="button" id="exportAnnotations">导出需求说明</button>
+    <button type="button" id="exportAnnotatedHtml">导出带标注HTML</button>
+</div>
+<aside class="annotation-panel" id="annotationPanel">
+    <div class="annotation-panel-header">
+        <h2>需求标注</h2>
+        <button type="button" class="annotation-close" id="closeAnnotationPanel" title="关闭标注">×</button>
+    </div>
+    <div class="panel-tip">点击橙色标注点后可编辑。保存会先写入当前浏览器；点击“导出带标注HTML”可生成已固化标注的新 HTML，上传 GitHub 后其他人也能看到。</div>
+    <div id="annotationEditor" class="annotation-empty">请选择一个标注点。</div>
+</aside>
+<script type="application/json" id="annotationDefaults">[
+  {"id":"page-title","selector":".header h1","name":"页面标题","logic":"标识当前页面为 TA 数据发送功能入口。正式系统中可从菜单或路由配置读取标题。","notes":"需要确认页面名称是否与菜单名称保持一致。"},
+  {"id":"main-tabs","selector":"#view-list .tab-nav","name":"列表/详情页签","logic":"用于在 TA 数据发送设置列表与发送详情之间切换，不刷新页面。","notes":"可考虑记忆用户上次停留的页签。"},
+  {"id":"setting-search","selector":"#list-content .search-bar","name":"发送设置查询区","logic":"按发送任务名、产品等条件查询发送配置；查询为空时展示全部，重置清空筛选条件。","notes":"后续可增加启用状态、发送维度等筛选项。"},
+  {"id":"new-setting","selector":"#list-content .action-bar","name":"新增与导出操作","logic":"新增进入 TA 数据发送配置表单；导出按当前筛选条件导出配置列表。","notes":"按钮需要结合权限控制；导出是否异步待确认。"},
+  {"id":"setting-table","selector":"#list-content .data-table","name":"发送设置列表","logic":"展示已配置的 TA 数据发送规则，支持修改配置、查看详情、删除、补发、复制等操作。","notes":"删除需二次确认；停用后不应继续自动生成发送任务。"},
+  {"id":"detail-search","selector":"#detail-content .search-bar","name":"发送详情查询区","logic":"按任务名、产品、日期、状态等条件查询已生成的发送明细。","notes":"需要确认历史明细最长允许查询多久。"},
+  {"id":"detail-actions","selector":"#detail-content .action-bar","name":"发送详情批量操作","logic":"支持生成数据、批量发送、批量删除和导出；批量发送/删除需先勾选符合状态的记录。","notes":"已发送记录不可删除；部分发送失败时需展示失败明细。"},
+  {"id":"detail-table","selector":"#detailTable","name":"发送详情表格","logic":"展示每条 TA 数据发送记录的状态和操作；未发送可发送/删除，已发送可查看、下载或再次发送。","notes":"发送前需校验邮箱、文件生成状态和业务日期。"},
+  {"id":"send-dimension","selector":"#sendDimension","name":"发送维度","logic":"决定按投资者或按产品生成发送规则；切换维度时联动显示对应选择区域。","notes":"编辑已有配置时是否允许修改发送维度待确认。"},
+  {"id":"investor-select","selector":"#investorSelectGroup","name":"投资者选择","logic":"按投资者发送时选择目标投资者，并选择其名下全部产品或自定义产品范围。","notes":"自定义产品时至少选择一个产品；投资者无产品时应阻止继续。"},
+  {"id":"product-select","selector":"#productSelectGroup","name":"产品选择","logic":"按产品发送时选择目标产品，并选择全部投资者或自定义投资者范围。","notes":"自定义投资者时至少选择一个投资者；隐藏区域不参与校验和提交。"},
+  {"id":"task-name","selector":"#taskName","name":"发送任务名","logic":"用于识别一条 TA 数据发送配置；支持用户自定义，部分场景可自动生成。","notes":"建议校验必填、长度和重名。"},
+  {"id":"data-type-table","selector":"#view-settings .data-type-table","name":"发送数据类型配置","logic":"配置交易确认、份额持有等数据类型的发送格式、频率、模式和样式。","notes":"至少选择一种数据类型；必选类型不可取消；净值/市值相关数据需等待估值确认。"},
+  {"id":"receive-email","selector":"#receiveEmail","name":"接收邮箱","logic":"配置 TA 数据邮件主送地址，支持多个邮箱用逗号、分号或换行分隔。","notes":"必填，保存前需校验邮箱格式并标准化为数组。"},
+  {"id":"cc-email","selector":"#ccEmail","name":"抄送邮箱","logic":"配置 TA 数据邮件抄送地址，可为空，支持多个邮箱。","notes":"非空时需校验邮箱格式；是否默认抄送运营公共邮箱待确认。"},
+  {"id":"form-actions","selector":"#view-settings .button-group","name":"表单底部操作","logic":"上一步返回列表，下一步执行校验并进入确认/保存流程，取消放弃当前编辑。","notes":"提交按钮需防重复点击；是否需要邮件内容预览待确认。"}
+]</script>
+<script>
+(function () {
+    var STORAGE_KEY = 'ta-data-send-annotations-cn-v1';
+    var fields = [
+        ['name', '标注名称', 'input'],
+        ['logic', '业务逻辑', 'textarea'],
+        ['notes', '其他说明', 'textarea']
+    ];
+    var defaults = readDefaults();
+    var annotations = loadAnnotations();
+    var activeId = null;
+    var enabled = false;
+    var dots = new Map();
+    var editor = document.getElementById('annotationEditor');
+    var toggleBtn = document.getElementById('toggleAnnotationMode');
+    var closeBtn = document.getElementById('closeAnnotationPanel');
+    var exportBtn = document.getElementById('exportAnnotations');
+    var exportHtmlBtn = document.getElementById('exportAnnotatedHtml');
+
+    function readDefaults() {
+        try {
+            return JSON.parse(document.getElementById('annotationDefaults').textContent || '[]');
+        } catch (error) {
+            return [];
+        }
+    }
+    function loadAnnotations() {
+        try {
+            var saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            return defaults.map(function (item) { return Object.assign({}, item, saved[item.id] || {}); });
+        } catch (error) {
+            return defaults.slice();
+        }
+    }
+    function persist() {
+        var payload = {};
+        annotations.forEach(function (item) { payload[item.id] = item; });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    }
+    function createDots() {
+        annotations.forEach(function (item) {
+            var dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = 'annotation-dot';
+            dot.textContent = 'i';
+            dot.title = item.name;
+            dot.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+                selectAnnotation(item.id);
+            });
+            document.body.appendChild(dot);
+            dots.set(item.id, dot);
+        });
+    }
+    function positionDots() {
+        if (!enabled) return;
+        annotations.forEach(function (item) {
+            var dot = dots.get(item.id);
+            var target = document.querySelector(item.selector);
+            if (!dot || !target || target.offsetParent === null) {
+                if (dot) dot.style.display = 'none';
+                return;
+            }
+            var rect = target.getBoundingClientRect();
+            dot.style.display = 'block';
+            dot.style.left = (window.scrollX + rect.right - 10) + 'px';
+            dot.style.top = (window.scrollY + rect.top - 10) + 'px';
+        });
+    }
+    function hideDots() {
+        dots.forEach(function (dot) {
+            dot.classList.remove('active');
+            dot.style.display = 'none';
+        });
+    }
+    function openAnnotationMode() {
+        enabled = true;
+        document.body.classList.add('annotation-mode');
+        toggleBtn.textContent = '关闭标注';
+        if (!activeId && annotations[0]) selectAnnotation(annotations[0].id);
+        setTimeout(positionDots, 60);
+    }
+    function closeAnnotationMode() {
+        enabled = false;
+        document.body.classList.remove('annotation-mode');
+        toggleBtn.textContent = '标注模式';
+        hideDots();
+    }
+    function selectAnnotation(id) {
+        activeId = id;
+        dots.forEach(function (dot, dotId) { dot.classList.toggle('active', dotId === id); });
+        var item = annotations.find(function (entry) { return entry.id === id; });
+        if (!item) return;
+        editor.className = '';
+        editor.innerHTML = fields.map(function (field) {
+            var key = field[0];
+            var label = field[1];
+            var type = field[2];
+            var value = escapeHtml(item[key] || '');
+            if (type === 'input') {
+                return '<div class="annotation-field"><label>' + label + '</label><input data-anno-field="' + key + '" value="' + value + '"></div>';
+            }
+            return '<div class="annotation-field"><label>' + label + '</label><textarea data-anno-field="' + key + '">' + value + '</textarea></div>';
+        }).join('') + '<div class="annotation-actions"><button type="button" class="primary" id="saveAnnotation">保存</button><button type="button" id="resetAnnotation">恢复默认</button></div>';
+        document.getElementById('saveAnnotation').addEventListener('click', saveCurrent);
+        document.getElementById('resetAnnotation').addEventListener('click', resetCurrent);
+    }
+    function saveCurrent() {
+        var item = annotations.find(function (entry) { return entry.id === activeId; });
+        if (!item) return;
+        editor.querySelectorAll('[data-anno-field]').forEach(function (input) {
+            item[input.getAttribute('data-anno-field')] = input.value;
+        });
+        persist();
+        var dot = dots.get(item.id);
+        if (dot) dot.title = item.name;
+        alert('已保存到当前浏览器。若要让其他人看到，请点击“导出带标注HTML”并上传覆盖原文件。');
+    }
+    function resetCurrent() {
+        var original = defaults.find(function (entry) { return entry.id === activeId; });
+        var index = annotations.findIndex(function (entry) { return entry.id === activeId; });
+        if (!original || index < 0) return;
+        annotations[index] = Object.assign({}, original);
+        persist();
+        selectAnnotation(activeId);
+    }
+    function exportMarkdown() {
+        var content = annotations.map(function (item, index) {
+            return '## ' + (index + 1) + '. ' + item.name + '\n\n' +
+                '- 标识：' + item.id + '\n' +
+                '- 业务逻辑：' + (item.logic || '') + '\n' +
+                '- 其他说明：' + (item.notes || '') + '\n';
+        }).join('\n');
+        downloadFile('TA数据发送需求标注.md', '# TA 数据发送需求标注\n\n' + content, 'text/markdown;charset=utf-8');
+    }
+    function exportAnnotatedHtml() {
+        saveCurrentIfOpen();
+        var oldEnabled = enabled;
+        closeAnnotationMode();
+        var defaultsNode = document.getElementById('annotationDefaults');
+        var oldText = defaultsNode.textContent;
+        defaultsNode.textContent = JSON.stringify(annotations, null, 2);
+        var html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        defaultsNode.textContent = oldText;
+        if (oldEnabled) openAnnotationMode();
+        downloadFile('ta-data-send.html', html, 'text/html;charset=utf-8');
+    }
+    function saveCurrentIfOpen() {
+        if (!activeId || !editor.querySelector('[data-anno-field]')) return;
+        var item = annotations.find(function (entry) { return entry.id === activeId; });
+        if (!item) return;
+        editor.querySelectorAll('[data-anno-field]').forEach(function (input) {
+            item[input.getAttribute('data-anno-field')] = input.value;
+        });
+        persist();
+    }
+    function downloadFile(fileName, content, type) {
+        var blob = new Blob([content], { type: type });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+    function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, function (char) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]; });
+    }
+    toggleBtn.addEventListener('click', function () {
+        if (enabled) closeAnnotationMode(); else openAnnotationMode();
+    });
+    closeBtn.addEventListener('click', closeAnnotationMode);
+    exportBtn.addEventListener('click', exportMarkdown);
+    exportHtmlBtn.addEventListener('click', exportAnnotatedHtml);
+    window.addEventListener('scroll', positionDots, true);
+    window.addEventListener('resize', positionDots);
+    document.addEventListener('click', function () { setTimeout(positionDots, 80); }, true);
+    createDots();
+})();
+</script>
+<!-- annotation-template-end -->
 </body>
 </html>

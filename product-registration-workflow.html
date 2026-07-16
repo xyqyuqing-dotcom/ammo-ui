@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>产品报备流程</title>
+  <style>
+    :root{
+      --blue:#1677ff;
+      --blue-soft:#eaf3ff;
+      --cyan:#13c2c2;
+      --ink:#1f2937;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --bg:#f5f7fb;
+      --danger:#d93026;
+      --warn:#b45309;
+      --warn-bg:#fff7e6;
+      --success:#16a34a;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:"Microsoft YaHei",Arial,sans-serif;font-size:14px}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    .topbar{height:42px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 18px;position:sticky;top:0;z-index:20}
+    .brand{font-weight:700;color:#111827;display:flex;align-items:center;gap:10px}
+    .category-badge{font-size:12px;font-weight:500;color:#1677ff;background:#eaf3ff;border-radius:12px;padding:3px 9px}
+    .top-actions{display:flex;align-items:center;gap:18px;color:#6b7280;font-size:13px}
+    .page{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:12px;max-width:1760px;margin:12px auto 84px;padding:0 12px}
+    .main-panel,.side-panel{background:#fff;border:1px solid #eef0f3;border-radius:4px}
+    .main-panel{min-width:0}
+    .side-panel{position:sticky;top:54px;height:calc(100vh - 68px);overflow:auto}
+    .workflow-title{padding:18px 22px;border-bottom:1px solid #eef0f3;background:#fff}
+    .workflow-title h1{margin:0 0 12px;font-size:17px;line-height:1.5}
+    .starter{display:flex;align-items:center;gap:10px;color:#6b7280;font-size:13px}
+    .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#111827,#9ca3af);display:inline-grid;place-items:center;color:#fff;font-size:12px}
+    .tag{display:inline-block;border:1px solid #d8dde6;border-radius:3px;padding:1px 5px;color:#4b5563;background:#fff;font-size:12px}
+    .summary-toggle{margin-left:auto;color:#4b5563}
+    .content{padding:22px}
+    .section{margin-bottom:26px}
+    .section h2{font-size:14px;margin:0 0 14px;color:#111827}
+    .form-row{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;margin-bottom:12px;align-items:start}
+    .label{padding-top:8px;text-align:right;color:#374151;font-size:13px}
+    .label.req:before{content:"*";color:#ff4d4f;margin-right:4px}
+    input[type=text],select,textarea{width:100%;border:1px solid #d9dde5;border-radius:4px;background:#fff;padding:8px 10px;outline:none;min-height:36px}
+    input[readonly],textarea[readonly]{background:#f7f8fa;color:#6b7280}
+    textarea{height:58px;resize:vertical}
+    input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(22,119,255,.1)}
+    .inline-choice{display:flex;align-items:center;gap:14px;min-height:36px}
+    .radio-card{display:inline-flex;align-items:center;gap:7px;border:1px solid #d9dde5;border-radius:4px;padding:7px 12px;background:#fff}
+    .radio-card input{margin:0}
+    .radio-card.warn{border-color:#f6c96b;background:#fffaf0;color:#8a5a00}
+    .field-note{font-size:12px;color:#8a94a6;margin-top:6px;line-height:1.6}
+    .stamp-checks{padding-top:4px}
+    .stamp-checks label{display:flex;align-items:center;gap:8px;color:#6b7280;margin:10px 0}
+    .file-block{border-top:1px solid #f0f2f5;margin-top:10px}
+    .file-head,.file-row{display:grid;grid-template-columns:minmax(0,1fr) 112px;align-items:center}
+    .file-head{height:36px;background:#fafafa;color:#374151;font-weight:600;padding:0 10px;border-bottom:1px solid #eef0f3}
+    .file-row{min-height:44px;padding:0 10px;border-bottom:1px solid #f3f4f6;color:#374151}
+    .file-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .file-actions{display:flex;justify-content:flex-end;gap:8px}
+    .icon-btn{width:26px;height:26px;border:1px solid #d8dde6;border-radius:50%;background:#fff;color:#6b7280}
+    .upload-btn{float:right;margin-bottom:8px;border:1px solid #d9dde5;border-radius:4px;background:#fafafa;color:#9ca3af;padding:6px 12px}
+    .bottom-bar{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);border-top:1px solid var(--line);padding:12px 22px;display:flex;justify-content:flex-end;align-items:center;gap:10px;z-index:30;backdrop-filter:blur(8px)}
+    .btn{border:1px solid #d8dde6;background:#fff;border-radius:4px;padding:8px 18px;color:#374151}
+    .btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+    .btn.warn{background:#fa8c16;border-color:#fa8c16;color:#fff}
+    .side-head{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid #eef0f3}
+    .side-head h2{font-size:15px;margin:0}
+    .side-options{display:flex;justify-content:flex-end;gap:14px;padding:10px 18px 0;color:#4b5563;font-size:12px}
+    .timeline{padding:10px 18px 24px}
+    .timeline-item{display:grid;grid-template-columns:22px 1fr;gap:10px;position:relative;padding:0 0 28px}
+    .timeline-item:before{content:"";position:absolute;left:5px;top:18px;bottom:0;border-left:2px solid #e2ecff}
+    .timeline-item:last-child:before{display:none}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--blue);margin-top:10px}
+    .dot.avatar-dot{width:28px;height:28px;margin-left:-10px;margin-top:0;background:linear-gradient(135deg,#111827,#9ca3af);border:3px solid #eff6ff}
+    .dot.cc{width:28px;height:28px;margin-left:-10px;margin-top:0;background:#eaf3ff;border:1px solid #91caff;display:grid;place-items:center;color:var(--blue)}
+    .record-main{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+    .record-title{font-weight:600;color:#374151;margin-bottom:4px}
+    .record-sub{font-size:12px;color:#9ca3af}
+    .record-time{font-size:12px;color:#9ca3af;white-space:nowrap}
+    .record-status{border:1px solid #87e8de;color:#08979c;border-radius:3px;padding:2px 5px;font-size:12px;margin-bottom:5px;display:inline-block}
+    .modal-mask{position:fixed;inset:0;background:rgba(17,24,39,.45);display:none;align-items:center;justify-content:center;z-index:60;padding:18px}
+    .modal-mask.show{display:flex}
+    .modal{width:min(560px,100%);background:#fff;border-radius:10px;box-shadow:0 24px 70px rgba(15,23,42,.28);overflow:hidden}
+    .modal-head{background:#fff7e6;border-bottom:1px solid #ffd591;padding:18px 20px;display:flex;gap:12px;align-items:center}
+    .warning-icon{width:38px;height:38px;border-radius:50%;background:#fa8c16;color:#fff;display:grid;place-items:center;font-size:24px;font-weight:700}
+    .modal-head h3{margin:0;font-size:18px;color:#9a5b00}
+    .modal-body{padding:20px;color:#374151;line-height:1.8}
+    .modal-body strong{color:#d46b08}
+    .modal-actions{padding:14px 20px;border-top:1px solid #eef0f3;display:flex;justify-content:flex-end;gap:10px}
+    .toast{position:fixed;right:24px;top:62px;background:#172033;color:#fff;border-radius:5px;padding:12px 16px;opacity:0;transform:translateY(-8px);transition:.18s;z-index:70}
+    .toast.show{opacity:1;transform:none}
+    @media(max-width:1020px){
+      .page{grid-template-columns:1fr}
+      .side-panel{position:static;height:auto}
+      .form-row{grid-template-columns:1fr}
+      .label{text-align:left;padding-top:0}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">产品报备流程zero <span class="category-badge">产品</span></div>
+    <div class="top-actions"><span>事务中心</span><span>设置</span><span>首页</span></div>
+  </header>
+
+  <main class="page">
+    <section class="main-panel">
+      <div class="workflow-title">
+        <h1>产品报备流程-XXXXX私客尊享FOF367号单一资产管理计划的报备</h1>
+        <div class="starter"><span class="avatar">产</span><span>产品经理（资产管理部） 2025-10-20 09:33 发起</span><span class="tag">一般</span><span class="summary-toggle">摘要⌄</span></div>
+      </div>
+
+      <div class="content">
+        <form id="registrationForm">
+          <div class="section">
+            <h2>基本信息</h2>
+            <div class="form-row">
+              <label class="label req">产品名称</label>
+              <input type="text" value="XXXXX私客尊享FOF367号单一资产管理计划">
+            </div>
+            <div class="form-row">
+              <label class="label req">产品标签</label>
+              <select><option>Pro</option><option>标准</option><option>重点产品</option></select>
+            </div>
+            <div class="form-row">
+              <label class="label req">是否可下投子基金</label>
+              <select required><option value="">请选择</option><option>是</option><option>否</option></select>
+            </div>
+            <div class="form-row">
+              <label class="label">备注</label>
+              <textarea placeholder="请输入"></textarea>
+            </div>
+          </div>
+
+          <div class="section">
+            <h2>TA岗填写</h2>
+            <div class="form-row">
+              <label class="label req">产品编码</label>
+              <input type="text" value="S000002">
+            </div>
+            <div class="form-row">
+              <label class="label">备注</label>
+              <textarea placeholder="请输入"></textarea>
+            </div>
+          </div>
+
+          <div class="section">
+            <h2>产品经理用印</h2>
+            <div class="form-row">
+              <label class="label"></label>
+              <div class="stamp-checks">
+                <label><input type="checkbox" checked disabled> 已开始用印流程</label>
+                <label><input type="checkbox" checked disabled> 用印流程完成</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h2>母层豁免上会</h2>
+            <div class="form-row">
+              <label class="label req">是否豁免上会</label>
+              <div>
+                <div class="inline-choice" id="exemptionChoice">
+                  <label class="radio-card"><input type="radio" name="meetingExemption" value="是"> 是</label>
+                  <label class="radio-card warn"><input type="radio" name="meetingExemption" value="否" checked> 否（默认）</label>
+                </div>
+                <div class="field-note">该节点位于抄送前，由资管部负责人确认是否允许豁免上会。</div>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="label">审批意见</label>
+              <textarea placeholder="请填写审批意见，可为空"></textarea>
+            </div>
+          </div>
+
+          <div class="section">
+            <h2><span style="color:#ff4d4f">*</span> 资产管理合同 <button class="upload-btn" type="button">上传</button></h2>
+            <div class="file-block">
+              <div class="file-head"><span>文件名</span><span>操作</span></div>
+              <div class="file-row"><span class="file-name">（已压缩）混合类（借期货和衍生品类）XXXXX私客尊享FOF367号单一资产管理计划合同.pdf</span><span class="file-actions"><button class="icon-btn" type="button">⊙</button><button class="icon-btn" type="button">↓</button><button class="icon-btn" type="button">□</button></span></div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h2><span style="color:#ff4d4f">*</span> 风险揭示书 <button class="upload-btn" type="button">上传</button></h2>
+            <div class="file-block">
+              <div class="file-head"><span>文件名</span><span>操作</span></div>
+              <div class="file-row"><span class="file-name">混合类（借期货和衍生品类）XXXXX私客尊享FOF367号单一资产管理计划风险揭示书.pdf</span><span class="file-actions"><button class="icon-btn" type="button">⊙</button><button class="icon-btn" type="button">↓</button><button class="icon-btn" type="button">□</button></span></div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h2><span style="color:#ff4d4f">*</span> 产品说明书 <button class="upload-btn" type="button">上传</button></h2>
+            <div class="file-block">
+              <div class="file-head"><span>文件名</span><span>操作</span></div>
+              <div class="file-row"><span class="file-name">混合类（借期货和衍生品类）XXXXX私客尊享FOF367号单一资产管理计划说明书.pdf</span><span class="file-actions"><button class="icon-btn" type="button">⊙</button><button class="icon-btn" type="button">↓</button><button class="icon-btn" type="button">□</button></span></div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <aside class="side-panel">
+      <div class="side-head"><h2>流程记录</h2><span>流程图</span></div>
+      <div class="side-options"><label><input type="checkbox" checked> 审批意见</label><label><input type="checkbox" checked> 评论</label></div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <span class="dot"></span>
+          <div class="record-main"><div><div class="record-title">产品经理发起</div><div class="record-sub">发起人</div></div><div><span class="record-status">同意</span><div class="record-time">2025-10-20 09:33</div></div></div>
+        </div>
+        <div class="timeline-item">
+          <span class="dot"></span>
+          <div class="record-main"><div><div class="record-title">TA岗执行</div><div class="record-sub">TA运营岗</div></div><div><span class="record-status">同意</span><div class="record-time">2025-10-20 09:40</div></div></div>
+        </div>
+        <div class="timeline-item">
+          <span class="dot"></span>
+          <div class="record-main"><div><div class="record-title">产品经理开始用印</div><div class="record-sub">产品经理</div></div><div><span class="record-status">同意</span><div class="record-time">2025-10-22 18:03</div></div></div>
+        </div>
+        <div class="timeline-item">
+          <span class="dot"></span>
+          <div class="record-main"><div><div class="record-title">产品经理用印完成</div><div class="record-sub">产品经理</div></div><div><span class="record-status">同意</span><div class="record-time">2025-10-22 18:03</div></div></div>
+        </div>
+        <div class="timeline-item">
+          <span class="dot avatar-dot"></span>
+          <div class="record-main"><div><div class="record-title">资管部负责人审批</div><div class="record-sub" id="managerApprovalSub">待审批 · 是否豁免上会：否</div></div><div><span class="record-status">待办</span></div></div>
+        </div>
+        <div class="timeline-item">
+          <span class="dot cc">抄</span>
+          <div class="record-main"><div><div class="record-title">抄送</div><div class="record-sub">已抄送5人⌄</div></div><div class="record-time">审批后触发</div></div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <div class="bottom-bar">
+    <button class="btn" type="button" id="saveDraft">保存草稿</button>
+    <button class="btn primary" type="button" id="submitBtn">提交</button>
+  </div>
+
+  <div class="modal-mask" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-head"><div class="warning-icon">!</div><h3 id="modalTitle">请领导确认：当前选择“不豁免上会”</h3></div>
+      <div class="modal-body">
+        本次产品报备的“是否豁免上会”为 <strong>否</strong>。提交后流程将按不豁免上会口径继续，请资管部负责人再次确认该选择无误。
+      </div>
+      <div class="modal-actions">
+        <button class="btn" type="button" id="backToEdit">返回修改</button>
+        <button class="btn warn" type="button" id="confirmSubmit">确认提交</button>
+      </div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const radios=[...document.querySelectorAll('input[name="meetingExemption"]')];
+    const confirmModal=document.querySelector('#confirmModal');
+    const toastEl=document.querySelector('#toast');
+    function exemptionValue(){return document.querySelector('input[name="meetingExemption"]:checked').value}
+    function syncExemptionHint(){
+      const value=exemptionValue();
+      document.querySelector('#managerApprovalSub').textContent='待审批 · 是否豁免上会：'+value;
+    }
+    function toast(text){toastEl.textContent=text;toastEl.classList.add('show');setTimeout(()=>toastEl.classList.remove('show'),2200)}
+    radios.forEach(radio=>radio.addEventListener('change',syncExemptionHint));
+    document.querySelector('#saveDraft').addEventListener('click',()=>toast('草稿已保存（原型演示）'));
+    document.querySelector('#submitBtn').addEventListener('click',()=>{
+      if(exemptionValue()==='否'){confirmModal.classList.add('show');return}
+      toast('提交成功（原型演示）');
+    });
+    document.querySelector('#backToEdit').addEventListener('click',()=>confirmModal.classList.remove('show'));
+    document.querySelector('#confirmSubmit').addEventListener('click',()=>{confirmModal.classList.remove('show');toast('已确认“不豁免上会”，流程继续提交')});
+    confirmModal.addEventListener('click',event=>{if(event.target===confirmModal)confirmModal.classList.remove('show')});
+    syncExemptionHint();
+  </script>
+</body>
+</html>

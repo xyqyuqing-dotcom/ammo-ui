@@ -379,6 +379,10 @@
         .info-value { font-size: 15px; font-weight: 500; color: #333; }
         .info-value.red { color: #cf1322; }
         .info-value.green { color: #52c41a; }
+        .asset-pool-not-in {
+            color: #cf1322;
+            font-weight: 500;
+        }
 
         /* 建仓调仓记录 */
         .record-card {
@@ -1567,6 +1571,16 @@ function getDemoAssetPoolStatusText(productName, fallback = '') {
     return normalizeAssetPool(fallback);
 }
 
+function isNotInAssetPoolStatus(value) {
+    const text = String(value || '');
+    return text.includes('不在资配池') || text.includes('不在池');
+}
+
+function formatAssetPoolStatus(value) {
+    const text = normalizeAssetPool(value);
+    return isNotInAssetPoolStatus(text) ? `<span class="asset-pool-not-in">${text}</span>` : text;
+}
+
 function formatCodeName(value, name) {
     const text = String(value || '').trim();
     if (!text && !name) return '-';
@@ -1616,7 +1630,7 @@ function renderColumnValue(row, key, strategyRatioMap = {}) {
         afterAmount: afterAmount ? afterAmount.toFixed(2) : '-',
         afterConfigRatio: row.afterConfigRatio || (afterAmount ? `${(afterAmount / 9000 * 100).toFixed(2)}%` : '-'),
         upperPool: normalizeUpperPool(row.upperPool || row.pool),
-        assetPool: getDemoAssetPoolStatusText(row.subName, row.assetPool || row.pool),
+        assetPool: formatAssetPoolStatus(getDemoAssetPoolStatusText(row.subName, row.assetPool || row.pool)),
         securitiesDept,
         futuresDept,
         status: `<span class="${getStatusClass(row.status)}">${row.status}</span>`,
@@ -2045,7 +2059,7 @@ function renderRecordTable() {
 // ============================================================
 //  新建建仓 - 明细行管理
 // ============================================================
-function addNpDetailRow() {
+function addNpDetailRow(sample = {}) {
     const tbody = document.getElementById('npDetailBody');
     const row = document.createElement('tr');
     row.innerHTML = `
@@ -2057,6 +2071,10 @@ function addNpDetailRow() {
         <td><select class="form-select np-sub" style="min-width:150px" onchange="autoFillNpStrategy(this)">
             <option value="HF002" data-strategy="量化中性">HF002 幻方量化中性3号</option>
             <option value="LJ004" data-strategy="CTA策略">LJ004 灵均CTA策略2号</option>
+            <option value="NB008" data-strategy="混合策略">NB008 宁波幻方混合1号</option>
+            <option value="YF005" data-strategy="量化指增">YF005 衍复量化增强1号</option>
+            <option value="JK001" data-strategy="量化对冲">JK001 九坤量化对冲1号</option>
+            <option value="HY007" data-strategy="量化对冲">HY007 黑翼对冲基金6号</option>
             <option value="YN006" data-strategy="量化中性">YN006 因诺中性策略4号</option>
         </select></td>
         <td><select class="form-select np-tradeType" style="min-width:120px" disabled>
@@ -2066,7 +2084,7 @@ function addNpDetailRow() {
         <td><input type="text" class="form-input np-ratio" style="width:80px" placeholder="" oninput="calcNpAmount(this)"></td>
         <td><input type="text" class="form-input np-amount" style="width:90px" placeholder="" oninput="calcNpRatio(this)" readonly></td>
         <td>核心池</td>
-        <td>在池</td>
+        <td class="np-asset-pool">在池，可下投</td>
         <td style="white-space:nowrap;">
             <button class="exempt-btn" onclick="toggleExempt(this)">豁免</button>
             <button class="icon-btn" title="复制" onclick="copyNpRow(this)">📋</button>
@@ -2074,6 +2092,10 @@ function addNpDetailRow() {
         </td>
     `;
     tbody.appendChild(row);
+    if (sample.subValue) row.querySelector('.np-sub').value = sample.subValue;
+    if (sample.ratio) row.querySelector('.np-ratio').value = sample.ratio;
+    if (sample.amount) row.querySelector('.np-amount').value = sample.amount;
+    autoFillNpStrategy(row.querySelector('.np-sub'));
     // 初始化输入模式
     toggleNpInputMode();
 }
@@ -2099,6 +2121,7 @@ function autoFillNpStrategy(selectEl) {
     const opt = subSelect.options[subSelect.selectedIndex];
     const strategy = opt.getAttribute('data-strategy') || '-';
     row.querySelector('.np-strategy-display').textContent = strategy;
+    updateNewRowAssetPoolStatus(row, 'np');
 }
 function autoFillNaStrategy(selectEl) {
     const row = selectEl.closest('tr');
@@ -2107,6 +2130,15 @@ function autoFillNaStrategy(selectEl) {
     const opt = subSelect.options[subSelect.selectedIndex];
     const strategy = opt.getAttribute('data-strategy') || '-';
     row.querySelector('.na-strategy-display').textContent = strategy;
+    updateNewRowAssetPoolStatus(row, 'na');
+}
+
+function updateNewRowAssetPoolStatus(row, prefix) {
+    const subSelect = row.querySelector(`.${prefix}-sub`);
+    const cell = row.querySelector(`.${prefix}-asset-pool`);
+    if (!subSelect || !cell) return;
+    const productText = subSelect.options[subSelect.selectedIndex]?.textContent || '';
+    cell.innerHTML = formatAssetPoolStatus(getDemoAssetPoolStatusText(productText, cell.innerText));
 }
 
 // 建仓 - 输入模式切换（按比例/按金额）
@@ -2245,6 +2277,10 @@ function addNaDetailRow() {
         <td><select class="form-select na-sub" style="min-width:150px" onchange="autoFillNaStrategy(this)">
             <option value="HF002" data-strategy="量化中性">HF002 幻方量化中性3号</option>
             <option value="LJ004" data-strategy="CTA策略">LJ004 灵均CTA策略2号</option>
+            <option value="NB008" data-strategy="混合策略">NB008 宁波幻方混合1号</option>
+            <option value="YF005" data-strategy="量化指增">YF005 衍复量化增强1号</option>
+            <option value="JK001" data-strategy="量化对冲">JK001 九坤量化对冲1号</option>
+            <option value="HY007" data-strategy="量化对冲">HY007 黑翼对冲基金6号</option>
         </select></td>
         <td><select class="form-select na-tradeType" style="min-width:120px" onchange="onNaTradeTypeChange(this)">
             <option value="">请选择</option>
@@ -2260,7 +2296,7 @@ function addNaDetailRow() {
         <td class="na-amount-cell"><input type="text" class="form-input na-amount" style="width:90px" placeholder="" oninput="calcNaRatio(this)"></td>
         <td class="na-share-cell"><input type="text" class="form-input na-share" style="width:90px;display:none" placeholder=""></td>
         <td>配置池</td>
-        <td>在池</td>
+        <td class="na-asset-pool">在池，可下投</td>
         <td style="white-space:nowrap;">
             <button class="exempt-btn" onclick="toggleExempt(this)">豁免</button>
             <button class="icon-btn" title="复制" onclick="copyNaRow(this)">📋</button>
@@ -2268,6 +2304,7 @@ function addNaDetailRow() {
         </td>
     `;
     tbody.appendChild(row);
+    autoFillNaStrategy(row.querySelector('.na-sub'));
     toggleNaInputMode();
 }
 function copyNaRow(btn) { const r = btn.closest('tr'); const c = r.cloneNode(true); r.parentNode.insertBefore(c, r.nextSibling); }
@@ -2698,7 +2735,7 @@ function normalizePoolCellValues(table) {
             const productName = subFundIndex >= 0 && row.children[subFundIndex]
                 ? row.children[subFundIndex].innerText
                 : legacySubFundIndexes.map(index => row.children[index]?.innerText || '').join(' ');
-            row.children[assetPoolIndex].textContent = getDemoAssetPoolStatusText(productName, row.children[assetPoolIndex].innerText);
+            row.children[assetPoolIndex].innerHTML = formatAssetPoolStatus(getDemoAssetPoolStatusText(productName, row.children[assetPoolIndex].innerText));
         }
     });
 }
@@ -2766,7 +2803,12 @@ function ensureDetailExtraColumns(table, scope) {
         table.querySelectorAll('tbody tr').forEach(row => {
             const td = document.createElement('td');
             td.dataset.field = key;
-            td.textContent = getDetailExtraValue(table, row, key);
+            const value = getDetailExtraValue(table, row, key);
+            if (key === 'assetPool') {
+                td.innerHTML = formatAssetPoolStatus(value);
+            } else {
+                td.textContent = value;
+            }
             const actionCell = Array.from(row.children).find(cell => cell.querySelector('.action-link'));
             if (actionCell) {
                 row.insertBefore(td, actionCell);
@@ -3304,8 +3346,9 @@ function saveEditRecord() {
 // ============================================================
 renderMainTable();
 
-// 默认给建仓和调仓各加两行空明细
-for (let i = 0; i < 2; i++) addNpDetailRow();
+// 默认给建仓和调仓各加两行明细，建仓首行用于展示“不在资配池”样例
+addNpDetailRow({ subValue: 'NB008', ratio: '20.00' });
+addNpDetailRow();
 for (let i = 0; i < 2; i++) addNaDetailRow();
 </script>
 
